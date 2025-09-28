@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Firevent - Event Page</title>
+
+    <!-- Icons From Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Including Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./static/style/style.css">
+  </head>
+  <body>
+    <!-- Reusable Navbar - This Navbar has been reused in every other webpage. -->
+    <div class="navbar-expand-lg bg-white shadow-sm py-3 text-dark mb-5">
+        <div class="container navbar">
+            <a class="navbar fw-bold fs-2 ms-2 text-decoration-none " href="./index.html"><img src="./static/img/logo.png" alt="logo" class="logo"><h4 class="logo-text ms-0 ms-sm-4">Firevents</h4></a>
+            
+            <!-- The idea for this such navigation is inspired from a youtube video-->
+            <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto p-3">
+                    <li class="nav-item me-3">
+                        <a class="text-dark nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown me-3">
+                        <!-- Bootstrap Dropdown Toggle Component - Idea taken from W3School -->
+                        <a class="nav-link dropdown-toggle text-dark" href="#" id="browseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Events
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="browseDropdown">
+                            <li><a class="dropdown-item" href="./events.html">See an Event</a></li>
+                            <li><a class="dropdown-item" href="./create-event.html">Create an Event</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item me-3">
+                        <a class="nav-link text-dark" href="./login.html">Login</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-dark" href="./orderhistory.html">
+                            Order History
+                        </a>
+                        <!-- <ul class="dropdown-menu" aria-labelledby="forAuthorsDropdown">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                        </ul> -->
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center px-2">
+                    <input type="text" class="form-control" placeholder="Search for events">
+                    <button class="btn bg-green fw-semibold submit-button"><i class="bi bi-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="event container my-4 ">
+        <div class="row">
+          <div class="col-12 col-lg-8 ">
+            <div class="mb-3">
+                <img src="./static/img/banner.png" alt="Banner" class="w-100">
+            </div>
+            
+            <div class="mb-4">
+              <h3 class="px-3">Live Music Festival: Justin Beiber & Ed Sheeran</h3>
+              <div class="d-flex flex-column flex-md-row justify-content-center mt-3 gap-3">
+                <div class="d-flex justify-content-evenly flex-row gap-4">
+                    <div class=""><i class="bi bi-calendar2-event-fill m-2 text-success"></i><span>Sat 27, 2026</span></div>
+                    <div class=""><i class="bi bi-clock-fill m-2 text-primary"></i><span>4:00 PM Onwards</span></div>
+                </div>
+                <div class="d-flex justify-content-evenly flex-row gap-4">
+                    <div class=""><i class="bi bi-geo-alt-fill m-2 text-danger"></i><span>Concert Hall, Brisbane</span></div>
+                    <div class=""><i class="bi bi-check-circle-fill m-2 text-success"></i><span>Available</span></div>
+                </div>
+              </div>
+            </div>
+            
+            
+            <div class="mb- mt-3">
+                <h5 class="fw-bold">Description</h5>
+                <div class="col-12">Allows entry into the venue all three days. GA Pass holders may visit the GA camping areas. Includes (4) GA passes at price shown x 4. Save $10 per pass.</div>
+            </div>
+            
+            <div class="mb-3 mt-3 p-3 rounded-2 information-card">Please reach at the location 1 hr prior to the event time.</div>
+
+          </div>
+
+          <div class="col-12 col-lg-4 shadow-sm p-4 rounded-2">
+            
+            <div class="mb-3">
+                <div class="mb-4">
+                    <h5 class="mb-3">Select Ticket Types</h5>
+                    
+                    <div class="row border p-3 mb-3">
+                        <div class="col-8">
+                            <h6 class="mb-1">Phase-I: Balcony</h6>
+                            <p class="mb-1">Rs. 1,299</p>
+                            <a href="#" class="small">Seats Available: <strong>78</strong></a>
+                        </div>
+                        <div class="col-4 text-end">
+                            <button class="btn btn-outline-dark">SELECT</button>
+                        </div>
+                    </div>
+                    
+                    <div class="row border p-3 mb-3">
+                        <div class="col-8">
+                            <h6 class="mb-1">Phase-II: VIP Lounge</h6>
+                            <p class="mb-1">Rs. 1,599</p>
+                            <a href="#" class="small">Seats Available: <strong>114</strong></a>
+                        </div>
+                        <div class="col-4 text-end">
+                            <button class="btn btn-outline-dark">SELECT</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-6 mb-3">
+                    <h6 class="fw-bold fs-5">Location</h6>
+                    <div class="d-flex fs-7">
+                        <div><i class="bi bi-geo-alt-fill m-2"></i></div>
+                        <div>
+                            <p class="mb-1"><strong>Independence Club</strong></p>
+                            <p class="mb-1">127 Calle de Atocha, Spain</p>
+                            <a href="#">Get directions</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-6 mb-3">
+                    <h6 class="fw-bold fs-5">Highlights</h6>
+                    <div class="fs-7">
+                        <p class="mb-1"><i class="bi bi-clock-history me-2"></i>6 hours, 30 minutes</p>
+                        <p class="mb-1"><i class="bi bi-person-vcard me-2"></i>Over 18 years old</p>
+                        <p class="mb-1"><i class="bi bi-person-walking me-2"></i>In person</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <h6 class="fw-bold fs-5 mb-3">Organizer</h6>
+                <div class="d-flex flex-row justify-content-around p-3 w-100">
+                    <div class="d-flex col-4 align-items-center">
+                        <img src="./static/img/logo.png" alt="Organizer Logo" class="img-fluid rounded-circle" style="width:50px; height:50px;">
+                    </div>
+
+                    <div class="col-8">
+                        <h6 class="mb-1">Independence Club</h6>
+                        <div class="d-flex flex-wrap small text-muted">
+                            <div class="me-3">
+                            <span>Followers</span><br><strong>8.7k</strong>
+                            </div>
+                            <div class="me-3">
+                            <span>Events</span><br><strong>83</strong>
+                            </div>
+                            <div>
+                            <span>Lodging</span><br><strong>7 years</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class=" mt-3 text-end">
+                        <button class="btn btn-outline-dark mb-2">Contact</button>
+                        <button class="btn btn-danger mb-2">&nbsp;Follow&nbsp;</button>
+                    </div> -->
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <h6 class="fw-bold fs-5 mb-3">Book Now</h6>
+
+                <div class="col-6 p-0">
+                    <!-- <h5>No. of Seats</h5> -->
+                    <input type="text" name="seats" class="form-control" placeholder="Enter Number of Tickets">
+                </div>
+                <div class="col-6 text-center">
+                    <h5 class="mb-0 fw-bold mt-2">$48.43</h5>
+                </div>
+            </div>
+            <div class="row">
+                <button class="btn btn-success w-100 fw-bold py-2">
+                    BUY TICKETS
+                </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    <div class="container my-5">
+        <h4 class="mb-3">Add a comment</h4>
+        <div class="card p-3 mb-4">
+            <textarea class="form-control border-0 mb-2" rows="2" placeholder="Add comment..."></textarea>
+            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-3 text-muted fs-5">
+                <i class="bi bi-type-bold pointer"></i>
+                <i class="bi bi-type-italic pointer"></i>
+                <i class="bi bi-type-underline pointer"></i>
+            </div>
+            <button class="btn btn-success rounded-2 px-4">Submit</button>
+            </div>
+        </div>
+
+        <div class="card p-3 mb-3">
+            <div class="d-flex mb-2">
+            <img src="./static/img/profile.jpg" class="rounded-circle me-3 " style="width: 30px;">
+            <div>
+                <strong>Sudeep Thapa</strong> <i class="bi bi-dot fs-5" style="margin-top:10px;"></i> <small class="text-muted me-2">2 weeks ago</small>
+            </div>
+            </div>
+            <p class="mb-1">Woah, your project looks awesome! How long have you been coding for?</p>
+        </div>
+
+        <div class="card p-3 mb-3">
+            <div class="d-flex mb-2">
+            <img src="./static/img/profile.jpg" class="rounded-circle me-3 " style="width: 30px;">
+            <div>
+                <strong>Sudeep Thapa</strong> <i class="bi bi-dot fs-5" style="margin-top:10px;"></i> <small class="text-muted me-2">2 weeks ago</small>
+            </div>
+            </div>
+            <p class="mb-1">Damn Sudeep. Are you a coding genius or what? </p>
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-light border">Load More</button>
+        </div>
+
+    </div>
+
+
+
+    <div class="container similar-event mt-5">
+      <h2 class="text-center mb-4">Similar Events</h2>
+        <div class="row g-3"> 
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card h-100 shadow-sm">
+                  <img src="./static/img/ed sheeran.jpg" class="card-img-top" alt="Event Image">
+                  <div class="card-body">
+                  <div class="d-flex justify-content-between mb-2">
+                      <small><i class="bi bi-calendar-event me-1"></i> 12 SEP</small>
+                      <small class="fw-bold">$50</small>
+                  </div>
+                  <h6 class="card-title">Ed Sheeran</h6>
+                  <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1"></i> EDEN, Adelaide</p>
+                  <p class="card-text small mb-1"><i class="bi bi-check-circle me-2"></i>Status: Open </p>
+                  <a href="#" id="jazz" class="btn btn-sm btn-success w-100 mt-3">Book Now</a>
+                  </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card h-100 shadow-sm">
+                  <img src="./static/img/eminem.jpg" class="card-img-top" alt="Event Image">
+                  <div class="card-body">
+                  <div class="d-flex justify-content-between mb-2">
+                      <small><i class="bi bi-calendar-event me-1"></i> 19 SEP</small>
+                      <small class="fw-bold">$70</small>
+                  </div>
+                  <h6 class="card-title">Eminem</h6>
+                  <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Sydney Pearl Harbour</p>
+                  <p class="card-text small mb-1"><i class="bi bi-check-circle me-2"></i>Status: Open </p>
+                  <a href="#" class="btn btn-sm btn-success w-100 mt-3">Book Now</a>
+                  </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card h-100 shadow-sm">
+                  <img src="./static/img/akon.jpeg" class="card-img-top" alt="Event Image">
+                  <div class="card-body">
+                  <div class="d-flex justify-content-between mb-2">
+                      <small><i class="bi bi-calendar-event me-1"></i> 23 AUG</small>
+                      <small class="fw-bold">$70</small>
+                  </div>
+                  <h6 class="card-title">Akon</h6>
+                  <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Club Nexus, Perth</p>
+                  <p class="card-text small mb-1"><i class="bi bi-check-circle me-2"></i>Status: Open </p>
+                  <a href="#" class="btn btn-sm btn-success w-100 mt-3">Book Now</a>
+                  </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card h-100 shadow-sm">
+                  <img src="./static/img/taylor swift.webp" class="card-img-top" alt="Event Image">
+                  <div class="card-body">
+                  <div class="d-flex justify-content-between mb-2">
+                      <small><i class="bi bi-calendar-event me-1"></i> 11 JUL</small>
+                      <small class="fw-bold">$45</small>
+                  </div>
+                  <h6 class="card-title">Taylor Swift</h6>
+                  <p class="card-text small mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Embark College, Terrace</p>
+                  <p class="card-text small mb-1"><i class="bi bi-check-circle me-2"></i>Status: Upcoming </p>
+                  <a href="#" class="btn btn-sm btn-success w-100 mt-3">Book Now</a>
+                  </div>
+              </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Reusable Footer - This footer has been reused in every other webpage. -->
+    <footer class="bg-white text-dark pt-5 border-top mt-4">
+      <div class="container">
+        <div class="row text-center text-md-start">
+          <div class="col-md-4 mb-4">
+            <h6 class="fw-bold">Download the App</h6>
+            <small class="text-muted">Available on App Store & Play Store</small>
+            <div class="mt-3 d-flex justify-content-center justify-content-md-start gap-2">
+              <!-- <a href="#"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" height="40"/></a> -->
+              <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" height="40" /></a>
+            </div>
+          </div>
+
+          <div class="col-md-3 mb-4">
+            <h6 class="fw-bold">Resources</h6>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-dark">About</a></li>
+              <li><a href="#" class="text-dark">Press</a></li>
+              <li><a href="#" class="text-dark">Jobs</a></li>
+              <li><a href="#" class="text-dark">Careers</a></li>
+              <li><a href="#" class="text-dark">Sitemap</a></li>
+            </ul>
+          </div>
+
+          <div class="col-md-2 mb-4">
+            <h6 class="fw-bold">Social</h6>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-dark">Twitter</a></li>
+              <li><a href="#" class="text-dark">Facebook</a></li>
+              <li><a href="#" class="text-dark">Instagram</a></li>
+              <li><a href="#" class="text-dark">TikTok</a></li>
+            </ul>
+          </div>
+
+          <div class="col-md-3 mb-4">
+            <h6 class="fw-bold">Developers</h6>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-dark">Platform</a></li>
+              <li><a href="#" class="text-dark">Developer Blog</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-dark text-light text-center py-3 mt-3">
+        <div class="container d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center">
+          <div class="mb-2 mb-md-0">Copyright © 2025 QUT Assignment</div>
+          <div class="mb-2 mb-md-0">Powered By: <strong>Sudeep Thapa</strong></div>
+          <div>Terms of Use</div>
+        </div>
+      </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  </body>
+</html>
