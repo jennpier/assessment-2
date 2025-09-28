@@ -3,7 +3,7 @@ from . import db
 from datetime import datetime
 from flask_login import UserMixin
 
-# User 1..* Events, 1..* Bookings, 0..* Comments
+# User Table Structure 
 class User(db.Model, UserMixin):
     __tablename__ = "user"
 
@@ -13,6 +13,8 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(40))
 
+
+# Relationship of User with other Tables.
     events = db.relationship(
         "Event", back_populates="owner", cascade="all, delete-orphan"
     )
@@ -23,10 +25,10 @@ class User(db.Model, UserMixin):
         "Comment", back_populates="author", cascade="all, delete-orphan"
     )
 
+# Added _repr_ method of debugging purposes.
     def __repr__(self):
         return f"<User {self.email}>"
 
-# Category 1..* Events
 class Category(db.Model):
     __tablename__ = "category"
 
@@ -39,7 +41,6 @@ class Category(db.Model):
     def __repr__(self):
         return f"<Category {self.category_name}>"
 
-# Venue 1..* Events
 class Venue(db.Model):
     __tablename__ = "venue"
 
@@ -53,7 +54,6 @@ class Venue(db.Model):
     def __repr__(self):
         return f"<Venue {self.id}:{self.name}>"
 
-# Event 0..* Comments, 0..* Bookings, 1 Category, 1 Venue, 1 Owner(User)
 class Event(db.Model):
     __tablename__ = "event"
 
@@ -82,7 +82,6 @@ class Event(db.Model):
     def __repr__(self):
         return f"<Event {self.id}:{self.title}>"
 
-# Comment belongs to 1 User and 1 Event
 class Comment(db.Model):
     __tablename__ = "comment"
 
