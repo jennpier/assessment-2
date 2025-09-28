@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!--- MIGHT STILL ADD JUMBOTRON-->
+
+
+<style>
+  body {background-color:rgb(75, 75, 75)}
+</style>
+
+<div class="container mt-4 text-center text-white">
+<h1 class="display-3">Music Events Managment</h1>
+<p class="lead">Upcoming Events</p>
+</div>
+
+<!-- Filter the music events (filter genres) -->
+  <div class="d-flex justify-content-center mb-4 ">
+    <button class="btn btn-dark btn-outline-light mx-1">All</button>
+    <button class="btn btn-dark btn-outline-light mx-1">Jazz</button>
+    <button class="btn btn-dark btn-outline-light mx-1">Hip-Hop</button>
+    <button class="btn btn-dark btn-outline-light mx-1">House</button>
+    <button class="btn btn-dark btn-outline-light mx-1">Classical</button>
+    <button class="btn btn-dark btn-outline-light mx-1">Rock</button> 
+    <button class="btn btn-dark btn-outline-light mx-1">Electronic</button>
+    <button class="btn btn-dark btn-outline-light mx-1">Indie</button>
+  </div>
+
+
+  <!-- Music Events - HARDCODED FOR NOW - WILL CHANGE LATER -->
+  <div class="row justify-content-center">
+     <!---- Event 1 -->
+    <div class="col-12 col-sm-6 col-md-4 mb-3">
+      <div class="card bg-dark text-white h-100">
+        <img src="https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?q=80&w=800&auto=format&fit=crop" class="card-img-top" alt="Blue's Boys">
+        <div class="card-body">
+          <h5 class="card-title">The Blue's Boys</h5>
+          <p class="card-text">15 October 2025 - 8:00pm</p>
+          <p class="card-text">Brisbanes biggest jazz band with an evening of smooth jazz classics.</p>
+          <p><strong>Status:</strong> Open</p>
+          <a href="event.html" class="btn btn-primary">View Details</a>
+        </div>
+      </div>
+    </div>
+
+    <!---- Event 2 -->
+    <div class="col-12 col-sm-6 col-md-4 mb-3">
+      <div class="card bg-dark text-white h-100">
+        <img src="https://images.pexels.com/photos/1238980/pexels-photo-1238980.jpeg?_gl=1*1ee2d96*_ga*MjU0OTQxMzMzLjE3NTY5MDE0MDY.*_ga_8JE65Q40S6*czE3NTY5MDE0MDYkbzEkZzEkdDE3NTY5MDE0MTUkajUxJGwwJGgw" class="card-img-top" alt="Hip-Hop Fest">
+        <div class="card-body">
+          <h5 class="card-title">Hip-Hop Fest</h5>
+          <p class="card-text">13 October 2025 - 5:00pm</p>
+          <p class="card-text"> A stacked lineup of Australia’s biggest hip-hop artists.</p>
+          <p><strong>Status:</strong> Sold Out</p>
+          <a href="event.html" class="btn btn-primary">View Details</a>
+        </div>
+      </div>
+    </div>
+
+    <!---- Event 3 -->
+    <div class="col-12 col-sm-6 col-md-4 mb-3">
+      <div class="card bg-dark text-white h-100">
+        <img src="https://images.pexels.com/photos/18838170/pexels-photo-18838170.jpeg?_gl=1*jriada*_ga*MjU0OTQxMzMzLjE3NTY5MDE0MDY.*_ga_8JE65Q40S6*czE3NTY5MDE0MDYkbzEkZzEkdDE3NTY5MDI2ODYkajU5JGwwJGgw" class="card-img-top" alt="Classical Symphony">
+        <div class="card-body">
+          <h5 class="card-title">Classical Symphony</h5>
+          <p class="card-text">11 October 2025 - 7:00pm</p>
+          <p class="card-text">Classical masterpieces played live.</p>
+          <p><strong>Status:</strong> Cancelled</p>
+          <a href="event.html" class="btn btn-primary">View Details</a>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
