@@ -32,3 +32,25 @@ def login():
         else:
             flash(error)
     return render_template('user.html', form=login_form, heading='Login')
+
+
+
+
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit(): # runs if form is valid
+        hashed_password = generate_password_hash(form.password.data)
+        new_user = User(
+            name=form.name.data,
+            email=form.email.data,
+            phone=form.phone.data,
+            password_hash=hashed_password   
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        flash("Registration successful! You can now log in.", "success") #confirmation
+        return redirect(url_for('auth_bp.login'))  #go to login page
+    return render_template('user.html', form=form, heading='Register') # show the form again if invalid
+
+            
