@@ -15,53 +15,8 @@
     <link rel="stylesheet" href="static/style/style.css">
   </head>
   <body>
-    <!-- Reusable Navbar - This Navbar has been reused in every other webpage. -->
-    <div class="navbar-expand-lg bg-white shadow-sm py-3 text-dark mb-5">
-        <div class="container navbar">
-            <a class="navbar fw-bold fs-2 ms-2 text-decoration-none " href="./index.html"><img src="./static/img/logo.png" alt="logo" class="logo"><h4 class="logo-text ms-0 ms-sm-4">Firevents</h4></a>
-            
-            
-            <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false">
-                <span class="navbar-toggler-icon"></span>
-            </button>
 
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto p-3">
-                    <li class="nav-item me-3">
-                        <a class="text-dark nav-link" href="./index.html">Home</a>
-                    </li>
-                    <li class="nav-item dropdown me-3">
-                        <!-- Bootstrap Dropdown Toggle Component - Idea taken from W3School -->
-                        <a class="nav-link dropdown-toggle text-dark" href="#" id="browseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Events
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="browseDropdown">
-                            <li><a class="dropdown-item" href="events.html">See an Event</a></li>
-                            <li><a class="dropdown-item" href="create-event.html">Create an Event</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item me-3">
-                        <a class="nav-link text-dark" href="login.html">Login</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link text-dark" href="orderhistory.html">
-                            Order History
-                        </a>
-                        <!-- <ul class="dropdown-menu" aria-labelledby="forAuthorsDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                        </ul> -->
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center px-2">
-                    <input type="text" class="form-control" placeholder="Search for events">
-                    <button class="btn bg-green fw-semibold submit-button"><i class="bi bi-search"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    {% include 'navbar.html' %}
 
     <div class="container my-5">
       <div class="card p-4 shadow-sm">
@@ -147,58 +102,8 @@
       </div>
     </div>
 
-    <!-- Reusable Footer - This footer has been reused in every other webpage. -->
-    <footer class="bg-white text-dark pt-5 border-top mt-4">
-      <div class="container">
-        <div class="row text-center text-md-start">
-          <div class="col-md-4 mb-4">
-            <h6 class="fw-bold">Download the App</h6>
-            <small class="text-muted">Available on App Store & Play Store</small>
-            <div class="mt-3 d-flex justify-content-center justify-content-md-start gap-2">
-              <!-- <a href="#"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" height="40"/></a> -->
-              <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" height="40" /></a>
-            </div>
-          </div>
+    {% include 'footer.html' %}
 
-          <div class="col-md-3 mb-4">
-            <h6 class="fw-bold">Resources</h6>
-            <ul class="list-unstyled">
-              <li><a href="#" class="text-dark">About</a></li>
-              <li><a href="#" class="text-dark">Press</a></li>
-              <li><a href="#" class="text-dark">Jobs</a></li>
-              <li><a href="#" class="text-dark">Careers</a></li>
-              <li><a href="#" class="text-dark">Sitemap</a></li>
-            </ul>
-          </div>
-
-          <div class="col-md-2 mb-4">
-            <h6 class="fw-bold">Social</h6>
-            <ul class="list-unstyled">
-              <li><a href="#" class="text-dark">Twitter</a></li>
-              <li><a href="#" class="text-dark">Facebook</a></li>
-              <li><a href="#" class="text-dark">Instagram</a></li>
-              <li><a href="#" class="text-dark">TikTok</a></li>
-            </ul>
-          </div>
-
-          <div class="col-md-3 mb-4">
-            <h6 class="fw-bold">Developers</h6>
-            <ul class="list-unstyled">
-              <li><a href="#" class="text-dark">Platform</a></li>
-              <li><a href="#" class="text-dark">Developer Blog</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-dark text-light text-center py-3 mt-3">
-        <div class="container d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center">
-          <div class="mb-2 mb-md-0">Copyright © 2025 QUT Assignment</div>
-          <div class="mb-2 mb-md-0">Powered By: <strong>Sudeep Thapa</strong></div>
-          <div>Terms of Use</div>
-        </div>
-      </div>
-    </footer>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   </body>

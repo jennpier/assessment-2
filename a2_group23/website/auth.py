@@ -26,8 +26,8 @@ def login():
             login_user(user)
             nextp = request.args.get('next') # this gives the url from where the login page was accessed
             print(nextp)
-            if next is None or not nextp.startswith('/'): 
-                return redirect(url_for("main.index"))
+            if not nextp or not nextp.startswith('/'):
+                return redirect(url_for('main.index'))
             return redirect(nextp)
         else:
             flash(error)
@@ -42,7 +42,7 @@ def register():
     if form.validate_on_submit(): # runs if form is valid
         hashed_password = generate_password_hash(form.password.data)
         new_user = User(
-            name=form.name.data,
+            name=form.user_name.data,
             email=form.email.data,
             phone=form.phone.data,
             password_hash=hashed_password   
@@ -50,7 +50,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         flash("Registration successful! You can now log in.", "success") #confirmation
-        return redirect(url_for('auth_bp.login'))  #go to login page
+        return redirect(url_for('auth.login'))  #go to login page
     return render_template('user.html', form=form, heading='Register') # show the form again if invalid
 
             
