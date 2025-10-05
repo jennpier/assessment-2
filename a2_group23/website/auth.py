@@ -54,3 +54,9 @@ def register():
     return render_template('user.html', form=form, heading='Register') # show the form again if invalid
 
             
+@auth_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()  # Clears the user session
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('main.index'))
