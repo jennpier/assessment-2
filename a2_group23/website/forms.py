@@ -19,4 +19,21 @@ class RegisterForm(FlaskForm):
     confirm = PasswordField("Confirm Password")
 
     # submit button
+
     submit = SubmitField("Register")
+
+class EventForm(FlaskForm):
+    title=StringField("Event Title", validators=[InputRequired('Enter title')])
+    category=RadioField("Category", 
+                        choices=[('Category 1', 'Category 1'),
+                                 ('Category 2', 'Category 2'),
+                                 ('Category 3', 'Category 3')],   
+                                 validators=[InputRequired('Choose category')])
+    description=TextAreaField("Event Description", validators=[InputRequired('Enter description')])
+    image = FileField('Destination Image', validators=[
+        FileRequired(message = 'Image cannot be empty'),
+        FileAllowed(ALLOWED_FILE, message='Only supports png, jpg, JPG, PNG')])
+    date_time=DateTimeField("Event Date and Time", validators=[InputRequired('Date and Time required')], format='%D-%m-%Y %H:%M')
+    ticket_price=IntegerField("Ticket Prices", validators=[InputRequired('Price must be set')])
+    submit = SubmitField("Post", validators=[InputRequired()])
+
