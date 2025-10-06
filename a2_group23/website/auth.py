@@ -34,8 +34,6 @@ def login():
     return render_template('user.html', form=login_form, heading='Login')
 
 
-
-
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -60,3 +58,6 @@ def logout():
     logout_user()  # Clears the user session
     flash('You have been logged out.', 'info')
     return redirect(url_for('main.index'))
+
+
+

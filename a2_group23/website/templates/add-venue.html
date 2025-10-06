@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Venues</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container my-5">
+      <h3 class="mb-4">Venues</h3>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'warning' if category=='message' else category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <div class="row">
+        <div class="col-lg-6 mb-4">
+          <div class="card p-4 shadow-sm">
+            <h5 class="mb-3">Add a venue</h5>
+            <form method="POST" action="{{ url_for('main.venues') }}">
+              {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
+              <div class="mb-3">
+                <label class="form-label" for="name">Name</label>
+                <input id="name" name="name" type="text" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="location">Address</label>
+                <input id="location" name="location" type="text" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="capacity">Number of seats</label>
+                <input id="capacity" name="capacity" type="number" min="1" class="form-control" required>
+              </div>
+              <button class="btn btn-primary w-100" type="submit">Add Venue</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card p-4 shadow-sm">
+            <h5 class="mb-3">All venues</h5>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th class="text-end">Seats</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for v in venues %}
+                    <tr>
+                      <td>{{ v.id }}</td>
+                      <td>{{ v.name }}</td>
+                      <td>{{ v.location }}</td>
+                      <td class="text-end">{{ v.num_of_capacity }}</td>
+                    </tr>
+                  {% else %}
+                    <tr><td colspan="4" class="text-muted">No venues yet.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {% include 'footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

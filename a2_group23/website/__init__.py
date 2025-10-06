@@ -3,6 +3,9 @@ from flask import Flask
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+import os
+from pathlib import Path
+
 
 db = SQLAlchemy()
 
@@ -41,5 +44,15 @@ def create_app():
 
     from . import auth
     app.register_blueprint(auth.auth_bp)
+
+
+
+    #To Make sure Images are saved at correct path
+
+    app.config["UPLOAD_FOLDER"] = str(Path(app.root_path) / "static" / "images")
+    app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5 MB
+    app.config["ALLOWED_IMAGE_EXTS"] = {"png", "jpg", "jpeg", "gif"}
+
+    Path(app.config["UPLOAD_FOLDER"]).mkdir(parents=True, exist_ok=True)
     
     return app

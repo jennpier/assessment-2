@@ -44,7 +44,7 @@ class Category(db.Model):
 class Venue(db.Model):
     __tablename__ = "venue"
 
-    id = db.Column(db.String(50), primary_key=True)  # per diagram
+    id = db.Column(db.String(50), primary_key=True) 
     name = db.Column(db.String(200), nullable=False)
     location = db.Column(db.String(200), nullable=False)
     num_of_capacity = db.Column(db.Integer, nullable=False)
@@ -62,7 +62,10 @@ class Event(db.Model):
     description = db.Column(db.Text, nullable=False)
     time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     image = db.Column(db.String(255))
-    status = db.Column(db.String(20), nullable=False, default="Open")  # Open, Inactive, Sold Out, Cancelled
+    status = db.Column(db.String(20), nullable=False, default="Open")
+
+    duration_minutes = db.Column(db.Integer)
+    seat_types = db.Column(db.Text)
 
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable=False)
@@ -81,6 +84,7 @@ class Event(db.Model):
 
     def __repr__(self):
         return f"<Event {self.id}:{self.title}>"
+
 
 class Comment(db.Model):
     __tablename__ = "comment"
