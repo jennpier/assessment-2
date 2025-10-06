@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 import os, uuid, json
 
+from website.forms import EventForm
+
 from . import db
 from .models import Event, Venue, Category
 
@@ -13,19 +15,11 @@ main_bp = Blueprint('main', __name__)
 def index():
     return render_template("Index.html")
 
-
-# THis was a route for GET method onlyy.
-# @main_bp.route('/create-event')
-# def create_event():
-#     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-#     return render_template("create-event.html", venues=venues)
-
 @main_bp.route("/events", methods=["GET"])
 @login_required
 def events():
     items = db.session.scalars(db.select(Event).order_by(Event.time.desc())).all()
-    return render_template("all_events.html", events=items)
-
+    return render_template("all_events.html", events=items)   # or 'events.html' if that’s your file
 
 @main_bp.route("/venues", methods=["GET", "POST"])
 @login_required
@@ -34,18 +28,15 @@ def venues():
         name = (request.form.get("name") or "").strip()
         location = (request.form.get("location") or "").strip()
         capacity = int(request.form.get("capacity") or 0)
-
         if not name or not location or capacity <= 0:
             flash("Please fill all fields correctly.", "warning")
             return redirect(url_for("main.venues"))
-
         existing = db.session.scalar(
             db.select(Venue).where(Venue.name == name, Venue.location == location)
         )
         if existing:
             flash("That venue already exists.", "info")
             return redirect(url_for("main.venues"))
-
         venue = Venue(
             id=f"V-{uuid.uuid4().hex[:8]}",
             name=name,
@@ -59,8 +50,6 @@ def venues():
 
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
     return render_template("add-venue.html", venues=venues)
-
-
 
 @main_bp.route("/create-event", methods=["GET", "POST"])
 @login_required
@@ -125,7 +114,33 @@ def create_event():
         db.session.add(event)
         db.session.commit()
         flash("Event created successfully!", "success")
-        return redirect(url_for("main.events"))  # change to your events list page
+        return redirect(url_for("main.events"))
 
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
     return render_template("create-event.html", venues=venues)
+
+#change to it's own event.py file - include /update-event and /events?
+# @main_bp.route('/create-event', methods = ['GET', 'POST'])
+# def create_event():
+#   print('Method type: ', request.method)
+#   form = EventForm()
+#   if form.validate_on_submit():
+#     db_file_path = check_upload_file(form)    
+#     event = Event(title=form.title.data,
+#                   category=form.category.data,
+#                   description=form.description.data,
+#                   image=form.image.data,
+#                   date_time=form.date_time.data,
+#                   ticket_price=form.ticket_price.data
+#                   )
+#     db.session.add(event)
+#     db.session.commit()
+#     print('Successfully created new event')
+#     return redirect(url_for('event.create_event'))
+#   return render_template('/<id>/create_event.html', form=form)
+
+# @main_bp.route('/update-event')
+# def update_event():
+#     return render_template()
+
+
