@@ -26,49 +26,31 @@
   </div>
 
 
-  <!-- Music Events - HARDCODED FOR NOW - WILL CHANGE LATER -->
   <div class="row justify-content-center">
-     <!---- Event 1 -->
+  {% for e in events %}
     <div class="col-12 col-sm-6 col-md-4 mb-3">
       <div class="card bg-dark text-white h-100">
-        <img src="https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?q=80&w=800&auto=format&fit=crop" class="card-img-top" alt="Blue's Boys">
+        {% if e.image %}
+          <img src="{{ url_for('static', filename='images/' ~ e.image) }}" class="card-img-top" alt="{{ e.title }}">
+        {% endif %}
         <div class="card-body">
-          <h5 class="card-title">The Blue's Boys</h5>
-          <p class="card-text">15 October 2025 - 8:00pm</p>
-          <p class="card-text">Brisbanes biggest jazz band with an evening of smooth jazz classics.</p>
-          <p><strong>Status:</strong> Open</p>
-          <a href="event.html" class="btn btn-primary">View Details</a>
+          <h5 class="card-title">{{ e.title }}</h5>
+          <p class="card-text">
+            {{ e.time.strftime('%d %B %Y - %H:%M') }}
+          </p>
+          <p class="card-text">
+            {{ e.description|truncate(140, True) }}
+          </p>
+          <p><strong>Status:</strong> {{ e.status }}</p>
+          <a href="{{ url_for('main.event_detail', event_id=e.id) }}" class="btn btn-primary">View Details</a>
         </div>
       </div>
     </div>
+  {% else %}
+    <div class="text-center text-white-50">No events yet.</div>
+  {% endfor %}
+</div>
 
-    <!---- Event 2 -->
-    <div class="col-12 col-sm-6 col-md-4 mb-3">
-      <div class="card bg-dark text-white h-100">
-        <img src="https://images.pexels.com/photos/1238980/pexels-photo-1238980.jpeg?_gl=1*1ee2d96*_ga*MjU0OTQxMzMzLjE3NTY5MDE0MDY.*_ga_8JE65Q40S6*czE3NTY5MDE0MDYkbzEkZzEkdDE3NTY5MDE0MTUkajUxJGwwJGgw" class="card-img-top" alt="Hip-Hop Fest">
-        <div class="card-body">
-          <h5 class="card-title">Hip-Hop Fest</h5>
-          <p class="card-text">13 October 2025 - 5:00pm</p>
-          <p class="card-text"> A stacked lineup of Australia’s biggest hip-hop artists.</p>
-          <p><strong>Status:</strong> Sold Out</p>
-          <a href="event.html" class="btn btn-primary">View Details</a>
-        </div>
-      </div>
-    </div>
-
-    <!---- Event 3 -->
-    <div class="col-12 col-sm-6 col-md-4 mb-3">
-      <div class="card bg-dark text-white h-100">
-        <img src="https://images.pexels.com/photos/18838170/pexels-photo-18838170.jpeg?_gl=1*jriada*_ga*MjU0OTQxMzMzLjE3NTY5MDE0MDY.*_ga_8JE65Q40S6*czE3NTY5MDE0MDYkbzEkZzEkdDE3NTY5MDI2ODYkajU5JGwwJGgw" class="card-img-top" alt="Classical Symphony">
-        <div class="card-body">
-          <h5 class="card-title">Classical Symphony</h5>
-          <p class="card-text">11 October 2025 - 7:00pm</p>
-          <p class="card-text">Classical masterpieces played live.</p>
-          <p><strong>Status:</strong> Cancelled</p>
-          <a href="event.html" class="btn btn-primary">View Details</a>
-        </div>
-      </div>
-    </div>
 
 {% endblock %}
 

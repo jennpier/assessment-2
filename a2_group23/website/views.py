@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -13,7 +13,18 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    return render_template("Index.html")
+    events = db.session.scalars(
+        db.select(Event).order_by(Event.time.asc())
+    ).all()
+    return render_template("Index.html", events=events)
+
+@main_bp.route('/events/<int:event_id>')
+def event_detail(event_id):
+    event = db.session.get(Event, event_id)
+    if not event:
+        abort(404)
+    return render_template('event.html', event=event)
+
 
 @main_bp.route("/events", methods=["GET"])
 @login_required
