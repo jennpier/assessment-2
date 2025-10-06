@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mx-auto pt-5">
+  <h1 class="display-1">My Bookings</h1>
+</div>
+
+<!--TABS-->
+  <!--TAB EVENT STATUS CARDS-->
+
+    <div class="container mx-auto pt-5">
+      <div class="card text-center shadow p-3 mb-5 bg-body-tertiary rounded">
+        <div class="card-header bg-primary">
+          <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+              <a class="flex-sm-fill text-sm-center text-danger nav-link active" aria-current="true" href="#">Open</a>
+            </li>
+            <li class="nav-item">
+              <a class="flex-sm-fill text-sm-center text-white nav-link" href="#">Sold Out</a>
+            </li>
+            <li class="nav-item">
+              <a class="flex-sm-fill text-sm-center text-white nav-link" href="#">Cancelled</a>
+            </li>
+            <li class="nav-item">
+              <a class="flex-sm-fill text-sm-center text-white nav-link" href="#">Inactive</a>
+            </li>
+          </ul>
+        </div>
+
+<!--EVENT CARDS (INSERT IMAGES IN HASHTAGS)-->        
+        <div class="card-body">
+
+          <div class="row row-cols-sm row-cols-md-2 row-cols-lg-3">
+            
+              <div class="card flex-sm-fill m-2 shadow p-3 mb-5 bg-body-tertiary rounded">
+                <img src="#" class="card-img-top rounded-4 mt-3" alt="gig image">
+                <div class="card-body">
+                  <h5 class="card-title">Event Title</h5>
+                  <p class="card-text">Event creator</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Booking ID: 35033 <br><small class="text-body-secondary">Booked: 22 July 2025 @ 1825</small></li>
+                </ul>
+                <div class="card-body">
+                    <a href="event.html" class="card-link text-primary">View Details</a>                  
+                </div>                
+              </div>
+
+                
+              <div class="card flex-sm-fill m-2 shadow p-3 mb-5 bg-body-tertiary rounded">
+                <img src="#" class="card-img-top object-fit-fill rounded-4 mt-3" alt="gig image">
+                <div class="card-body">
+                  <h5 class="card-title">Event Title</h5>
+                  <p class="card-text">Event creator</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Booking ID: 33333 <br><small class="text-body-secondary">Booked: 07 January 2025 @ 0102</small></li>
+                </ul>
+                <div class="card-body">
+                    <a href="event.html" class="card-link text-primary">View Details</a>                  
+                </div>                
+              </div>
+
+              <div class="card flex-sm-fill m-2 shadow p-3 mb-5 bg-body-tertiary rounded">
+                <img src="#" class="card-img-top rounded-4 mt-3" alt="gig image">
+                <div class="card-body">
+                  <h5 class="card-title">Event Title</h5>
+                  <p class="card-text">Event creator</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Booking ID: 33333 <br><small class="text-body-secondary">Booked: 30 June 2025 @ 1453</small></li>
+                </ul>
+                <div class="card-body">
+                    <a href="event.html" class="card-link text-primary">View Details</a>                  
+                </div>                
+              </div>
+
+              <div class="card flex-sm-fill m-2 shadow p-3 mb-5 bg-body-tertiary rounded">
+                <img src="#" class="card-img-top rounded-4 mt-3" alt="gig image">
+                <div class="card-body">
+                  <h5 class="card-title">Event Title</h5>
+                  <p class="card-text">Event creator</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Booking ID: 33333 <br><small class="text-body-secondary">Booked: 08 August 2025 @ 0949</small></li>
+                </ul>
+                <div class="card-body">
+                    <a href="event.html" class="card-link text-primary">View Details</a>                  
+                </div>                
+              </div>
+
+              <div class="card flex-sm-fill m-2 shadow p-3 mb-5 bg-body-tertiary rounded">
+                <img src="#" class="card-img-top rounded-4 mt-3" alt="gig image">
+                <div class="card-body">
+                  <h5 class="card-title">Event Title</h5>
+                  <p class="card-text">Event creator</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Booking ID: 33333 <br><small class="text-body-secondary">Booked: 09 June 2025 @ 1021</small></li>
+                </ul>
+                <div class="card-body">
+                    <a href="event.html" class="card-link text-primary">View Details</a>                  
+                </div>                
+              </div>
+
+              <div class="card flex-sm-fill m-2 shadow p-3 mb-5 bg-body-tertiary rounded">
+                <img src="#" class="card-img-top rounded-4 mt-3" alt="gig image">
+                <div class="card-body">
+                  <h5 class="card-title">Event Title</h5>
+                  <p class="card-text">Event creator</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Booking ID: 33333 <br><small class="text-body-secondary">Booked: 10 August 2025 @ 1935</small></li>
+                </ul>
+                <div class="card-body">
+                    <a href="event.html" class="card-link text-primary">View Details</a>                  
+                </div>                
+              </div>
+
+            </div>
+        </div>
+
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}
+
+
