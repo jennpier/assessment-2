@@ -31,15 +31,32 @@ class RegisterForm(FlaskForm):
 class EventForm(FlaskForm):
     title=StringField("Event Title", validators=[InputRequired('Enter title')])
     category=RadioField("Category", 
-                        choices=[('Category 1', 'Category 1'),
-                                 ('Category 2', 'Category 2'),
-                                 ('Category 3', 'Category 3')],   
+                        choices=[('Category 1', 'Jazz'),
+                                 ('Category 2', 'Rock'),
+                                 ('Category 3', 'Hip Hop'),
+                                 ('Category 4', 'Pop'),
+                                 ('Category 5', 'Metal'),
+                                ],   
                                  validators=[InputRequired('Choose category')])
     description=TextAreaField("Event Description", validators=[InputRequired('Enter description')])
     image = FileField('Destination Image', validators=[
         FileRequired(message = 'Image cannot be empty'),
         FileAllowed(ALLOWED_FILE, message='Only supports png, jpg, JPG, PNG')])
     date_time=DateTimeField("Event Date and Time", validators=[InputRequired('Date and Time required')], format='%D-%m-%Y %H:%M')
+    ticket_type=RadioField("Ticket type",
+                           choices=[('type option 1', 'Ticket Type eg1'),
+                                    ('type option 2', 'Ticket Type eg2'),
+                                    ('type option 3', 'Ticket Type eg3')])
     ticket_price=IntegerField("Ticket Prices", validators=[InputRequired('Price must be set')])
-    submit = SubmitField("Post", validators=[InputRequired()])
+    submit = SubmitField("Post")
+
+class BookingForm(FlaskForm):
+    ticket_type=RadioField("Ticket type", 
+                           choices=[('ticket type 1', 'Ticket Type eg1'),
+                                    ('ticket type 2', 'Ticket Type eg2'),
+                                    ('ticket type 3', 'Ticket Type eg3')
+                           ],
+                           validators=[InputRequired()])
+    no_of_tickets=IntegerField("Number of tickets", validators=[InputRequired(), NumberRange(min=1)])
+    submit=SubmitField("Buy")
 
