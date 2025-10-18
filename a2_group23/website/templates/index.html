@@ -1,19 +1,47 @@
 {% extends 'base.html' %}
 {% block content %}
+<!--- Need to Change Name of Event Management System  -->
 
-<!--- MIGHT STILL ADD JUMBOTRON-->
+<!---Carousel -->
+<div id="MusicManagementCarousel" class="carousel slide" style="height:380px;">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="https://images.pexels.com/photos/3473085/pexels-photo-3473085.jpeg?_gl=1*1qe7ekd*_ga*OTIxMjIyMTE5LjE3NjA3NTY1NzM.*_ga_8JE65Q40S6*czE3NjA3NTY1NzIkbzEkZzEkdDE3NjA3NTY2MjgkajQkbDAkaDA." class="d-block w-100" alt="Carousel Image 1" style="height:380px; object-fit: cover;">
+    </div>
+    <div class="carousel-item">
+      <img src="https://images.pexels.com/photos/7591515/pexels-photo-7591515.jpeg?_gl=1*x4yf8z*_ga*OTIxMjIyMTE5LjE3NjA3NTY1NzM.*_ga_8JE65Q40S6*czE3NjA3NTY1NzIkbzEkZzEkdDE3NjA3NTY2NDUkajYwJGwwJGgw" class="d-block w-100" alt="Carousel Image 2" style="height:380px; object-fit: cover;">
+    </div>
+    <div class="carousel-item">
+      <img src="https://images.pexels.com/photos/2905996/pexels-photo-2905996.jpeg?_gl=1*1w3n9w0*_ga*OTIxMjIyMTE5LjE3NjA3NTY1NzM.*_ga_8JE65Q40S6*czE3NjA3NTY1NzIkbzEkZzEkdDE3NjA3NTY2NTEkajU0JGwwJGgw" class="d-block w-100" alt="Carousel Image 3" style="height:380px; object-fit: cover;">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
 
 
-<style>
+
+<style>  
   body {background-color:rgb(75, 75, 75)}
 </style>
 
 <div class="container mt-4 text-center text-white">
-<h1 class="display-3">Music Events Managment</h1>
+<h1 class="display-3">Music Events Management</h1>
 <p class="lead">Upcoming Events</p>
 </div>
 
-<!-- Filter the music events (filter genres) -->
+<!-- Filter the music events (filter genres) - Need to make filter buttons work -->
   <div class="d-flex justify-content-center mb-4 ">
     <button class="btn btn-dark btn-outline-light mx-1">All</button>
     <button class="btn btn-dark btn-outline-light mx-1">Jazz</button>
