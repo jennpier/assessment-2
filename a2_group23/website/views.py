@@ -11,6 +11,7 @@ from .models import Event, Venue, Category
 
 main_bp = Blueprint('main', __name__)
 
+# Listing out all the events list that is to be displayed in thee index page.
 @main_bp.route('/')
 def index():
     events = db.session.scalars(
@@ -18,6 +19,7 @@ def index():
     ).all()
     return render_template("Index.html", events=events)
 
+# Fetching Individual Event Details
 @main_bp.route('/events/<int:event_id>')
 def event_detail(event_id):
     event = db.session.get(Event, event_id)
@@ -68,20 +70,17 @@ def create_event():
     if request.method == "POST":
         title = request.form.get("title", "").strip()
         description = request.form.get("description", "").strip()
-        day = request.form.get("day", "").strip()
         hour = int(request.form.get("hour") or 0)
         minute = int(request.form.get("minute") or 0)
         duration = int(request.form.get("duration") or 0)
         status = request.form.get("status") or "Open"
         seat_types = request.form.getlist("seat_types")
 
-        try:
-            date_obj = datetime.strptime(day, "%Y-%m-%d")
-            event_dt = date_obj.replace(hour=hour, minute=minute, second=0, microsecond=0)
-        except Exception:
-            flash("Invalid date/time format.", "danger")
-            return redirect(url_for("main.create_event"))
 
+        day = request.form.get("day", "").strip()
+        event_dt = datetime.strptime(day, "%Y-%m-%d")
+        event_dt = event_dt.replace(hour=hour, minute=minute, second=0, microsecond=0)
+        
         image_file = request.files.get("image")
         image_filename = None
         if image_file and image_file.filename:
@@ -91,6 +90,8 @@ def create_event():
                 return redirect(url_for("main.create_event"))
             safe_name = secure_filename(image_file.filename)
             new_name = f"{uuid.uuid4().hex[:8]}_{safe_name}"
+
+            # Saving to the static folder. 
             save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], new_name)
             image_file.save(save_path)
             image_filename = new_name
