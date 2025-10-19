@@ -1,6 +1,9 @@
 from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+from .models import Booking, Ticket, Event
+from .forms import BookingForm
+from datetime import datetime
 from datetime import datetime
 import os, uuid, json
 
@@ -19,7 +22,18 @@ def index():
     ).all()
     return render_template("Index.html", events=events)
 
-# Fetching Individual Event Details
+## === Fetching Individual Event Details
+#Search Bar
+@main_bp.route('/search')
+def search():
+    if request.args['search'] and request.args['search'] != "":
+        print(request.args['search'])
+        query = "%" + request.args['search'] + "%"
+        events = db.session.scalars(db.select(Event).where(Event.description.like(query))).all()
+        return render_template('index.html', events=events)
+    else:
+        return redirect(url_for('main.index'))
+
 @main_bp.route('/events/<int:event_id>')
 def event_detail(event_id):
     event = db.session.get(Event, event_id)
@@ -27,6 +41,65 @@ def event_detail(event_id):
         abort(404)
     return render_template('event.html', event=event)
 
+@main_bp.route('/my-bookings')
+@login_required
+def my_bookings():
+    # Get all bookings for the current user
+    bookings = db.session.scalars(
+        db.select(Booking).where(Booking.user_id == current_user.id).order_by(Booking.id.desc())
+    ).all()
+    return render_template('bookings.html', bookings=bookings)
+
+@main_bp.route('/events/<int:event_id>/book', methods=['GET', 'POST'])
+@login_required
+def book_event(event_id):
+    event = db.session.get(Event, event_id)
+    if not event:
+        abort(404)
+
+    form = BookingForm()
+
+    if form.validate_on_submit():
+        ticket_type = form.ticket_type.data
+        quantity = form.no_of_tickets.data
+
+        # example pricing
+        price_lookup = {
+            'Phase I': 99,
+            'Phase II': 150,
+            'Phase III': 279,
+        }
+        ticket_price = price_lookup.get(ticket_type, 0)
+        total_price = ticket_price * quantity
+
+        # create booking
+        booking = Booking(
+            user_id=current_user.id,
+            event_id=event.id,
+            no_of_tickets=quantity,
+            total_price=total_price,
+            booking_status='Confirmed'
+        )
+        db.session.add(booking)
+        db.session.flush()  # get booking.id before commit
+
+        # create ticket
+        for _ in range(quantity):
+            ticket = Ticket(
+                price=ticket_price,
+                ticket_type=ticket_type,
+                booking_id=booking.id
+            )
+            db.session.add(ticket)
+
+        db.session.commit()
+        flash(f"Booking Successful! Your Order ID is {booking.id}", 'success')
+
+        # redirect back to event page o bookings page
+        return redirect(url_for('main.my_bookings'))
+
+    # if GET request or form not valid show booking form
+    return render_template('book_event.html', event=event, form=form)
 
 @main_bp.route("/events", methods=["GET"])
 @login_required

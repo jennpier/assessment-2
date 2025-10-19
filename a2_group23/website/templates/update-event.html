@@ -1,0 +1,218 @@
+<body>
+
+<div class="container mx-auto">
+      
+  <form class="row g-3" method="POST" enctype="multipart/form-data" action="{{ url_for('main.create_event') }}">
+    {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
+    
+    <div class="col-12 pt-5">
+        <h1 class="display-1">Update Event</h1>
+    </div>
+  
+    <div class="col-12 pt-5">
+        <h3>Name, Categories and Image</h3>
+    </div>
+    <!--GIG TITLE-->
+    <div class="col-md-6">
+        <label for="validationDefault01" class="form-label">Event Title</label>
+        <input type="text" class="form-control shadow p-3 mb-5 bg-body-tertiary rounded" id="validationDefault01" required>
+    </div> 
+<!--CATEGORIES-->
+
+    <div class="col-md-6 col-lg-12">
+        <label for="validationDefault11" class="form-label">Categories:</label>
+        <div class="container-fluid shadow p-3 mb-5 bg-body-tertiary rounded">
+            <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+            <label class="btn" for="btn-check">Jazz</label>
+
+            <input type="checkbox" class="btn-check" id="btn-check-2" autocomplete="off">
+            <label class="btn" for="btn-check-2">Rock</label>
+
+            <input type="checkbox" class="btn-check" id="btn-check-3" autocomplete="off">
+            <label class="btn" for="btn-check-3">Hip Hop</label>
+
+            <input type="checkbox" class="btn-check" id="btn-check-4" autocomplete="off">
+            <label class="btn" for="btn-check-4">House</label>
+            
+            <input type="checkbox" class="btn-check" id="btn-check-5" autocomplete="off">
+            <label class="btn" for="btn-check-5">Classical</label>
+
+            <input type="checkbox" class="btn-check" id="btn-check-6" autocomplete="off">
+            <label class="btn" for="btn-check-6">Electric</label>
+
+            <input type="checkbox" class="btn-check" id="btn-check-7" autocomplete="off">
+            <label class="btn" for="btn-check-7">Indie</label>
+
+            <input type="checkbox" class="btn-check" id="btn-check-8" autocomplete="off">
+            <label class="btn" for="btn-check-8">Pop</label>
+
+        </div>
+    </div>
+<!--IMAGE-->
+    <div class="col-md-7 pt-5">
+        <label for="validationDefault03" class="form-label">Image</label>
+        <div class="input-group">
+            <input type="file" class="form-control shadow p-3 mb-5 bg-body-tertiary rounded" id="validationDefault03" accept="image/*" required>
+            <button class="btn btn-outline-danger shadow p-3 mb-5 bg-body-danger rounded" type="button" id="validationDefault03">Button</button>
+        </div>
+    </div> 
+    
+<!--DATE N TIME-->
+    <div class="col-12 pt-5">
+        <h3>Date and Time</h3>       
+    </div>
+    <div class="col-md-3">
+        <label for="validationDefault09" class="form-label">Duration (mins)</label>
+        <input type="integer" class="form-control shadow p-3 mb-5 bg-body-tertiary rounded" id="validationDefault09" required>
+    </div>    
+    <div class="col-md-6">
+        <label for="validationDefault10" class="form-label">Date and Time</label>
+        <p><input type="datetime-local" class="form-control shadow p-3 mb-5 bg-body-tertiary rounded" id="Test_DatetimeLocal" required></p>
+    </div>
+ 
+
+<!--LOCATION-->
+    <div class="col-12 pt-4">
+        <h3>Location</h3>
+    </div>
+<!--VENUE NAME-->
+    <div class="col-md-4">
+      <label for="venue_id" class="form-label">Venue</label>
+      <select id="venue_id" name="venue_id" class="form-select shadow p-3 mb-5 bg-body-tertiary rounded" required>
+        <option value="" disabled selected>Select a venue</option>
+        {% for v in venues %}
+          <option value="{{ v.id }}">{{ v.name }} — {{ v.location }} ({{ v.num_of_capacity }} seats)</option>
+        {% endfor %}
+      </select>
+    </div>
+<!--ADDRESS-->
+  <div class="col-10">
+    <label for="validationDefault05" class="form-label">Address Line</label>
+    <input type="text" class="form-control shadow p-3 mb-5 bg-body-tertiary rounded" id="validationDefault05" required>
+  </div>
+
+  <div class="col-10">
+    <label for="validationDefault05" class="form-label">Address Line 2</label>
+    <input type="text" class="form-control shadow p-3 mb-5 bg-body-tertiary rounded" id="validationDefault05" placeholder="Apartment, floor, etc." required>
+  </div>
+
+  <div class="col-md-4">
+    <label for="validationDefault06" class="form-label">Suburb</label>
+    <input type="text" class="form-control shadow p-3 mb-5 bg-body-tertiary rounded" id="validationDefault06" required>
+  </div>
+
+  <div class="col-md-4">
+    <label for="validationDefault07" class="form-label">City</label>
+    <input type="text" class="form-control shadow p-3 mb-5 bg-body-tertiary rounded" id="validationDefault07" required>
+  </div>
+
+  <div class="col-md-3">
+    <label for="validationDefault08" class="form-label">State</label>
+    <select class="form-select shadow p-3 mb-5 bg-body-tertiary rounded" id="validationDefault08" required>
+      <option selected disabled value="">Choose...</option>
+      <option>QLD</option>
+      <option>SA</option>
+      <option>WA</option>
+      <option>NSW</option>
+      <option>VIC</option>
+      <option>TAS</option>
+      <option>NT</option>
+      <option>ACT</option>
+    </select>
+  </div>
+
+
+<!--DESCRIPTION AND TICKETS-->
+<div class="container-fluid">
+    <div class="row">
+
+    <!--TICKET TYPE-->
+        <div class="col-md-4 pt-5">
+            <div class="row">
+                <h3>Ticket types</h3>
+                <p>Select the ticket types and prices you are offering:</p>
+
+                <div class="col shadow p-3 mb-5 bg-body-tertiary rounded">
+                    <p class="text-end">Adult</p>
+                    <p class="text-end">Student</p>
+                    <p class="text-end">Child</p>
+                </div>
+
+
+                <div class="col-8 shadow p-3 mb-5 bg-body-tertiary rounded">
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input">
+                        </div>
+                        <input type="text" aria-label="Amount of tickets" class="form-control">
+                        <span class="input-group-text">$</span>
+                        <input type="text" aria-label="Ticket price" class="form-control">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input">
+                        </div>
+                        <input type="text" aria-label="Amount of tickets" class="form-control">
+                        <span class="input-group-text">$</span>
+                        <input type="text" aria-label="Ticket price" class="form-control">
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input">
+                        </div>
+                        <input type="text" aria-label="Amount of tickets" class="form-control">
+                        <span class="input-group-text">$</span>
+                        <input type="text" aria-label="Ticket price" class="form-control">
+                    </div> 
+                </div>  
+            </div>
+        </div> 
+        <!--DESCRIPTION-->
+        <div class="col-md-8 col-sm-12 pt-5 ps-5">
+            <div class="mb-3">
+                <label for="validationTextareaAbout" class="form-label"><h3>Gig Description</h3></label>
+                <textarea class="form-control shadow p-3 mb-5 bg-body-tertiary rounded" id="validationTextareaAbout" placeholder="About your gig" required></textarea>
+            </div>
+        </div>  
+    </div>                  
+</div>
+
+
+<!--CANCEL EVENT-->
+
+  <div class="col-12 pt-5">
+    <h3>Change Event Status</h3>
+    <div class="form-check pt-2">
+      <input class="form-check-input" type="checkbox" value="" aria-label='Checkbox for cancellation'>
+      <label class="form-check-label" for="Status">
+        Cancel Event
+      </label>
+    </div>
+  </div>
+  
+<!--TERMS N CONDITIONS-->
+  <div class="col-12 pt-5">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+      <label class="form-check-label" for="invalidCheck">
+        Agree to terms and conditions
+      </label>
+      <div class="invalid-feedback">
+        You must agree before submitting.
+      </div>
+    </div>
+  </div>
+
+  <!--POST GIG-->
+  <div class="col-12 pb-5">
+    <button class="btn btn-primary" type="submit">Publish</button>
+  </div>
+
+
+</div>
+
+</form>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+  </body>
