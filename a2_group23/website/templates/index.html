@@ -41,6 +41,14 @@
 <p class="lead">Upcoming Events</p>
 </div>
 
+<!-- Search Bar -->
+<div class="d-flex justify-content-center mb-4">
+<form class="d-flex w-50" action="{{ url_for('main.search') }}">
+  <input type="text" name="search" class="form-control flex-grow-1 my-1 mr-sm-2" id="SearchForm" placeholder="Search events by name...">
+  <button type="submit" class="flex-shrink-1 btn btn-primary">Search</button>
+</form>
+</div>
+
 <!-- Filter the music events (filter genres) - Need to make filter buttons work -->
   <div class="d-flex justify-content-center mb-4 ">
     <button class="btn btn-dark btn-outline-light mx-1">All</button>

@@ -21,6 +21,17 @@ def index():
     ).all()
     return render_template("Index.html", events=events)
 
+#Search Bar
+@main_bp.route('/search')
+def search():
+    if request.args['search'] and request.args['search'] != "":
+        print(request.args['search'])
+        query = "%" + request.args['search'] + "%"
+        events = db.session.scalars(db.select(Event).where(Event.description.like(query))).all()
+        return render_template('index.html', events=events)
+    else:
+        return redirect(url_for('main.index'))
+
 @main_bp.route('/events/<int:event_id>')
 def event_detail(event_id):
     event = db.session.get(Event, event_id)
