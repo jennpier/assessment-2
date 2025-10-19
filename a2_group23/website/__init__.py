@@ -49,6 +49,9 @@ def create_app():
     from . import auth
     app.register_blueprint(auth.auth_bp)
 
+    from .events import events_bp
+    app.register_blueprint(events_bp)
+
 
 
     #To Make sure Images are saved at correct path

@@ -2,7 +2,7 @@
 
 <div class="container mx-auto">
       
-  <form class="row g-3" method="POST" enctype="multipart/form-data" action="{{ url_for('main.create_event') }}">
+  <form class="row g-3" method="POST" enctype="multipart/form-data" action="{{ url_for('events.create_event') }}">
     {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
     
     <div class="col-12 pt-5">
