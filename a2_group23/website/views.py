@@ -28,24 +28,38 @@ def event_detail(event_id):
         abort(404)
     return render_template('event.html', event=event)
 
+@main_bp.route('/my-bookings')
+@login_required
+def my_bookings():
+    # Get all bookings for the current user
+    bookings = db.session.scalars(
+        db.select(Booking).where(Booking.user_id == current_user.id).order_by(Booking.id.desc())
+    ).all()
+    return render_template('bookings.html', bookings=bookings)
+
+@main_bp.route('/events/<int:event_id>/book', methods=['GET', 'POST'])
+@login_required
+def book_event(event_id):
+    event = db.session.get(Event, event_id)
+    if not event:
+        abort(404)
+
     form = BookingForm()
 
     if form.validate_on_submit():
-        #get ticket info ftom form
         ticket_type = form.ticket_type.data
         quantity = form.no_of_tickets.data
 
-        #example pricing
+        # example pricing
         price_lookup = {
             'Phase I': 99,
             'Phase II': 150,
             'Phase III': 279,
-
         }
-        ticket_price = price_lookup.get(ticket_type, 0) #default if not found
-        total_price = ticket_price*quantity
+        ticket_price = price_lookup.get(ticket_type, 0)
+        total_price = ticket_price * quantity
 
-        #create booking
+        # create booking
         booking = Booking(
             user_id=current_user.id,
             event_id=event.id,
@@ -54,9 +68,9 @@ def event_detail(event_id):
             booking_status='Confirmed'
         )
         db.session.add(booking)
-        db.session.flush() #gets booking id befor commit
+        db.session.flush()  # get booking.id before commit
 
-        #create tickets under booking
+        # create ticket
         for _ in range(quantity):
             ticket = Ticket(
                 price=ticket_price,
@@ -66,18 +80,13 @@ def event_detail(event_id):
             db.session.add(ticket)
 
         db.session.commit()
+        flash(f"Booking Successful! Your Order ID is {booking.id}", 'success')
 
-        flash(f"Booking Successful! Your Order ID is {booking.id}", 'Sucess')
-        return redirect (url_for(main.booking_history))
+        # redirect back to event page o bookings page
+        return redirect(url_for('main.my_bookings'))
+
+    # if GET request or form not valid show booking form
     return render_template('book_event.html', event=event, form=form)
-
-@main_bp.route('/my-bookings')
-@login_required
-def booking_history():
-    bookings = db.session.scalars(
-        db.select(Booking).where(Booking.user_id == current_user.id)
-    ).all()
-    return render_template('booking_history.html', bookings=bookings)
 
 @main_bp.route("/events", methods=["GET"])
 @login_required
