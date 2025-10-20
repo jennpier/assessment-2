@@ -66,6 +66,8 @@ class Event(db.Model):
 
     duration_minutes = db.Column(db.Integer)
     seat_types = db.Column(db.Text)
+    total_tickets = db.Column(db.Integer, nullable=False)
+    no_sold_tickets = db.Column(db.Integer, default=0)
 
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable=False)
@@ -84,6 +86,25 @@ class Event(db.Model):
 
     def __repr__(self):
         return f"<Event {self.id}:{self.title}>"
+    
+    def tickets_sold(self):
+        return Ticket.query.filter_by(booking_id=self.id).count()
+
+    def tickets_left(self):
+        return self.total_tickets - self.tickets_sold()
+    
+    #def sold_out(self):
+        #return self.no_sold_tickets >= self.total_tickets
+   
+    def status(self):
+        if self.status == 'cancelled':
+            return
+        elif self.time < datetime.utcnow():
+            self.status = 'inactive'
+        elif self.tickets_left() <= 0:
+            self.status = 'sold_out'
+        else:
+            self.status = 'active'
 
 
 class Comment(db.Model):
@@ -108,7 +129,7 @@ class Booking(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     booking_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    no_of_tickets = db.Column(db.Integer, nullable=False)
+    no_tickets = db.Column(db.Integer, nullable=False)
     total_price = db.Column(db.Integer, nullable=False)
     booking_status = db.Column(db.String(20), nullable=False, default="Pending")
 
