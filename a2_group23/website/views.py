@@ -34,6 +34,15 @@ def search():
     else:
         return redirect(url_for('main.index'))
 
+# Backend Filter (working on - Still need to do front end)
+# @main_bp.route('/filter-event/<category>')
+# def filter_event(category):
+    # filtered = db.session.scalars(
+        # db.select(Event).join(Category).where(Category.category_name.ilike(category)).order_by(Event.time.asc())
+        # ).all()
+        # return render_template('index.html', events=filtered)    
+    
+
 # @main_bp.route('/events/<int:event_id>')
 # def event_detail(event_id):
 #     event = db.session.get(Event, event_id)
