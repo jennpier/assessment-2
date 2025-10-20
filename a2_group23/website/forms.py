@@ -48,6 +48,7 @@ class EventForm(FlaskForm):
                                     ('type option 2', 'Ticket Type eg2'),
                                     ('type option 3', 'Ticket Type eg3')])
     ticket_price=IntegerField("Ticket Prices", validators=[InputRequired('Price must be set')])
+    total_tickets=IntegerField("Number of tickets", validators=[InputRequired(), NumberRange(min=1)])    
     submit = SubmitField("Post")
 
 class BookingForm(FlaskForm):
@@ -57,6 +58,7 @@ class BookingForm(FlaskForm):
                                     ('ticket type 3', 'Ticket Type eg3')
                            ],
                            validators=[InputRequired()])
-    no_of_tickets=IntegerField("Number of tickets", validators=[InputRequired(), NumberRange(min=1)])
+    no_tickets=IntegerField("Number of tickets", validators=[InputRequired(), NumberRange(min=1)])
     submit=SubmitField("Buy")
+
 
