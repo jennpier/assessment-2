@@ -44,7 +44,7 @@
             {% for e in events %}
               <tr>
                 <td>{{ e.title }}</td>
-                <td>{{ e.date_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ e.time.strftime('%Y-%m-%d %H:%M') }}</td>
                 <td>{{ e.venue.name if e.venue else '-' }}</td>
                 <td>{{ e.status }}</td>
                 <td>
