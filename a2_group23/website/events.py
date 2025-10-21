@@ -10,7 +10,7 @@ import os, uuid, json
 from website.forms import EventForm
 
 from . import db
-from .models import Event, Venue, Category
+from .models import Event, Venue, Category, Comment
 
 events_bp = Blueprint("events", __name__)  # no url_prefix so paths stay the same if you want
 
@@ -103,8 +103,6 @@ def delete(event_id):
     flash("Event deleted.", "success")
     return redirect(url_for("main.events"))
 
-
-
 @events_bp.route('/events/<int:event_id>/book', methods=['GET', 'POST'])
 @login_required
 def book_event(event_id):
@@ -162,4 +160,127 @@ def event_detail(event_id):
     event = db.session.get(Event, event_id)
     if not event:
         abort(404)
-    return render_template('event.html', event=event)
+
+    comments = db.session.scalars(
+        db.select(Comment)
+          .where(Comment.event_id == event.id)
+          .order_by(Comment.posted_date.desc())
+    ).all()
+
+    return render_template('event.html', event=event, comments=comments)
+
+
+
+
+@events_bp.route("/events/<int:event_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit(event_id):
+    event = db.session.get(Event, event_id)
+    if not event:
+        flash("Event not found.", "warning")
+        return redirect(url_for("main.events"))
+
+    # Optional: only owner can edit
+    # if event.owner_id != current_user.id:
+    #     flash("You don't have permission to edit this event.", "danger")
+    #     return redirect(url_for("main.events"))
+
+    if request.method == "POST":
+        title = (request.form.get("title") or "").strip()
+        description = (request.form.get("description") or "").strip()
+        hour = int(request.form.get("hour") or 0)
+        minute = int(request.form.get("minute") or 0)
+        duration = int(request.form.get("duration") or 0)
+        status = request.form.get("status") or "Open"
+        venue_id = request.form.get("venue_id")
+
+        # date (required)
+        day = (request.form.get("day") or "").strip()
+        event_dt = datetime.strptime(day, "%Y-%m-%d").replace(
+            hour=hour, minute=minute, second=0, microsecond=0
+        )
+
+        # venue (required)
+        venue = db.session.get(Venue, venue_id)
+        if not venue:
+            flash("Select a valid venue.", "warning")
+            return redirect(url_for("events.edit", event_id=event.id))
+
+        # optional image replacement
+        image_file = request.files.get("image")
+        if image_file and image_file.filename:
+            ext = image_file.filename.rsplit(".", 1)[-1].lower()
+            if ext not in {"jpg", "jpeg", "png", "gif"}:
+                flash("Unsupported image type.", "warning")
+                return redirect(url_for("events.edit", event_id=event.id))
+            safe_name = secure_filename(image_file.filename)
+            new_name = f"{uuid.uuid4().hex[:8]}_{safe_name}"
+            save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], new_name)
+            image_file.save(save_path)
+
+            # delete old file if existed
+            if event.image:
+                old_path = os.path.join(current_app.config["UPLOAD_FOLDER"], event.image)
+                try:
+                    if os.path.exists(old_path):
+                        os.remove(old_path)
+                except OSError:
+                    pass
+
+            event.image = new_name  # set new filename
+
+        # update fields
+        event.title = title
+        event.description = description
+        event.time = event_dt
+        event.status = status
+        event.duration_minutes = duration or None
+        event.venue_id = venue.id
+
+        db.session.commit()
+        flash("Event updated successfully!", "success")
+        return redirect(url_for("main.events"))
+
+    # GET: render form with current values
+    venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
+    return render_template("edit-event.html", event=event, venues=venues)
+
+
+@events_bp.route("/events/<int:event_id>/comments", methods=["POST"])
+@login_required
+def add_comment(event_id):
+    event = db.session.get(Event, event_id)
+    if not event:
+        abort(404)
+
+    text = (request.form.get("comment") or "").strip()
+    if not text:
+        flash("Comment cannot be empty.", "warning")
+        return redirect(url_for("events.event_detail", event_id=event.id) + "#comments")
+
+    c = Comment(comment=text, user_id=current_user.id, event_id=event.id)
+    db.session.add(c)
+    db.session.commit()
+    flash("Comment posted.", "success")
+    return redirect(url_for("events.event_detail", event_id=event.id) + "#comments")
+
+
+@events_bp.route("/comments/<int:comment_id>/delete", methods=["POST"])
+@login_required
+def delete_comment(comment_id):
+    c = db.session.get(Comment, comment_id)
+    if not c:
+        flash("Comment not found.", "warning")
+        return redirect(url_for("events.event_detail", event_id=0))  # harmless fallback
+
+    # allow deletion by comment author or event owner
+    is_author = c.user_id == current_user.id
+    is_event_owner = (c.event and c.event.owner_id == current_user.id)
+    if not (is_author or is_event_owner):
+        flash("You don't have permission to delete this comment.", "danger")
+        return redirect(url_for("events.event_detail", event_id=c.event_id) + "#comments")
+
+    db.session.delete(c)
+    db.session.commit()
+    flash("Comment deleted.", "success")
+    return redirect(url_for("events.event_detail", event_id=c.event_id) + "#comments")

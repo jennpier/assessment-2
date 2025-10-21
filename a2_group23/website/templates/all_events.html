@@ -4,11 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Events</title>
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Adding Remix Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
-    <!-- Adding CSS Files -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
   </head>
   <body>
@@ -40,7 +37,7 @@
               <th>Venue</th>
               <th>Status</th>
               <th>Image</th>
-              <th>Action</th>
+              <th style="width:160px">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -52,21 +49,25 @@
                 <td>{{ e.status }}</td>
                 <td>
                   {% if e.image %}
-                    <img src="{{ url_for('static', filename='images/' ~ e.image) }}" alt="" style="height:40px">
+                    <img src="{{ url_for('static', filename='images/' ~ e.image) }}" alt="{{ e.title }}" style="height:40px">
                   {% else %}-{% endif %}
                 </td>
-                <td>
-                  <form method="POST" action="{{ url_for('events.delete', event_id=e.id) }}" style="display:inline">
+                <td class="d-flex gap-2">
+                  <a class="btn btn-sm btn-outline-primary" href="{{ url_for('events.edit', event_id=e.id) }}">
+                    <i class="ri-pencil-line"></i> Edit
+                  </a>
+
+                  <form method="POST" action="{{ url_for('events.delete', event_id=e.id) }}">
                     {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
-                    <button type="submit" class="btn btn-link p-0" title="Delete"
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
                             onclick="return confirm('Delete this event? This cannot be undone.');">
-                      <i class="ri-delete-bin-fill" style="color: rgb(177, 2, 2); font-size: 30px;"></i>
+                      <i class="ri-delete-bin-fill"></i> Delete
                     </button>
                   </form>
                 </td>
               </tr>
             {% else %}
-              <tr><td colspan="5" class="text-muted">No events yet.</td></tr>
+              <tr><td colspan="6" class="text-muted">No events yet.</td></tr>
             {% endfor %}
           </tbody>
         </table>
@@ -74,6 +75,4 @@
     </div>
 
     {% include 'footer.html' %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootst
