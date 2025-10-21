@@ -32,11 +32,11 @@
               <div class="d-flex justify-content-evenly flex-row gap-4">
                 <div>
                   <i class="bi bi-calendar2-event-fill m-2 text-success"></i>
-                  <span>{{ event.time.strftime('%a %d, %Y') }}</span>
+                  <span>{{ event.date_time.strftime('%a %d, %Y') }}</span>
                 </div>
                 <div>
                   <i class="bi bi-clock-fill m-2 text-primary"></i>
-                  <span>{{ event.time.strftime('%I:%M %p') }}</span>
+                  <span>{{ event.date_time.strftime('%I:%M %p') }}</span>
                 </div>
               </div>
 
@@ -74,161 +74,6 @@
         <div class="col-12 col-lg-4 shadow-sm p-4 rounded-2">
           <div class="mb-3">
             <div class="mb-4">
-<<<<<<< HEAD
-              <h3 class="px-3">{{ e.title }}</h3>
-              <div class="d-flex flex-column flex-md-row justify-content-center mt-3 gap-3">
-                <div class="d-flex justify-content-evenly flex-row gap-4">
-                    <div class=""><i class="bi bi-calendar2-event-fill m-2 text-success"></i><span>{{ e.date_time}}</span></div>
-                    <div class=""><i class="bi bi-clock-fill m-2 text-primary"></i><span>{{ e.duration_minutes}}</span></div>
-                </div>
-                <div class="d-flex justify-content-evenly flex-row gap-4">
-                    {% for v in venue %}
-                    <div class=""><i class="bi bi-geo-alt-fill m-2 text-danger"></i><span>{{ v.name }}, {{ v.location }}</span></div>
-                    <div class=""><i class="bi bi-check-circle-fill m-2 text-success"></i><span>Available</span></div>
-                </div>
-              </div>
-            </div>
-            
-            
-            <div class="mb- mt-3">
-                {% for e in event %}
-                <h5 class="fw-bold">Description</h5>
-                <div class="col-12">{{ e.description }}</div>
-            </div>
-            
-          </div>
-
-          <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.book_event') }}">
-          {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
-          
-
-          <div class="col-12 col-lg-4 shadow-sm p-4 rounded-2">
-            
-            <div class="mb-3">
-                <div class="mb-4">
-                    <h5 class="mb-3">Select Ticket Types</h5>
-                    
-                    <div class="row border p-3 mb-3">
-                        <div class="col-8">
-                            <h6 class="mb-1">{{ e.ticket.type }}</h6>
-                            <p class="mb-1">Rs. {{ e.total_tickets }}</p>
-                            <a href="#" class="small">Seats Available: <strong>{{ e.tickets_left }}</strong></a>
-                        </div>
-                        <div class="col-4 text-end">
-                            {{ form.ticket_type.label(class="form-label") }}
-                            {{ form.ticket_type(class="btn-check") }}
-                            <!--
-                            <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off">
-                            <label class="btn btn-secondary" for="option1">SELECT</label> -->
-                            
-                        </div>
-                    </div>
-                    
-                    <div class="row border p-3 mb-3">
-                        <div class="col-8">
-                            <h6 class="mb-1">{{ e.ticket.type }}</h6>
-                            <p class="mb-1">Rs. {{ e.total_tickets }}</p>
-                            <a href="#" class="small">Seats Available: <strong>{{ e.tickets_left }}</strong></a>
-                        </div>
-                        <div class="col-4 text-end">
-                            {{ form.ticket_type.label(class="form-label") }}
-                            {{ form.ticket_type(class="btn-check") }}
-                            <!--
-                            <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
-                            <label class="btn btn-secondary" for="option2">SELECT</label>
-                        -->
-                        </div>
-                    </div>
-
-                    <div class="row border p-3 mb-3">
-                        <div class="col-8">
-                            <h6 class="mb-1">{{ e.ticket.type }}</h6>
-                            <p class="mb-1">Rs. {{ e.total_tickets }}</p>
-                            <a href="#" class="small">Seats Available: <strong>{{ e.tickets_left }}</strong></a>
-                        </div>
-                        <div class="col-4 text-end">
-                            {{ form.ticket_type.label(class="form-label") }}
-                            {{ form.ticket_type(class="btn-check") }}
-                            <!--
-                            <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off">
-                            <label class="btn btn-secondary" for="option3">SELECT</label> -->
-                        </div>
-                    </div>                    
-                </div>
-            </div>
-            
-            <div class="row mb-3">
-                <div class="col-6 mb-3">
-                    <h6 class="fw-bold fs-5">Location</h6>
-                    <div class="d-flex fs-7">
-                        <div><i class="bi bi-geo-alt-fill m-2"></i></div>
-                        <div>
-                            {% for v in venue %}
-                            <p class="mb-1"><strong>{{ v.name }}</strong></p>
-                            <p class="mb-1">{{ v.location }}</p>
-                            <a href="#">Get directions</a>
-                        </div>
-                    </div>
-                </div>
-                {% for e in event %}
-                <div class="col-6 mb-3">
-                    <h6 class="fw-bold fs-5">Highlights</h6>
-                    <div class="fs-7">
-                        <p class="mb-1"><i class="bi bi-clock-history me-2"></i>{{ e.duration_minutes}}</p>
-                        <p class="mb-1"><i class="bi bi-person-vcard me-2"></i>Over 18 years old</p>
-                        <p class="mb-1"><i class="bi bi-person-walking me-2"></i>In person</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mb-3">
-                <h6 class="fw-bold fs-5 mb-3">Organizer</h6>
-                <div class="d-flex flex-row justify-content-around p-3 w-100">
-                    <div class="d-flex col-4 align-items-center">
-                        <img src="./static/img/logo.png" alt="Organizer Logo" class="img-fluid rounded-circle" style="width:50px; height:50px;">
-                    </div>
-
-                    <div class="col-8">
-                        <h6 class="mb-1">Independence Club</h6>
-                        <div class="d-flex flex-wrap small text-muted">
-                            <div class="me-3">
-                            <span>Followers</span><br><strong>8.7k</strong>
-                            </div>
-                            <div class="me-3">
-                            <span>Events</span><br><strong>83</strong>
-                            </div>
-                            <div>
-                            <span>Lodging</span><br><strong>7 years</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- <div class=" mt-3 text-end">
-                        <button class="btn btn-outline-dark mb-2">Contact</button>
-                        <button class="btn btn-danger mb-2">&nbsp;Follow&nbsp;</button>
-                    </div> -->
-                </div>
-            </div>
-
-        
-            <div class="row mb-3">
-                <h6 class="fw-bold fs-5 mb-3">Book Now</h6>
-                
-                <div class="col-6 p-0">
-                    <!-- <h5>No. of Seats</h5> -->
-                    {{ form.no_tickets.label(class="form-label") }}
-                    {{ form.no_tickets(class="form-control", placeholder="Enter Number of Tickets") }}
-                </div>
-                <div class="col-6 text-center">
-                    {{% for t in tickets %}}
-                    <!--change to be ticket type's price x no of tickets-->
-                    <h5 class="mb-0 fw-bold mt-2">{{ t.price }}</h5>
-                </div>
-            </div>
-            <div class="row">
-               <a href="{{ url_for('main.book_event', event_id=event.id) }}" class="btn btn-success w-100 fw-bold py-2">BUY TICKETS</a>
-                </button>
-=======
               <h5 class="mb-3">Select Ticket Types</h5>
 
               <div class="row border p-3 mb-3">
@@ -277,7 +122,6 @@
                   {% endif %}
                 </div>
               </div>
->>>>>>> c013f7d (Comments added in events page)
             </div>
 
             <div class="col-6 mb-3">
@@ -337,96 +181,53 @@
       </div>
     </div>
 
-<<<<<<< HEAD
-    <div class="container my-5">
-        <h4 class="mb-3">Add a comment</h4>
-        <div class="card p-3 mb-4">
-            <textarea class="form-control border-0 mb-2" rows="2" placeholder="Add comment..."></textarea>
-            <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex gap-3 text-muted fs-5">
-                <i class="bi bi-type-bold pointer"></i>
-                <i class="bi bi-type-italic pointer"></i>
-                <i class="bi bi-type-underline pointer"></i>
-            </div>
-            <button class="btn btn-success rounded-2 px-4">Submit</button>
-            </div>
-        </div>
-        {% for c in comment %}
-        <div class="card p-3 mb-3">
-            <div class="d-flex mb-2">
-            <img src="./static/img/profile.jpg" class="rounded-circle me-3 " style="width: 30px;">
-            <div>
-                <strong>{{ c.user_id }}</strong> <i class="bi bi-dot fs-5" style="margin-top:10px;"></i> <small class="text-muted me-2">2 weeks ago</small>
-            </div>
-            </div>
-            <p class="mb-1">{{ c.comment }}</p>
-        </div>
+    <div class="container my-5" id="comments">
+      <h4 class="mb-3">Comments</h4>
 
-        <div class="card p-3 mb-3">
-            <div class="d-flex mb-2">
-            <img src="./static/img/profile.jpg" class="rounded-circle me-3 " style="width: 30px;">
-            <div>
-                <strong>{{ c.user_id }}</strong> <i class="bi bi-dot fs-5" style="margin-top:10px;"></i> <small class="text-muted me-2">2 weeks ago</small>
-=======
-   <div class="container my-5" id="comments">
-        <h4 class="mb-3">Comments</h4>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ 'warning' if category=='message' else category }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        {% if current_user.is_authenticated %}
-            <form class="card p-3 mb-4" method="POST" action="{{ url_for('events.add_comment', event_id=event.id) }}">
-            {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
-            <textarea name="comment" class="form-control border-0 mb-2" rows="2" placeholder="Add comment..." required></textarea>
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-success rounded-2 px-4" type="submit">Submit</button>
->>>>>>> c013f7d (Comments added in events page)
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'warning' if category=='message' else category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            </form>
-        {% else %}
-            <div class="alert alert-info">Please <a href="{{ url_for('auth.login', next=request.full_path) }}">log in</a> to comment.</div>
+          {% endfor %}
         {% endif %}
+      {% endwith %}
 
-        {% for c in comments %}
-            <div class="card p-3 mb-3">
-            <div class="d-flex mb-2 align-items-center">
-                <img src="{{ url_for('static', filename='img/profile.jpg') }}" class="rounded-circle me-3" style="width:30px" alt="">
-                <div>
-                <strong>{{ c.author.name if c.author else 'User' }}</strong>
-                <small class="text-muted ms-2">{{ c.posted_date.strftime('%Y-%m-%d %H:%M') }}</small>
-                </div>
-                {% if current_user.is_authenticated and (current_user.id == c.user_id or (event and event.owner_id == current_user.id)) %}
-                <form method="POST" action="{{ url_for('events.delete_comment', comment_id=c.id) }}" class="ms-auto">
-                    {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                </form>
-                {% endif %}
+      {% if current_user.is_authenticated %}
+        <form class="card p-3 mb-4" method="POST" action="{{ url_for('events.add_comment', event_id=event.id) }}">
+          {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
+          <textarea name="comment" class="form-control border-0 mb-2" rows="2" placeholder="Add comment..." required></textarea>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-success rounded-2 px-4" type="submit">Submit</button>
+          </div>
+        </form>
+      {% else %}
+        <div class="alert alert-info">Please <a href="{{ url_for('auth.login', next=request.full_path) }}">log in</a> to comment.</div>
+      {% endif %}
+
+      {% for c in comments %}
+        <div class="card p-3 mb-3">
+          <div class="d-flex mb-2 align-items-center">
+            <img src="{{ url_for('static', filename='img/profile.jpg') }}" class="rounded-circle me-3" style="width:30px" alt="">
+            <div>
+              <strong>{{ c.author.name if c.author else 'User' }}</strong>
+              <small class="text-muted ms-2">{{ c.posted_date.strftime('%Y-%m-%d %H:%M') }}</small>
             </div>
-            <p class="mb-1">{{ c.comment }}</p>
-<<<<<<< HEAD
+            {% if current_user.is_authenticated and (current_user.id == c.user_id or (event and event.owner_id == current_user.id)) %}
+              <form method="POST" action="{{ url_for('events.delete_comment', comment_id=c.id) }}" class="ms-auto">
+                {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            {% endif %}
+          </div>
+          <p class="mb-1">{{ c.comment }}</p>
         </div>
-
-        <div class="text-center">
-            <button class="btn btn-light border">Load More</button>
-        </div>
-
-=======
-            </div>
-        {% else %}
-            <p class="text-muted">No comments yet.</p>
-        {% endfor %}
->>>>>>> c013f7d (Comments added in events page)
+      {% else %}
+        <p class="text-muted">No comments yet.</p>
+      {% endfor %}
     </div>
-
-
 
     {% if similar_events %}
       <div class="container similar-event mt-5">
@@ -442,7 +243,7 @@
                 {% endif %}
                 <div class="card-body">
                   <div class="d-flex justify-content-between mb-2">
-                    <small><i class="bi bi-calendar-event me-1"></i> {{ s.time.strftime('%d %b') }}</small>
+                    <small><i class="bi bi-calendar-event me-1"></i> {{ s.date_time.strftime('%d %b') }}</small>
                     <small class="fw-bold">—</small>
                   </div>
                   <h6 class="card-title">{{ s.title }}</h6>

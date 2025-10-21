@@ -1,4 +1,5 @@
 # website/models.py
+from sqlalchemy import func
 from . import db
 from datetime import datetime
 from flask_login import UserMixin
@@ -76,6 +77,10 @@ class Event(db.Model):
     category = db.relationship("Category", back_populates="events")
     venue = db.relationship("Venue", back_populates="events")
 
+    tickets = db.relationship(
+        "Ticket", back_populates="event", cascade="all, delete-orphan"
+    )
+
     comments = db.relationship(
         "Comment", back_populates="event", cascade="all, delete-orphan"
     )
@@ -86,24 +91,25 @@ class Event(db.Model):
     def __repr__(self):
         return f"<Event {self.id}:{self.title}>"
     
-    def tickets_sold(self):
-        return Ticket.query.filter_by(booking_id=self.id).count()
+    def tickets_sold(self) -> int:
+        return db.session.scalar(
+            db.select(func.count()).select_from(Ticket).where(Ticket.event_id == self.id)
+        ) or 0
 
-    def tickets_left(self):
-        return self.total_tickets - self.tickets_sold()
+    def tickets_left(self) -> int:
+        return max((self.total_tickets or 0) - self.tickets_sold(), 0)
     
     #def sold_out(self):
         #return self.no_sold_tickets >= self.total_tickets
    
-    def status(self):
-        if self.status == 'cancelled':
-            return
-        elif self.time < datetime.utcnow():
-            self.status = 'inactive'
-        elif self.tickets_left() <= 0:
-            self.status = 'sold_out'
-        else:
-            self.status = 'active'
+    def computed_status(self) -> str:
+        if self.status == 'Cancelled':
+            return 'Cancelled'
+        if self.date_time < datetime.utcnow():
+            return 'Inactive'
+        if self.tickets_left() <= 0:
+            return 'Sold Out'
+        return 'Open'
 
 #class Status(db.Model):
 #    __tablename___ = "status"
@@ -171,11 +177,12 @@ class Ticket(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer, nullable=False)
-    type = db.Column(db.String(50), nullable=False)
+    ticket_type = db.Column(db.String(50), nullable=False)  
 
     booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
-    booking = db.relationship("Booking", back_populates="tickets")
-    event = db.relationship("Event", back_populates="tickets" )
+    booking    = db.relationship("Booking", back_populates="tickets")
 
+    event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False) 
+    event    = db.relationship("Event", back_populates="tickets")               
     def __repr__(self):
         return f"<Ticket {self.id} booking={self.booking_id}>"
