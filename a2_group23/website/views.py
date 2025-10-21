@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from .models import Booking, Ticket, Event
+from .models import Booking, Ticket, Event, User, Category, Venue, Comment
 from .forms import BookingForm
 from datetime import datetime
 from datetime import datetime
@@ -10,7 +10,7 @@ import os, uuid, json
 from website.forms import EventForm
 
 from . import db
-from .models import Event, Venue, Category
+from .models import Event, Venue, Category, Ticket, Booking, Comment, User
 
 main_bp = Blueprint('main', __name__)
 
@@ -42,13 +42,12 @@ def search():
         # ).all()
         # return render_template('index.html', events=filtered)    
     
-
-# @main_bp.route('/events/<int:event_id>')
-# def event_detail(event_id):
-#     event = db.session.get(Event, event_id)
-#     if not event:
-#         abort(404)
-#     return render_template('event.html', event=event)
+@main_bp.route('/events/<int:event_id>')
+def event_detail(event_id):
+     event = db.session.get(Event, event_id)
+     if not event:
+         abort(404)
+     return render_template('event.html', event=event)
 
 @main_bp.route('/my-bookings')
 @login_required
@@ -156,7 +155,8 @@ def venues():
 #         minute = int(request.form.get("minute") or 0)
 #         duration = int(request.form.get("duration") or 0)
 #         status = request.form.get("status") or "Open"
-#         seat_types = request.form.getlist("seat_types")
+#         total_tickets = int(request.form.get("number") or 1)
+
 
 
 #         day = request.form.get("day", "").strip()
@@ -192,12 +192,14 @@ def venues():
 #             flash("Select a valid venue.", "warning")
 #             return redirect(url_for("main.create_event"))
 
+#    if form.validate_on_submit():
 #         event = Event(
 #             title=title,
 #             description=description,
 #             time=event_dt,
 #             image=image_filename,
 #             status=status,
+#             total_tickets=total_tickets,
 #             duration_minutes=duration or None,
 #             seat_types=json.dumps(seat_types) if seat_types else None,
 #             owner_id=current_user.id,
@@ -252,13 +254,13 @@ def create_event():
         minute = int(request.form.get("minute") or 0)
         duration = int(request.form.get("duration") or 0)
         status = request.form.get("status") or "Open"
-        seat_types = request.form.getlist("seat_types")
+        #seat_types = request.form.getlist("seat_types")
         total_tickets = int(request.form.get("number") or 1)
         day = request.form.get("day", "").strip()
         event_dt = datetime.strptime(day, "%Y-%m-%d")
         event_dt = event_dt.replace(hour=hour, minute=minute, second=0, microsecond=0)
         
-        if not title or not description or hour or minute or duration or seat_types or total_tickets <= 0:
+        if not title or not description or hour or minute or duration or total_tickets <= 0:
             flash("Please fill all fields correctly.", "warning")
             return redirect(url_for("main.create_event"))
 
@@ -301,7 +303,7 @@ def create_event():
             status=status,
             total_tickets=total_tickets,
             duration=duration or None,
-            seat_types=json.dumps(seat_types) if seat_types else None,
+            #seat_types=json.dumps(seat_types) if seat_types else None,
             owner_id=current_user.id,
             category_id=category.id,
             venue_id=venue.id,
@@ -333,7 +335,7 @@ def update_event(event_id):
         minute = int(request.form.get("minute") or 0)
         duration = int(request.form.get("duration") or 0)
         status = request.form.get("status") or "open" or "cancelled"
-        seat_types = request.form.getlist("seat_types")
+        #seat_types = request.form.getlist("seat_types")
         total_tickets = int(request.form.get("number") or 1)
 
 
@@ -341,7 +343,7 @@ def update_event(event_id):
         event_dt = datetime.strptime(day, "%Y-%m-%d")
         event_dt = event_dt.replace(hour=hour, minute=minute, second=0, microsecond=0)
         
-        if not title or not description or hour or minute or duration or seat_types or total_tickets <= 0:
+        if not title or not description or hour or minute or duration or total_tickets <= 0:
             flash("Please fill all fields correctly.", "warning")
             return redirect(url_for("main.create_event"))
 
@@ -446,6 +448,7 @@ def book_event(event_id):
 
     # if GET request or form not valid show booking form
     return render_template('book_event.html', event=event, form=form)
+
 
 
 
