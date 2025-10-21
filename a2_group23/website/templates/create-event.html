@@ -109,19 +109,7 @@
               <input id="seats" name="seats" type="number" min="1" class="form-control" placeholder="Seats" required>
             </div> -->
 
-            <div class="col-md-4 mb-2">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-select" id="status" name="status">
-                <option value="" disabled selected>Select a status</option>
-                <!--needs editing, change status to be a class?-->
-                {% for e in event %}
-                <option value="{{ e.status }}">{{ e.status='open'}}</option>
-                <option value="{{ e.status }}">{{ e.status='cancelled'}}</option>
 
-                <option value="Open">Open</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-            </div>
           </div>
 
           <button class="btn btn-success w-100" type="submit">
