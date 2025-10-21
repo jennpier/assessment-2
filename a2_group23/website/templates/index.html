@@ -72,7 +72,7 @@
         <div class="card-body">
           <h5 class="card-title">{{ e.title }}</h5>
           <p class="card-text">
-            {{ e.time.strftime('%d %B %Y - %H:%M') }}
+            {{ e.date_time.strftime('%d %B %Y - %H:%M') }}
           </p>
           <p class="card-text">
             {{ e.description|truncate(140, True) }}

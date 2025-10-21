@@ -18,7 +18,7 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def index():
     events = db.session.scalars(
-        db.select(Event).order_by(Event.time.asc())
+        db.select(Event).order_by(Event.date_time.asc())
     ).all()
     return render_template("Index.html", events=events)
 
@@ -112,7 +112,7 @@ def my_bookings():
 @main_bp.route("/events", methods=["GET"])
 @login_required
 def events():
-    items = db.session.scalars(db.select(Event).order_by(Event.time.desc())).all()
+    items = db.session.scalars(db.select(Event).order_by(Event.date_time.desc())).all()
     return render_template("all_events.html", events=items)   # or 'events.html' if that’s your file
 
 @main_bp.route("/venues", methods=["GET", "POST"])

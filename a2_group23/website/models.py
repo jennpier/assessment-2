@@ -175,7 +175,7 @@ class Ticket(db.Model):
 
     booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
     booking = db.relationship("Booking", back_populates="tickets")
-    event = db.relationship("Event", back_populates="tickets" )
+    # event = db.relationship("Event", back_populates="tickets" )
 
     def __repr__(self):
         return f"<Ticket {self.id} booking={self.booking_id}>"
