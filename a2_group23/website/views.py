@@ -396,14 +396,14 @@ def book_event(event_id):
     form = BookingForm()
     available = event.tickets_left()
 
-    if event.status(sold_out):
+    if event.status('sold_out'):
         return render_template('invalid-booking.html', event=event)
-    elif event.status(cancelled):
+    elif event.status('cancelled'):
         return render_template('invalid-booking.html', event=event)
-    elif event.status(inactive):
+    elif event.status('inactive'):
         return render_template('invalid-booking.html', event=event)
 
-    else form.validate_on_submit():
+    if form.validate_on_submit():
         ticket_type = form.ticket_type.data
         quantity = form.no_tickets.data
 
@@ -448,6 +448,7 @@ def book_event(event_id):
 
     # if GET request or form not valid show booking form
     return render_template('book_event.html', event=event, form=form)
+
 
 
 
