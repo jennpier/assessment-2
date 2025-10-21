@@ -65,7 +65,7 @@ class Event(db.Model):
     status = db.Column(db.String(20), nullable=False, default="Open")
 
     duration_minutes = db.Column(db.Integer)
-    total_tickets = db.Column(db.Integer, nullable=False)
+    #total_tickets = db.Column(db.Integer, nullable=False)
     no_sold_tickets = db.Column(db.Integer, default=0)
 
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
@@ -89,8 +89,8 @@ class Event(db.Model):
     def tickets_sold(self):
         return Ticket.query.filter_by(booking_id=self.id).count()
 
-    def tickets_left(self):
-        return self.total_tickets - self.tickets_sold()
+    #def tickets_left(self):
+        #return self.total_tickets - self.tickets_sold()
     
     #def sold_out(self):
         #return self.no_sold_tickets >= self.total_tickets
