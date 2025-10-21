@@ -20,7 +20,7 @@ def index():
     events = db.session.scalars(
         db.select(Event).order_by(Event.time.asc())
     ).all()
-    return render_template("Index.html", events=events)
+    return render_template("index.html", events=events)
 
 ## === Fetching Individual Event Details
 #Search Bar
