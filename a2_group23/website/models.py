@@ -60,12 +60,11 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     image = db.Column(db.String(255))
     status = db.Column(db.String(20), nullable=False, default="Open")
 
     duration_minutes = db.Column(db.Integer)
-    seat_types = db.Column(db.Text)
     total_tickets = db.Column(db.Integer, nullable=False)
     no_sold_tickets = db.Column(db.Integer, default=0)
 
@@ -105,6 +104,26 @@ class Event(db.Model):
             self.status = 'sold_out'
         else:
             self.status = 'active'
+
+#class Status(db.Model):
+#    __tablename___ = "status"
+
+#    id = db.Column(db.Integer, primary_key=True)    
+#    open = db.Column(db.String(10), nullable=False)
+#    cancelled = db.Column(db.String(10), nullable=False)
+#    inactive = db.Column(db.String(10), nullable=False)
+#    sold_out = db.Column(db.String(10), nullable=False)
+
+#    event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
+#    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
+
+#    event = db.relationship(
+#        "Event", back_populates="status", cascade="all, delete-orphan"
+#    )
+
+#    bookings = db.relationship(
+#        "Booking", back_populates="event", cascade="all, delete-orphan"
+#    )
 
 
 class Comment(db.Model):
@@ -152,10 +171,11 @@ class Ticket(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer, nullable=False)
-    ticket_type = db.Column(db.String(50), nullable=False)
+    type = db.Column(db.String(50), nullable=False)
 
     booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
     booking = db.relationship("Booking", back_populates="tickets")
+    event = db.relationship("Event", back_populates="tickets" )
 
     def __repr__(self):
         return f"<Ticket {self.id} booking={self.booking_id}>"
