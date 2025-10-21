@@ -43,6 +43,7 @@ class EventForm(FlaskForm):
         FileRequired(message = 'Image cannot be empty'),
         FileAllowed(ALLOWED_FILE, message='Only supports png, jpg, JPG, PNG')])
     date_time=DateTimeField("Event Date and Time", validators=[InputRequired('Date and Time required')], format='%D-%m-%Y %H:%M')
+    duration_minutes=IntegerField("Duration in Minutes", validators=[InputRequired('Duration must be set')])
     ticket_type=RadioField("Ticket type",
                            choices=[('type option 1', 'Ticket Type eg1'),
                                     ('type option 2', 'Ticket Type eg2'),
@@ -60,5 +61,6 @@ class BookingForm(FlaskForm):
                            validators=[InputRequired()])
     no_tickets=IntegerField("Number of tickets", validators=[InputRequired(), NumberRange(min=1)])
     submit=SubmitField("Buy")
+
 
 
