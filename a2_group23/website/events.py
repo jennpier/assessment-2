@@ -2,7 +2,7 @@ from flask import Blueprint, abort, render_template, request, redirect, url_for,
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from .models import Booking, Ticket, Event
-from .forms import BookingForm
+from .forms import BookingForm, EventForm
 from datetime import datetime
 from datetime import datetime
 import os, uuid, json
