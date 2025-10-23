@@ -84,16 +84,37 @@
               </select>
             </div>
 
+            <!--tickets-->
+            <div class="row col-md-2 mb-2">
+              <label for="type" class="form-label">Ticket Type</label>
+              <select class="form-select" id="ticket_type" name="ticket_type">
+                <option value="General Admission" {% if event.ticket_type == 'General Admission' %}selected{% endif %}>General Admission</option>
+                <option value="VIP" {% if event.ticket_type == 'VIP' %}selected{% endif %}>VIP</option>
+                <option value="Backstage Pass" {% if event.ticket_type == 'Backstage Pass' %}selected{% endif %}>Backstage Pass</option>
+              </select>
+            </div>
+
+            <div class="row col-md-2 mb-2">
+              <label for="price" class="form-label">Price per Ticket</label>
+              <input id="price" name="price" type="number" min="1" class="form-control"
+                     value="{{ event.ticket_price }}" required>
+            </div>
+
+            <div class="row col-md-2 mb-2">
+              <label for="quantity" class="form-label">Quantity of Tickets</label>
+              <input id="quantity" name="quantity" type="number" min="1" class="form-control"
+                     value="{{ event.ticket_quantity }}" required>
+            </div>            
+
             <div class="col-md-6 mb-2">
               <label for="status" class="form-label">Status</label>
               <select class="form-select" id="status" name="status">
                 <option value="Open"      {% if event.status == 'Open' %}selected{% endif %}>Open</option>
-                <option value="Inactive"  {% if event.status == 'Inactive' %}selected{% endif %}>Inactive</option>
-                <option value="Sold Out"  {% if event.status == 'Sold Out' %}selected{% endif %}>Sold Out</option>
                 <option value="Cancelled" {% if event.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
               </select>
             </div>
           </div>
+
 
           <button class="btn btn-success w-100" type="submit">
             <i class="bi bi-save me-1"></i>
