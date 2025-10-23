@@ -99,10 +99,13 @@
 
           <!--Type of ticket, Number of Ticket type, price of ticket type-->
 
-          <div class="row mb-3">    
-            <div class="form-group col-4">
-              {{ form.type.label(class='form-label') }}
-              {{ form.type(class="form-select") }}
+            <div class="row col-md-2 mb-2">
+              <label for="type" class="form-label">Ticket Type</label>
+              <select class="form-select" id="ticket_type" name="ticket_type">
+                <option value="General Admission"      {% if event.ticket_type == 'General Admission' %}selected{% endif %}>General Admission</option>
+                <option value="VIP" {% if event.ticket_type == 'VIP' %}selected{% endif %}>VIP</option>
+                <option value="Backstage Pass" {% if event.ticket_type == 'Backstage Pass' %}selected{% endif %}>Backstage Pass</option>
+              </select>
             </div>
             
             <span class="input-group-text">$</span>
