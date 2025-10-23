@@ -41,29 +41,40 @@
           <!-- Date & Time & Duration -->
           <div class="row mb-3">
             <div class="form-group col-md-4 mb-2">
-              {{ form.date_time.label(class='form-label') }}
-              {{ form.date_time(class="form-control") }}
+              {{ form.day.label(class='form-label') }}
+              {{ form.day(class="form-control", value="{{ event.date_time.strftime('%Y-%m-%d') }}" required) }}
             </div>
 
-    <!--        <div class="form-group col-md-2 mb-2">
-              <label for="hour" class="form-label">Hour (24 hr)</label>
-              <input id="hour" name="hour" type="number" min="0" max="23" class="form-control" placeholder="20" required>
-            </div> 
+            <div class="form-group col-md-4 mb-2">
+              {{ form.hour.label(class='form-label') }}
+              {{ form.hour(class="form-control", min="00" max="23", value="{{ event.date_time.strftime('%H') }}" required) }}
+            </div>
 
-            <div class="col-md-2 mb-2">
-              <label for="minute" class="form-label">Minute</label>
-              <input id="minute" name="minute" type="number" min="0" max="59" class="form-control" placeholder="00" required>
-            </div> -->
+            <div class="form-group col-md-4 mb-2">
+              {{ form.minute.label(class='form-label') }}
+              {{ form.minute(class="form-control", min="0" max="59", value="{{ event.date_time.strftime('%M) }}" required) }}
+            </div>           
 
             <div class="form-group col-md-4 mb-2">
               {{ form.duration.label(class='form-label') }}
               {{ form.duration(class="form-control", min="1", placeholder="90") }}
-              <label for="duration" class="form-label">Duration (minutes)</label>
-              <input id="duration" name="duration" type="number" min="1" class="form-control" placeholder="90">
+              <!--<label for="duration" class="form-label">Duration (minutes)</label>
+              <input id="duration" name="duration" type="number" min="1" class="form-control" placeholder="90">-->
             </div>
-          </div>
-
+          </div>   
           
+          <!--Choose category-->
+          <div class="row mb-3">
+            <div class="col-md-8 mb-2">
+              <label for="category_id" class="form-label">Category</label>
+              <select id="category_id" name="category_id" class="form-select" required>
+                {% for c in categories %}
+                  <option value="{{ c.id }}" {% if c.id == event.category_id %}selected{% endif %}>
+                    {{ c.category_name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>            
 
           <!-- Image -->
           <div class="form-group mb-3">
@@ -72,7 +83,7 @@
             <div class="form-text">Accepted: PNG, JPG, JPEG, GIF. Max 5MB (as per server config).</div>
           </div>
 
-          <!-- Venue & Capacity & Status -->
+          <!-- Venue & Capacity -->
           <div class="row mb-3">
             <div class="col-md-4 mb-2">
               <label for="venue_id" class="form-label">Venue</label>
@@ -84,32 +95,29 @@
               </select>
             </div>
 
-          <!--ticket total and price-->
-          <div class="row">
-            <div class="form-group col-6 mb-2">
-              <!--{{ form.total_tickets.label(class='form-label') }}
-              {{ form.total_tickets(class="form-control") }}-->
+          <!--Tickets-->
+
+          <!--Type of ticket, Number of Ticket type, price of ticket type-->
+
+          <div class="row mb-3">    
+            <div class="form-group col-4">
+              {{ form.type.label(class='form-label') }}
+              {{ form.type(class="form-control") }}
             </div>
+            
             <span class="input-group-text">$</span>
-            <div class="form-group">
-              {{ form.ticket_price.label(class='form-label') }}
-              {{ form.ticket_price(class="form-control") }}
+            <div class="form-group col-4">
+              {{ form.price.label(class='form-label') }}
+              {{ form.price(class="form-control") }}
             </div>
+
+            <div class="form-group col-4 mb-2">
+              {{ form.quantity.label(class='form-label') }}
+              {{ form.quantity(class="form-control") }}
+            </div>
+
           </div>
              
-                     
-
-            <!-- <div class="col-md-4 mb-2">
-              <label for="venue_location" class="form-label">Venue Address</label>
-              <input id="venue_location" name="venue_location" type="text" class="form-control" placeholder="Enter address" required>
-            </div>
-
-            <div class="col-md-4 mb-2">
-              <label for="seats" class="form-label">Number of Seats</label>
-              <input id="seats" name="seats" type="number" min="1" class="form-control" placeholder="Seats" required>
-            </div> -->
-
-
           </div>
 
           <button class="btn btn-success w-100" type="submit">
