@@ -49,17 +49,17 @@
 </form>
 </div>
 
-<!-- Filter the music events (filter genres) - Need to make filter buttons work -->
-  <div class="d-flex justify-content-center mb-4 ">
-    <button class="btn btn-dark btn-outline-light mx-1">All</button>
-    <button class="btn btn-dark btn-outline-light mx-1">Jazz</button>
-    <button class="btn btn-dark btn-outline-light mx-1">Hip-Hop</button>
-    <button class="btn btn-dark btn-outline-light mx-1">House</button>
-    <button class="btn btn-dark btn-outline-light mx-1">Classical</button>
-    <button class="btn btn-dark btn-outline-light mx-1">Rock</button> 
-    <button class="btn btn-dark btn-outline-light mx-1">Electronic</button>
-    <button class="btn btn-dark btn-outline-light mx-1">Indie</button>
-  </div>
+<!-- Filter the music events (filter genres) - Need to test still -->
+<div class="d-flex justify-content-center mb-4">
+  <a href="{{ url_for('main.index') }}" class="btn btn-dark btn-outline-light mx-1">All</a>
+  <a href="{{ url_for('main.filter_event', category='Jazz') }}" class="btn btn-dark btn-outline-light mx-1">Jazz</a>
+  <a href="{{ url_for('main.filter_event', category='Hip-Hop') }}" class="btn btn-dark btn-outline-light mx-1">Hip-Hop</a>
+  <a href="{{ url_for('main.filter_event', category='House') }}" class="btn btn-dark btn-outline-light mx-1">House</a>
+  <a href="{{ url_for('main.filter_event', category='Classical') }}" class="btn btn-dark btn-outline-light mx-1">Classical</a>
+  <a href="{{ url_for('main.filter_event', category='Rock') }}" class="btn btn-dark btn-outline-light mx-1">Rock</a>
+  <a href="{{ url_for('main.filter_event', category='Electronic') }}" class="btn btn-dark btn-outline-light mx-1">Electronic</a>
+  <a href="{{ url_for('main.filter_event', category='Indie') }}" class="btn btn-dark btn-outline-light mx-1">Indie</a>
+</div>
 
 
   <div class="row justify-content-center">

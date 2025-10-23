@@ -1,1 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Firevent - Create Event</title>
 
+    <!-- Icons From Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Including Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+
+  </head>
+  <body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container my-5">
+      <div class="card p-4 shadow-sm">
+        <h3 class="mb-4">Create event</h3>
+
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('events.create') }}">
+          {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
+
+          <!-- Title -->
+          <div class="form-group mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
+          </div>
+
+          <!-- Description -->
+          <div class="form-group mb-3">
+            {{ form.description.label(class='form-label') }}
+            {{ form.description(class="form-control", placeholder="Tell people about the event") }}
+          </div>
+
+          <!-- Date & Time & Duration -->
+          <div class="row mb-3">
+            <div class="form-group col-md-4 mb-2">
+              {{ form.date_time.label(class='form-label') }}
+              {{ form.date_time(class="form-control") }}
+            </div>
+
+    <!--        <div class="form-group col-md-2 mb-2">
+              <label for="hour" class="form-label">Hour (24 hr)</label>
+              <input id="hour" name="hour" type="number" min="0" max="23" class="form-control" placeholder="20" required>
+            </div> 
+
+            <div class="col-md-2 mb-2">
+              <label for="minute" class="form-label">Minute</label>
+              <input id="minute" name="minute" type="number" min="0" max="59" class="form-control" placeholder="00" required>
+            </div> -->
+
+            <div class="form-group col-md-4 mb-2">
+              {{ form.duration.label(class='form-label') }}
+              {{ form.duration(class="form-control", min="1", placeholder="90") }}
+              <label for="duration" class="form-label">Duration (minutes)</label>
+              <input id="duration" name="duration" type="number" min="1" class="form-control" placeholder="90">
+            </div>
+          </div>
+
+          
+
+          <!-- Image -->
+          <div class="form-group mb-3">
+            {{ form.image.label(class='form-label') }}
+            {{ form.image(class="form-control") }}
+            <div class="form-text">Accepted: PNG, JPG, JPEG, GIF. Max 5MB (as per server config).</div>
+          </div>
+
+          <!-- Venue & Capacity & Status -->
+          <div class="row mb-3">
+            <div class="col-md-4 mb-2">
+              <label for="venue_id" class="form-label">Venue</label>
+              <select id="venue_id" name="venue_id" class="form-select" required>
+                <option value="" disabled selected>Select a venue</option>
+                {% for v in venues %}
+                  <option value="{{ v.id }}">{{ v.name }} — {{ v.location }} ({{ v.num_of_capacity }} seats)</option>
+                {% endfor %}
+              </select>
+            </div>
+
+          <!--ticket total and price-->
+          <div class="row">
+            <div class="form-group col-6 mb-2">
+              <!--{{ form.total_tickets.label(class='form-label') }}
+              {{ form.total_tickets(class="form-control") }}-->
+            </div>
+            <span class="input-group-text">$</span>
+            <div class="form-group">
+              {{ form.ticket_price.label(class='form-label') }}
+              {{ form.ticket_price(class="form-control") }}
+            </div>
+          </div>
+             
+                     
+
+            <!-- <div class="col-md-4 mb-2">
+              <label for="venue_location" class="form-label">Venue Address</label>
+              <input id="venue_location" name="venue_location" type="text" class="form-control" placeholder="Enter address" required>
+            </div>
+
+            <div class="col-md-4 mb-2">
+              <label for="seats" class="form-label">Number of Seats</label>
+              <input id="seats" name="seats" type="number" min="1" class="form-control" placeholder="Seats" required>
+            </div> -->
+
+
+          </div>
+
+          <button class="btn btn-success w-100" type="submit">
+            <i class="bi bi-plus-circle me-1"></i>
+            Create Event
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  </body>
+</html>
