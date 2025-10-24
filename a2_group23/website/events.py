@@ -10,7 +10,7 @@ import os, uuid, json
 from website.forms import EventForm
 
 from . import db
-from .models import Event, Venue, Category, Comment
+from .models import Event, Venue, Category, Comment, Ticket
 
 events_bp = Blueprint("events", __name__)  # no url_prefix so paths stay the same if you want
 
@@ -24,7 +24,6 @@ def create():
         minute = int(request.form.get("minute") or 0)
         duration = int(request.form.get("duration") or 0)
         status = request.form.get("status") or "Open"
-        seat_types = request.form.getlist("seat_types")
 
         day = (request.form.get("day") or "").strip()
         if not day:
@@ -61,6 +60,15 @@ def create():
             flash("Select a valid venue.", "warning")
             return redirect(url_for("events.create"))
 
+        ticket_type = db.session.scalar(
+            db.select(Event).where(Event.ticket_type == "General Admission")
+        )
+        if not ticket_type:
+            flash("Select a valid type.", "warning")
+            return redirect(url_for("events.create"))
+        ticket_price = request.form.get("ticket_price")
+        ticket_quantity = request.form.get("ticket_quanitty")        
+
         event = Event(
             title=title,
             description=description,
@@ -72,6 +80,9 @@ def create():
             owner_id=current_user.id,
             category_id=category.id,
             venue_id=venue.id,
+            type=ticket_type,
+            price=ticket_price,
+            quantity=ticket_quantity
         )
 
         db.session.add(event)
@@ -192,7 +203,18 @@ def edit(event_id):
         minute = int(request.form.get("minute") or 0)
         duration = int(request.form.get("duration") or 0)
         status = request.form.get("status") or "Open"
+        if event.status == "Inactive":
+            flash("Cannot change the status of a past event", "warning")
+            return redirect(url_for("main.events"))
         venue_id = request.form.get("venue_id")
+
+        category = db.session.scalar(
+            db.select(Category).where(Category.category_name == "General")
+        )
+        if not category:
+            category = Category(category_name="General", description="Default")
+            db.session.add(category)
+            db.session.flush()
 
         # date (required)
         day = (request.form.get("day") or "").strip()
@@ -229,13 +251,27 @@ def edit(event_id):
 
             event.image = new_name  # set new filename
 
+        ticket_type = db.session.scalar(
+            db.select(Event).where(Event.ticket_type == "General Admission")
+        )
+        if not ticket_type:
+            flash("Select a valid type.", "warning")
+            return redirect(url_for("events.create"))
+        ticket_price = request.form.get("ticket_price")
+        ticket_quantity = request.form.get("ticket_quanitty")
+
         # update fields
         event.title = title
         event.description = description
         event.time = event_dt
         event.status = status
+        event.category_id = category
         event.duration_minutes = duration or None
         event.venue_id = venue.id
+        event.ticket_type = type
+        event.ticket_price = price
+        event.ticket_quantity = quantity
+        
 
         db.session.commit()
         flash("Event updated successfully!", "success")
