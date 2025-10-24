@@ -67,6 +67,9 @@ class Event(db.Model):
     duration_minutes = db.Column(db.Integer)
     #total_tickets = db.Column(db.Integer, nullable=False)
     no_sold_tickets = db.Column(db.Integer, default=0)
+    ticket_price = db.Column(db.Integer, nullable=False)
+    ticket_type = db.Column(db.String(50), nullable=False)
+    ticket_quantity = db.Column(db.Integer, nullable=False)
 
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable=False)
@@ -82,12 +85,19 @@ class Event(db.Model):
     bookings = db.relationship(
         "Booking", back_populates="event", cascade="all, delete-orphan"
     )
+    #EDIT
+    tickets = db.relationship(
+        "Ticket", back_populates="event", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<Event {self.id}:{self.title}>"
     
     def tickets_sold(self):
         return Ticket.query.filter_by(booking_id=self.id).count()
+
+    def tickets_left(self):
+        return self.tickets.id - self.tickets_sold()
 
     #def tickets_left(self):
         #return self.total_tickets - self.tickets_sold()
@@ -96,14 +106,14 @@ class Event(db.Model):
         #return self.no_sold_tickets >= self.total_tickets
    
     def status(self):
-        if self.status == 'cancelled':
+        if self.status == 'Cancelled':
             return
         elif self.time < datetime.utcnow():
-            self.status = 'inactive'
+            self.status = 'Inactive'
         elif self.tickets_left() <= 0:
-            self.status = 'sold_out'
+            self.status = 'Sold_out'
         else:
-            self.status = 'active'
+            self.status = 'Open'
 
 #class Status(db.Model):
 #    __tablename___ = "status"
