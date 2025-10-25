@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Events</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
   </head>
   <body>
@@ -13,7 +14,7 @@
     <div class="container my-5">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="mb-0">Events</h3>
-        <a class="btn btn-primary" href="{{ url_for('main.create_event') }}">Create Event</a>
+        <a class="btn btn-primary" href="{{ url_for('events.create') }}">Create Event</a>
       </div>
 
       {% with messages = get_flashed_messages(with_categories=true) %}
@@ -36,23 +37,37 @@
               <th>Venue</th>
               <th>Status</th>
               <th>Image</th>
+              <th style="width:160px">Action</th>
             </tr>
           </thead>
           <tbody>
             {% for e in events %}
               <tr>
                 <td>{{ e.title }}</td>
-                <td>{{ e.time.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ e.date_time.strftime('%Y-%m-%d %H:%M') }}</td>
                 <td>{{ e.venue.name if e.venue else '-' }}</td>
                 <td>{{ e.status }}</td>
                 <td>
                   {% if e.image %}
-                    <img src="{{ url_for('static', filename='images/' ~ e.image) }}" alt="" style="height:40px">
+                    <img src="{{ url_for('static', filename='images/' ~ e.image) }}" alt="{{ e.title }}" style="height:40px">
                   {% else %}-{% endif %}
+                </td>
+                <td class="d-flex gap-2">
+                  <a class="btn btn-sm btn-outline-primary" href="{{ url_for('events.edit', event_id=e.id) }}">
+                    <i class="ri-pencil-line"></i> Edit
+                  </a>
+
+                  <form method="POST" action="{{ url_for('events.delete', event_id=e.id) }}">
+                    {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Delete this event? This cannot be undone.');">
+                      <i class="ri-delete-bin-fill"></i> Delete
+                    </button>
+                  </form>
                 </td>
               </tr>
             {% else %}
-              <tr><td colspan="5" class="text-muted">No events yet.</td></tr>
+              <tr><td colspan="6" class="text-muted">No events yet.</td></tr>
             {% endfor %}
           </tbody>
         </table>
@@ -60,6 +75,4 @@
     </div>
 
     {% include 'footer.html' %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootst

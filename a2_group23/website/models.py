@@ -60,12 +60,16 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     image = db.Column(db.String(255))
     status = db.Column(db.String(20), nullable=False, default="Open")
 
     duration_minutes = db.Column(db.Integer)
-    seat_types = db.Column(db.Text)
+    #total_tickets = db.Column(db.Integer, nullable=False)
+    no_sold_tickets = db.Column(db.Integer, default=0)
+    ticket_price = db.Column(db.Integer, nullable=False)
+    ticket_type = db.Column(db.String(50), nullable=False)
+    ticket_quantity = db.Column(db.Integer, nullable=False)
 
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable=False)
@@ -81,9 +85,55 @@ class Event(db.Model):
     bookings = db.relationship(
         "Booking", back_populates="event", cascade="all, delete-orphan"
     )
+    #EDIT
+    tickets = db.relationship(
+        "Ticket", back_populates="event", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<Event {self.id}:{self.title}>"
+    
+    def tickets_sold(self):
+        return Ticket.query.filter_by(booking_id=self.id).count()
+
+    def tickets_left(self):
+        return self.tickets.id - self.tickets_sold()
+
+    #def tickets_left(self):
+        #return self.total_tickets - self.tickets_sold()
+    
+    #def sold_out(self):
+        #return self.no_sold_tickets >= self.total_tickets
+   
+    def status(self):
+        if self.status == 'Cancelled':
+            return
+        elif self.time < datetime.utcnow():
+            self.status = 'Inactive'
+        elif self.tickets_left() <= 0:
+            self.status = 'Sold_out'
+        else:
+            self.status = 'Open'
+
+#class Status(db.Model):
+#    __tablename___ = "status"
+
+#    id = db.Column(db.Integer, primary_key=True)    
+#    open = db.Column(db.String(10), nullable=False)
+#    cancelled = db.Column(db.String(10), nullable=False)
+#    inactive = db.Column(db.String(10), nullable=False)
+#    sold_out = db.Column(db.String(10), nullable=False)
+
+#    event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
+#    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
+
+#    event = db.relationship(
+#        "Event", back_populates="status", cascade="all, delete-orphan"
+#    )
+
+#    bookings = db.relationship(
+#        "Booking", back_populates="event", cascade="all, delete-orphan"
+#    )
 
 
 class Comment(db.Model):
@@ -108,7 +158,7 @@ class Booking(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     booking_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    no_of_tickets = db.Column(db.Integer, nullable=False)
+    no_tickets = db.Column(db.Integer, nullable=False)
     total_price = db.Column(db.Integer, nullable=False)
     booking_status = db.Column(db.String(20), nullable=False, default="Pending")
 
@@ -131,10 +181,11 @@ class Ticket(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer, nullable=False)
-    ticket_type = db.Column(db.String(50), nullable=False)
+    type = db.Column(db.String(50), nullable=False)
 
     booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
     booking = db.relationship("Booking", back_populates="tickets")
+    # event = db.relationship("Event", back_populates="tickets" )
 
     def __repr__(self):
         return f"<Ticket {self.id} booking={self.booking_id}>"

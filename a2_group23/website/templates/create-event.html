@@ -23,53 +23,67 @@
       <div class="card p-4 shadow-sm">
         <h3 class="mb-4">Create event</h3>
 
-        <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.create_event') }}">
-          {# If you enabled Flask-WTF CSRFProtect, this will inject a hidden token #}
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('events.create') }}">
           {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
 
           <!-- Title -->
-          <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input id="title" name="title" type="text" class="form-control" placeholder="Name of the Event" required>
+          <div class="form-group mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
           </div>
 
           <!-- Description -->
-          <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea id="description" name="description" class="form-control" rows="4" placeholder="Tell people about the event" required></textarea>
+          <div class="form-group mb-3">
+            {{ form.description.label(class='form-label') }}
+            {{ form.description(class="form-control", placeholder="Tell people about the event") }}
           </div>
 
           <!-- Date & Time & Duration -->
           <div class="row mb-3">
-            <div class="col-md-4 mb-2">
-              <label for="day" class="form-label">Day</label>
-              <input id="day" name="day" type="date" class="form-control" required>
+            <div class="form-group col-md-4 mb-2">
+              {{ form.day.label(class='form-label') }}
+              {{ form.day(class="form-control", value="{{ event.date_time.strftime('%Y-%m-%d') }}" required) }}
             </div>
 
-            <div class="col-md-2 mb-2">
-              <label for="hour" class="form-label">Hour (24 hr)</label>
-              <input id="hour" name="hour" type="number" min="0" max="23" class="form-control" placeholder="20" required>
+            <div class="form-group col-md-4 mb-2">
+              {{ form.hour.label(class='form-label') }}
+              {{ form.hour(class="form-control", min="00" max="23", value="{{ event.date_time.strftime('%H') }}" required) }}
             </div>
 
-            <div class="col-md-2 mb-2">
-              <label for="minute" class="form-label">Minute</label>
-              <input id="minute" name="minute" type="number" min="0" max="59" class="form-control" placeholder="00" required>
-            </div>
+            <div class="form-group col-md-4 mb-2">
+              {{ form.minute.label(class='form-label') }}
+              {{ form.minute(class="form-control", min="0" max="59", value="{{ event.date_time.strftime('%M) }}" required) }}
+            </div>           
 
-            <div class="col-md-4 mb-2">
-              <label for="duration" class="form-label">Duration (minutes)</label>
-              <input id="duration" name="duration" type="number" min="1" class="form-control" placeholder="90">
+            <div class="form-group col-md-4 mb-2">
+              {{ form.duration.label(class='form-label') }}
+              {{ form.duration(class="form-control", min="1", placeholder="90") }}
+              <!--<label for="duration" class="form-label">Duration (minutes)</label>
+              <input id="duration" name="duration" type="number" min="1" class="form-control" placeholder="90">-->
             </div>
-          </div>
+          </div>   
+          
+          <!--Choose category-->
+          <div class="row mb-3">
+            <div class="col-md-8 mb-2">
+              <label for="category_id" class="form-label">Category</label>
+              <select id="category_id" name="category_id" class="form-select" required>
+                {% for c in categories %}
+                  <option value="{{ c.id }}" {% if c.id == event.category_id %}selected{% endif %}>
+                    {{ c.category_name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>            
 
           <!-- Image -->
-          <div class="mb-3">
-            <label for="image" class="form-label">Event Image</label>
-            <input id="image" name="image" type="file" class="form-control" accept=".png,.jpg,.jpeg,.gif">
+          <div class="form-group mb-3">
+            {{ form.image.label(class='form-label') }}
+            {{ form.image(class="form-control") }}
             <div class="form-text">Accepted: PNG, JPG, JPEG, GIF. Max 5MB (as per server config).</div>
           </div>
 
-          <!-- Venue & Capacity & Status -->
+          <!-- Venue & Capacity -->
           <div class="row mb-3">
             <div class="col-md-4 mb-2">
               <label for="venue_id" class="form-label">Venue</label>
@@ -81,25 +95,32 @@
               </select>
             </div>
 
-            <!-- <div class="col-md-4 mb-2">
-              <label for="venue_location" class="form-label">Venue Address</label>
-              <input id="venue_location" name="venue_location" type="text" class="form-control" placeholder="Enter address" required>
-            </div>
+          <!--Tickets-->
 
-            <div class="col-md-4 mb-2">
-              <label for="seats" class="form-label">Number of Seats</label>
-              <input id="seats" name="seats" type="number" min="1" class="form-control" placeholder="Seats" required>
-            </div> -->
+          <!--Type of ticket, Number of Ticket type, price of ticket type-->
 
-            <div class="col-md-4 mb-2">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-select" id="status" name="status">
-                <option value="Open">Open</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Sold Out">Sold Out</option>
-                <option value="Cancelled">Cancelled</option>
+            <div class="row col-md-2 mb-2">
+              <label for="type" class="form-label">Ticket Type</label>
+              <select class="form-select" id="ticket_type" name="ticket_type">
+                <option value="General Admission"      {% if event.ticket_type == 'General Admission' %}selected{% endif %}>General Admission</option>
+                <option value="VIP" {% if event.ticket_type == 'VIP' %}selected{% endif %}>VIP</option>
+                <option value="Backstage Pass" {% if event.ticket_type == 'Backstage Pass' %}selected{% endif %}>Backstage Pass</option>
               </select>
             </div>
+            
+            <span class="input-group-text">$</span>
+            <div class="form-group col-4">
+              {{ form.price.label(class='form-label') }}
+              {{ form.price(class="form-control") }}
+            </div>
+
+            <div class="form-group col-4 mb-2">
+              {{ form.quantity.label(class='form-label') }}
+              {{ form.quantity(class="form-control") }}
+            </div>
+
+          </div>
+             
           </div>
 
           <button class="btn btn-success w-100" type="submit">

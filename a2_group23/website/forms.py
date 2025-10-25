@@ -43,20 +43,30 @@ class EventForm(FlaskForm):
         FileRequired(message = 'Image cannot be empty'),
         FileAllowed(ALLOWED_FILE, message='Only supports png, jpg, JPG, PNG')])
     date_time=DateTimeField("Event Date and Time", validators=[InputRequired('Date and Time required')], format='%D-%m-%Y %H:%M')
+    duration_minutes=IntegerField("Duration in Minutes", validators=[InputRequired('Duration must be set')])
     ticket_type=RadioField("Ticket type",
-                           choices=[('type option 1', 'Ticket Type eg1'),
-                                    ('type option 2', 'Ticket Type eg2'),
-                                    ('type option 3', 'Ticket Type eg3')])
+                           choices=[('type 1', 'General Admission'),
+                                    ('type 2', 'VIP Pass'),
+                                    ('type 3', 'Backstage Pass')])
     ticket_price=IntegerField("Ticket Prices", validators=[InputRequired('Price must be set')])
+    ticket_quantity=IntegerField("Number of available tickets per type", validators=[InputRequired('Must be at least 1 ticket available for booking'), NumberRange(min=1)])
     submit = SubmitField("Post")
+#event date cannot be in the past??
+    def date_check(form, field):
+        if field.date_time < datetime.date.today():
+            raise ValidationError("Date cannot be in the past")
 
 class BookingForm(FlaskForm):
     ticket_type=RadioField("Ticket type", 
-                           choices=[('ticket type 1', 'Ticket Type eg1'),
-                                    ('ticket type 2', 'Ticket Type eg2'),
-                                    ('ticket type 3', 'Ticket Type eg3')
+                           choices=[('type 1', 'General Admission'),
+                                    ('type 2', 'VIP Pass'),
+                                    ('type 3', 'Backstage Pass')
                            ],
                            validators=[InputRequired()])
-    no_of_tickets=IntegerField("Number of tickets", validators=[InputRequired(), NumberRange(min=1)])
+    no_tickets=IntegerField("Number of tickets", validators=[InputRequired(), NumberRange(min=1)])
     submit=SubmitField("Buy")
+
+
+
+
 
