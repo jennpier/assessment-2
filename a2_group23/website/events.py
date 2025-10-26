@@ -2,21 +2,24 @@ from flask import Blueprint, abort, render_template, request, redirect, url_for,
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from .models import Booking, Ticket, Event
-from .forms import BookingForm, EventForm
+from .forms import BookingForm, EventForm, TicketForm
 from datetime import datetime
 from datetime import datetime
 import os, uuid, json
 
-from website.forms import EventForm
+from website.forms import EventForm, TicketForm
 
 from . import db
-from .models import Event, Venue, Category, Comment, Ticket
+from .models import Event, Venue, Category, Comment, Ticket, Booking
 
 events_bp = Blueprint("events", __name__)  # no url_prefix so paths stay the same if you want
 
 @events_bp.route("/create-event", methods=["GET", "POST"])
 @login_required
 def create():
+    event_form = EventForm()
+    ticket_form = TicketForm()
+    
     if request.method == "POST":
         title = (request.form.get("title") or "").strip()
         description = (request.form.get("description") or "").strip()
@@ -60,38 +63,51 @@ def create():
             flash("Select a valid venue.", "warning")
             return redirect(url_for("events.create"))
 
-        ticket_type = db.session.scalar(
-            db.select(Event).where(Event.ticket_type == "General Admission")
-        )
-        if not ticket_type:
-            flash("Select a valid type.", "warning")
-            return redirect(url_for("events.create"))
-        ticket_price = request.form.get("ticket_price")
-        ticket_quantity = request.form.get("ticket_quanitty")        
+        type = (request.form.get("type") or "").strip()
+        price = int(request.form.get("price") or 0)
+        quantity = int(request.form.get("quantity") or 0)
 
-        event = Event(
-            title=title,
-            description=description,
-            time=event_dt,
-            image=image_filename,
-            status=status,
-            duration_minutes=duration or None,
-            seat_types=json.dumps(seat_types) if seat_types else None,
-            owner_id=current_user.id,
-            category_id=category.id,
-            venue_id=venue.id,
-            type=ticket_type,
-            price=ticket_price,
-            quantity=ticket_quantity
-        )
 
-        db.session.add(event)
-        db.session.commit()
-        flash("Event created successfully!", "success")
-        return redirect(url_for("main.events"))
+
+        if event_form.validate_on_submit():
+            new_event = Event(
+                id=f"V-{uuid.uuid4().hex[:8]}",
+                title=title,
+                description=description,
+                time=event_dt,
+                image=image_filename,
+                status=status,
+                duration_minutes=duration or None,
+                owner_id=current_user.id,
+                category_id=category.id,
+                venue_id=venue.id,
+                ticket_type=type,
+                ticket_price=price,
+                ticket_quantity=quantity,                
+            )
+
+        db.session.add(new_event)
+        db.session.flush()
+
+        for ticket_form in event_form.tickets:
+            a_ticket = Ticket(
+                id=f"V-{uuid.uuid4().hex[:8]}",
+                type=ticket_form.type.data,
+                price=ticket_form.price.data,
+                quantity=ticket_form.quantity.data,
+                event_id=new_event.id
+            )
+            db.session.add(a_ticket)       
+        db.session.commit(new_event, a_ticket)
+
+        flash("Event with tickets created successfully!", "success")
+        return redirect(url_for("main.events", event_id=new_event.id))
+
 
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-    return render_template("create-event.html", venues=venues)
+    categories = db.session.scalars(db.select(Category).order_by(Category.name)).all()
+    return render_template("create-event.html", venues=venues, categories=categories)
+
 
 @events_bp.route("/events/<int:event_id>/delete", methods=["POST"])
 @login_required
@@ -268,9 +284,9 @@ def edit(event_id):
         event.category_id = category
         event.duration_minutes = duration or None
         event.venue_id = venue.id
-        event.ticket_type = type
-        event.ticket_price = price
-        event.ticket_quantity = quantity
+        event.ticket_type = ticket_type
+        event.ticket_price = ticket_price
+        event.ticket_quantity = ticket_quantity
         
 
         db.session.commit()
