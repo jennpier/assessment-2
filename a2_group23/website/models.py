@@ -66,7 +66,7 @@ class Event(db.Model):
 
     duration_minutes = db.Column(db.Integer)
     #total_tickets = db.Column(db.Integer, nullable=False)
-    no_sold_tickets = db.Column(db.Integer, default=0)
+    #no_sold_tickets = db.Column(db.Integer, default=0)
     ticket_price = db.Column(db.Integer, nullable=False)
     ticket_type = db.Column(db.String(50), nullable=False)
     ticket_quantity = db.Column(db.Integer, nullable=False)
@@ -74,7 +74,9 @@ class Event(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable=False)
     venue_id = db.Column(db.String(50), db.ForeignKey("venue.id"), nullable=False)
-
+    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
+    #ticket_id = db.Column(db.String(50), db.ForeignKey("ticket.id"), nullable=False)
+    
     owner = db.relationship("User", back_populates="events")
     category = db.relationship("Category", back_populates="events")
     venue = db.relationship("Venue", back_populates="events")
@@ -83,7 +85,7 @@ class Event(db.Model):
         "Comment", back_populates="event", cascade="all, delete-orphan"
     )
     bookings = db.relationship(
-        "Booking", back_populates="event", cascade="all, delete-orphan"
+        "Booking", back_populates="event"
     )
     #EDIT
     tickets = db.relationship(
@@ -158,18 +160,19 @@ class Booking(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     booking_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    no_tickets = db.Column(db.Integer, nullable=False)
+    no_of_tickets = db.Column(db.Integer, nullable=False)
     total_price = db.Column(db.Integer, nullable=False)
     booking_status = db.Column(db.String(20), nullable=False, default="Pending")
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
+    #event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
+    ticket_id = db.Column(db.Integer, db.ForeignKey("ticket.id"), nullable=False)
 
     user = db.relationship("User", back_populates="bookings")
     event = db.relationship("Event", back_populates="bookings")
 
     tickets = db.relationship(
-        "Ticket", back_populates="booking", cascade="all, delete-orphan"
+        "Ticket", back_populates="booking", foreign_keys=[ticket_id]
     )
 
     def __repr__(self):
@@ -182,10 +185,13 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(50), nullable=False)
-
-    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
+    #booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
+    
     booking = db.relationship("Booking", back_populates="tickets")
-    # event = db.relationship("Event", back_populates="tickets" )
+    event = db.relationship("Event", back_populates="tickets" )
 
     def __repr__(self):
-        return f"<Ticket {self.id} booking={self.booking_id}>"
+        return f"<Ticket {self.id} booking={self.booking.id}>"
