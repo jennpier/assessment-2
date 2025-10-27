@@ -3,130 +3,125 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Firevent - Create Event</title>
+    <title>Update Event</title>
 
-    <!-- Icons From Bootstrap -->
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-    <!-- Including Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
-
   </head>
-  <body>
 
+  <body>
     {% include 'navbar.html' %}
 
     <div class="container my-5">
       <div class="card p-4 shadow-sm">
-        <h3 class="mb-4">Create event</h3>
+        <h3 class="mb-4 text-center"><i class="bi bi-pencil-square me-1"></i> Update Event</h3>
 
-        <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.create_event') }}">
-          {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('events.edit', event_id=event.id) }}">
+          {{ form.hidden_tag() }}
 
           <!-- Title -->
           <div class="form-group mb-3">
-            {{ form.title.label(class="form-label") }}
-            {{ form.title(class="form-control") }}
+            <label for="title" class="form-label">Title</label>
+            <input type="text" id="title" name="title" class="form-control" value="{{ event.title }}" required>
           </div>
 
           <!-- Description -->
           <div class="form-group mb-3">
-            {{ form.description.label(class='form-label') }}
-            {{ form.description(class="form-control", placeholder="Tell people about the event") }}
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4" required>{{ event.description }}</textarea>
           </div>
 
-          <!-- Date & Time & Duration -->
+          <!-- Date & Time -->
           <div class="row mb-3">
-            <div class="form-group col-md-4 mb-2">
-              {{ form.date_time.label(class='form-label') }}
-              {{ form.date_time(class="form-control") }}
+            <div class="col-md-4">
+              <label for="day" class="form-label">Event Date</label>
+              <input id="day" name="day" type="date" class="form-control" value="{{ event.date_time.strftime('%Y-%m-%d') }}" required>
             </div>
-
-    <!--        <div class="form-group col-md-2 mb-2">
-              <label for="hour" class="form-label">Hour (24 hr)</label>
-              <input id="hour" name="hour" type="number" min="0" max="23" class="form-control" placeholder="20" required>
-            </div> 
-
-            <div class="col-md-2 mb-2">
-              <label for="minute" class="form-label">Minute</label>
-              <input id="minute" name="minute" type="number" min="0" max="59" class="form-control" placeholder="00" required>
-            </div> -->
-
-            <div class="form-group col-md-4 mb-2">
-              {{ form.duration.label(class='form-label') }}
-              {{ form.duration(class="form-control", min="1", placeholder="90") }}
-              <label for="duration" class="form-label">Duration (minutes)</label>
-              <input id="duration" name="duration" type="number" min="1" class="form-control" placeholder="90">
+            <div class="col-md-4">
+              <label for="hour" class="form-label">Hour (0–23)</label>
+              <input id="hour" name="hour" type="number" min="0" max="23" class="form-control" value="{{ event.date_time.hour }}" required>
+            </div>
+            <div class="col-md-4">
+              <label for="minute" class="form-label">Minute (0–59)</label>
+              <input id="minute" name="minute" type="number" min="0" max="59" class="form-control" value="{{ event.date_time.minute }}" required>
             </div>
           </div>
 
-          
-
-          <!-- Image -->
+          <!-- Duration -->
           <div class="form-group mb-3">
-            {{ form.image.label(class='form-label') }}
-            {{ form.image(class="form-control") }}
-            <div class="form-text">Accepted: PNG, JPG, JPEG, GIF. Max 5MB (as per server config).</div>
+            <label for="duration" class="form-label">Duration (minutes)</label>
+            <input id="duration" name="duration" type="number" min="1" class="form-control" value="{{ event.duration_minutes or '' }}">
           </div>
 
-          <!-- Venue & Capacity & Status -->
+          <!-- Existing Image -->
+          {% if event.image %}
+          <div class="form-group mb-3 text-center">
+            <label class="form-label d-block">Current Image:</label>
+            <img src="{{ url_for('static', filename='images/' ~ event.image) }}" alt="Event Image" class="img-fluid rounded" style="max-height: 250px;">
+          </div>
+          {% endif %}
+
+          <!-- Upload New Image -->
+          <div class="form-group mb-3">
+            <label for="image" class="form-label">Replace Image</label>
+            <input type="file" id="image" name="image" class="form-control">
+            <div class="form-text">Accepted: PNG, JPG, JPEG, GIF (optional)</div>
+          </div>
+
+          <!-- Venue -->
+          <div class="form-group mb-3">
+            <label for="venue_id" class="form-label">Venue</label>
+            <select id="venue_id" name="venue_id" class="form-select" required>
+              <option value="" disabled>Select a venue</option>
+              {% for v in venues %}
+                <option value="{{ v.id }}" {% if v.id == event.venue_id %}selected{% endif %}>
+                  {{ v.name }} — {{ v.location }} ({{ v.num_of_capacity }} seats)
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Category -->
+          <div class="form-group mb-3">
+            <label for="category_id" class="form-label">Category</label>
+            <select id="category_id" name="category_id" class="form-select" required>
+              <option value="" disabled>Select a category</option>
+              {% for c in categories %}
+                <option value="{{ c.id }}" {% if c.id == event.category_id %}selected{% endif %}>{{ c.category_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Ticket Info -->
           <div class="row mb-3">
-            <div class="col-md-4 mb-2">
-              <label for="venue_id" class="form-label">Venue</label>
-              <select id="venue_id" name="venue_id" class="form-select" required>
-                <option value="" disabled selected>Select a venue</option>
-                {% for v in venues %}
-                  <option value="{{ v.id }}">{{ v.name }} — {{ v.location }} ({{ v.num_of_capacity }} seats)</option>
-                {% endfor %}
-              </select>
+            <div class="col-md-6">
+              <label for="ticket_price" class="form-label">Ticket Price ($)</label>
+              <input id="ticket_price" name="ticket_price" type="number" class="form-control" min="0" value="{{ event.ticket_price }}">
             </div>
-
-          <!--ticket total and price-->
-          <div class="row">
-            <div class="form-group col-6 mb-2">
-              <!--{{ form.total_tickets.label(class='form-label') }}
-              {{ form.total_tickets(class="form-control") }}-->
-            </div>
-            <span class="input-group-text">$</span>
-            <div class="form-group">
-              {{ form.ticket_price.label(class='form-label') }}
-              {{ form.ticket_price(class="form-control") }}
-            </div>
-          </div>
-             
-                     
-
-            <!-- <div class="col-md-4 mb-2">
-              <label for="venue_location" class="form-label">Venue Address</label>
-              <input id="venue_location" name="venue_location" type="text" class="form-control" placeholder="Enter address" required>
-            </div>
-
-            <div class="col-md-4 mb-2">
-              <label for="seats" class="form-label">Number of Seats</label>
-              <input id="seats" name="seats" type="number" min="1" class="form-control" placeholder="Seats" required>
-            </div> -->
-
-            <div class="col-md-4 mb-2">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-select" id="status" name="status">
-                <option value="" disabled selected>Select a status</option>
-                <!--needs editing, change status to be a class?-->
-                {% for e in event %}
-                <option value="{{ e.status }}">{{ e.status='open'}}</option>
-                <option value="{{ e.status }}">{{ e.status='cancelled'}}</option>
-
-                <option value="Open">Open</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
+            <div class="col-md-6">
+              <label for="ticket_quantity" class="form-label">Ticket Quantity</label>
+              <input id="ticket_quantity" name="ticket_quantity" type="number" min="1" class="form-control" value="{{ event.ticket_quantity }}">
             </div>
           </div>
 
-          <button class="btn btn-success w-100" type="submit">
-            <i class="bi bi-plus-circle me-1"></i>
-            Create Event
+          <!-- Status -->
+          <div class="form-group mb-4">
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="status" class="form-select">
+              <option value="Open" {% if event.status == 'Open' %}selected{% endif %}>Open</option>
+              <option value="Cancelled" {% if event.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+          </div>
+
+          <!-- Submit -->
+          <button class="btn btn-primary w-100" type="submit">
+            <i class="bi bi-save me-1"></i> Update Event
           </button>
         </form>
       </div>
@@ -134,7 +129,6 @@
 
     {% include 'footer.html' %}
 
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

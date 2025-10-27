@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Firevent - {{ event.title }}</title>
 
+    <!-- Bootstrap & Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
@@ -14,336 +15,136 @@
 
     <div class="container my-4 event">
       <div class="row">
-        <div class="col-12 col-lg-8">
-          <div class="mb-3">
-            {% if event.image %}
-              <img src="{{ url_for('static', filename='images/' ~ event.image) }}"
-                   alt="{{ event.title }}" class="w-100">
+        <!-- Left Column (Event Image & Description) -->
+        <div class="col-12 col-lg-8 mb-4">
+          {% if event.image %}
+            <img src="{{ url_for('static', filename='images/' ~ event.image) }}" alt="{{ event.title }}" class="w-100 rounded shadow-sm mb-3">
+          {% else %}
+            <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="No image" class="w-100 rounded shadow-sm mb-3">
+          {% endif %}
+
+          <h3 class="fw-bold">{{ event.title }}</h3>
+
+          <div class="mt-3 text-muted">
+            <i class="bi bi-calendar2-event-fill text-success me-2"></i>
+            {{ event.date_time.strftime('%d %B %Y, %I:%M %p') }}
+            <br>
+            <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+            {% if event.venue %}
+              {{ event.venue.name }}, {{ event.venue.location }}
             {% else %}
-              <img src="{{ url_for('static', filename='images/placeholder.jpg') }}"
-                   alt="No image" class="w-100">
+              Venue TBA
             {% endif %}
+            <br>
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            {{ event.status }}
           </div>
 
-         <!-- <div class="mb-4">
-            <h3 class="px-3">{{ event.title }}</h3>
+          <hr>
 
-            <div class="d-flex flex-column flex-md-row justify-content-center mt-3 gap-3">
-              <div class="d-flex justify-content-evenly flex-row gap-4">
-                <div>
-                  <i class="bi bi-calendar2-event-fill m-2 text-success"></i>
-                  <span>{{ event.time.strftime('%a %d, %Y') }}</span>
-                </div>
-                <div>
-                  <i class="bi bi-clock-fill m-2 text-primary"></i>
-                  <span>{{ event.time.strftime('%I:%M %p') }}</span>
-                </div>
-              </div>
-
-              <div class="d-flex justify-content-evenly flex-row gap-4">
-                <div>
-                  <i class="bi bi-geo-alt-fill m-2 text-danger"></i>
-                  <span>
-                    {% if event.venue %}
-                      {{ event.venue.name }}, {{ event.venue.location }}
-                    {% else %}
-                      Venue TBA
-                    {% endif %}
-                  </span>
-                </div>
-                <div>
-                  <i class="bi bi-check-circle-fill m-2 text-success"></i>
-                  <span>{{ event.status }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="mb- mt-3">
-            <h5 class="fw-bold">Description</h5>
-            <div class="col-12">{{ event.description }}</div>
-          </div>
+          <h5 class="fw-bold mt-4">Description</h5>
+          <p>{{ event.description }}</p>
 
           {% if event.duration_minutes %}
-            <div class="mb-3 mt-3 p-3 rounded-2 information-card">
-              Duration: {{ event.duration_minutes }} minutes.
+            <div class="alert alert-secondary mt-3">
+              <i class="bi bi-clock-history me-2"></i>
+              Duration: {{ event.duration_minutes }} minutes
             </div>
           {% endif %}
-        </div>-->
+        </div>
 
-        <div class="col-12 col-lg-4 shadow-sm p-4 rounded-2">
-          <div class="mb-3">
-            <div class="mb-4">
-              <h3 class="px-3">{{ event.title }}</h3>
-              <div class="d-flex flex-column flex-md-row justify-content-center mt-3 gap-3">
-                <div class="d-flex justify-content-evenly flex-row gap-4">
-                    <div class=""><i class="bi bi-calendar2-event-fill m-2 text-success"></i><span>{{ event.date_time}}</span></div>
-                    <div class=""><i class="bi bi-clock-fill m-2 text-primary"></i><span>{{ event.duration_minutes}}</span></div>
-                </div>
-                <div class="d-flex justify-content-evenly flex-row gap-4">
-                    {% for v in venue %}
-                    <div class=""><i class="bi bi-geo-alt-fill m-2 text-danger"></i><span>{{ v.name }}, {{ v.location }}</span></div>
-                    {% endfor %}
-                    <div class=""><i class="bi bi-check-circle-fill m-2 text-success"></i><span>{{ event.status}}</span></div>
-                </div>
+        <!-- Right Column (Booking, Info, Organizer) -->
+        <div class="col-12 col-lg-4">
+          <div class="card shadow-sm p-4">
+            <h5 class="fw-bold mb-3">Book Your Ticket</h5>
+
+            <div class="mb-3">
+              <p class="mb-1"><strong>Price:</strong> Rs. {{ event.ticket_price }}</p>
+            </div>
+
+            <a href="{{ url_for('events.book_event', event_id=event.id) }}" class="btn btn-success w-100 fw-bold py-2">
+              <i class="bi bi-ticket-perforated me-1"></i> Buy Ticket
+            </a>
+
+            <hr class="my-4">
+
+            <h6 class="fw-bold fs-5 mb-3">Organizer</h6>
+            <div class="d-flex align-items-center">
+              <img src="{{ url_for('static', filename='img/profile.jpg') }}" alt="Organizer" class="rounded-circle me-3" style="width:50px; height:50px;">
+              <div>
+                <strong>{{ event.owner.name if event.owner else 'Organizer' }}</strong>
               </div>
             </div>
-            
-            
-            <div class="mb- mt-3">
-                <h5 class="fw-bold">Description</h5>
-                <div class="col-12">{{ event.description }}</div>
-            </div>
-            
+
+            <hr class="my-4">
+
+            <h6 class="fw-bold fs-5 mb-3">Highlights</h6>
+            <p class="mb-1"><i class="bi bi-clock me-2"></i>Duration: {{ event.duration_minutes }} min</p>
+            <p class="mb-1"><i class="bi bi-geo-alt me-2"></i>
+              {% if event.venue %}
+                {{ event.venue.name }}, {{ event.venue.location }}
+              {% else %}
+                Venue TBA
+              {% endif %}
+            </p>
           </div>
-
-          <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.book_event') }}">
-          {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
-          
-
-          <div class="col-12 col-lg-4 shadow-sm p-4 rounded-2">
-            
-            <div class="mb-3">
-                <div class="mb-4">
-                    <h5 class="mb-3">Select Ticket Types</h5>
-                    
-                    <div class="row border p-3 mb-3">
-                        <div class="col-8">
-                            <h6 class="mb-1">{{event.ticket_type }}</h6>
-                            <!--<p class="mb-1">Rs. {{ e.total_tickets }}</p>-->
-                            <a href="#" class="small">Seats Available: <strong>{{ event.tickets_left }}</strong></a>
-                        </div>
-                        <div class="col-4 text-end">
-                            {{ ticket_form.a_ticket.label(class="btn btn-secondary") }}
-                            {{ ticket_form.a_ticket(type="radio", class="btn-check", autocomplete="off") }}
-                            <!--
-                            <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off">
-                            <label class="btn btn-secondary" for="option1">SELECT</label> -->
-                            
-                        </div>
-                    </div>
-                    
-                    <div class="row border p-3 mb-3">
-                        <div class="col-8">
-                            <h6 class="mb-1">{{ event.ticket_type }}</h6>
-                            <!--<p class="mb-1">Rs. {{ e.total_tickets }}</p>-->
-                            <a href="#" class="small">Seats Available: <strong>{{ event.tickets_left }}</strong></a>
-                        </div>
-                        <div class="col-4 text-end">
-                            {{ ticket_form.a_ticket.label(class="btn btn-secondary") }}
-                            {{ ticket_form.a_ticket(type="radio", class="btn-check", autocomplete="off") }}
-                            <!--
-                            <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
-                            <label class="btn btn-secondary" for="option2">SELECT</label>
-                        -->
-                        </div>
-                    </div>
-
-                    <div class="row border p-3 mb-3">
-                        <div class="col-8">
-                            <h6 class="mb-1">{{ event.ticket_type }}</h6>
-                            <!--<p class="mb-1">Rs. {{ e.total_tickets }}</p>-->
-                            <a href="#" class="small">Seats Available: <strong>{{ event.tickets_left }}</strong></a>
-                        </div>
-                        <div class="col-4 text-end">
-                            {{ ticket_form.a_ticket.label(class="btn btn-secondary") }}
-                            {{ ticket_form.a_ticket(type="radio", class="btn-check", autocomplete="off") }}
-                            <!--
-                            <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off">
-                            <label class="btn btn-secondary" for="option3">SELECT</label> -->
-                        </div>
-                    </div>                    
-                </div>
-            </div>
-            
-            <div class="row mb-3">
-                <div class="col-6 mb-3">
-                    <h6 class="fw-bold fs-5">Location</h6>
-                    <div class="d-flex fs-7">
-                        <div><i class="bi bi-geo-alt-fill m-2"></i></div>
-                        <div>
-                            {% for v in venue %}
-                            <p class="mb-1"><strong>{{ v.name }}</strong></p>
-                            <p class="mb-1">{{ v.location }}</p>
-                            {% endfor %}
-                            {% if event.venue %}
-                            <a target="_blank"
-                             href="https://www.google.com/maps/search/{{ (event.venue.name ~ ' ' ~ event.venue.location)|urlencode }}">
-                             Get directions
-                            </a>
-                            {% endif %}
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col-6 mb-3">
-                    <h6 class="fw-bold fs-5">Highlights</h6>
-                    <div class="fs-7">
-                        <p class="mb-1"><i class="bi bi-clock-history me-2"></i>{{ event.duration_minutes}}</p>
-                        <!--<p class="mb-1"><i class="bi bi-person-vcard me-2"></i>Over 18 years old</p>
-                        <p class="mb-1"><i class="bi bi-person-walking me-2"></i>In person</p>-->
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mb-3">
-                <h6 class="fw-bold fs-5 mb-3">Organizer</h6>
-                <div class="d-flex flex-row justify-content-around p-3 w-100">
-                    <div class="d-flex col-4 align-items-center">
-                        <img src="./static/img/logo.png" alt="Organizer Logo" class="img-fluid rounded-circle" style="width:50px; height:50px;">
-                    </div>
-
-                    <div class="col-8">
-                        <h6 class="mb-1">{{ event.owner.name }}</h6><!--
-                        <div class="d-flex flex-wrap small text-muted">
-                            <div class="me-3">
-                            <span>Followers</span><br><strong>8.7k</strong>
-                            </div>
-                            <div class="me-3">
-                            <span>Events</span><br><strong>83</strong>
-                            </div>
-                            <div>
-                            <span>Lodging</span><br><strong>7 years</strong>
-                            </div>
-                        </div>-->
-                    </div>
-
-                    <!-- <div class=" mt-3 text-end">
-                        <button class="btn btn-outline-dark mb-2">Contact</button>
-                        <button class="btn btn-danger mb-2">&nbsp;Follow&nbsp;</button>
-                    </div> -->
-                </div>
-            </div>
-
-        
-            <div class="row mb-3">
-                <h6 class="fw-bold fs-5 mb-3">Book Now</h6>
-                
-            <div class="row">
-               <a href="{{ url_for('main.book_event', event_id=event.id) }}" class="btn btn-success w-100 fw-bold py-2">BUY TICKETS</a>
-                </button>
-
-
-    <div class="container my-5">
-        <h4 class="mb-3">Add a comment</h4>
-        <div class="card p-3 mb-4">
-            <textarea class="form-control border-0 mb-2" rows="2" placeholder="Add comment..."></textarea>
-            <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex gap-3 text-muted fs-5">
-                <i class="bi bi-type-bold pointer"></i>
-                <i class="bi bi-type-italic pointer"></i>
-                <i class="bi bi-type-underline pointer"></i>
-            </div>
-            <button class="btn btn-success rounded-2 px-4">Submit</button>
-            </div>
         </div>
-        {% for c in comment %}
-        <div class="card p-3 mb-3">
-            <div class="d-flex mb-2">
-            <img src="./static/img/profile.jpg" class="rounded-circle me-3 " style="width: 30px;">
-            <div>
-                <strong>{{ c.user_id }}</strong> <i class="bi bi-dot fs-5" style="margin-top:10px;"></i> <small class="text-muted me-2">2 weeks ago</small>
-            </div>
-            </div>
-            <p class="mb-1">{{ c.comment }}</p>
-        </div>
+      </div>
 
-        <div class="card p-3 mb-3">
-            <div class="d-flex mb-2">
-            <img src="./static/img/profile.jpg" class="rounded-circle me-3 " style="width: 30px;">
-            <div>
-                <strong>{{ c.user_id }}</strong> <i class="bi bi-dot fs-5" style="margin-top:10px;"></i> <small class="text-muted me-2">2 weeks ago</small>
-   <div class="container my-5" id="comments">
+      <!-- COMMENTS SECTION -->
+      <div class="container my-5" id="comments">
         <h4 class="mb-3">Comments</h4>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
+          {% if messages %}
             {% for category, message in messages %}
-                <div class="alert alert-{{ 'warning' if category=='message' else category }} alert-dismissible fade show" role="alert">
+              <div class="alert alert-{{ 'warning' if category=='message' else category }} alert-dismissible fade show" role="alert">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+              </div>
             {% endfor %}
-            {% endif %}
+          {% endif %}
         {% endwith %}
 
         {% if current_user.is_authenticated %}
-            <form class="card p-3 mb-4" method="POST" action="{{ url_for('events.add_comment', event_id=event.id) }}">
+          <form class="card p-3 mb-4" method="POST" action="{{ url_for('events.add_comment', event_id=event.id) }}">
             {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
             <textarea name="comment" class="form-control border-0 mb-2" rows="2" placeholder="Add comment..." required></textarea>
             <div class="d-flex justify-content-end">
-                <button class="btn btn-success rounded-2 px-4" type="submit">Submit</button>
+              <button class="btn btn-success rounded-2 px-4" type="submit">Submit</button>
             </div>
-            </form>
+          </form>
         {% else %}
-            <div class="alert alert-info">Please <a href="{{ url_for('auth.login', next=request.full_path) }}">log in</a> to comment.</div>
+          <div class="alert alert-info">
+            Please <a href="{{ url_for('auth.login', next=request.full_path) }}">log in</a> to comment.
+          </div>
         {% endif %}
 
         {% for c in comments %}
-            <div class="card p-3 mb-3">
+          <div class="card p-3 mb-3">
             <div class="d-flex mb-2 align-items-center">
-                <img src="{{ url_for('static', filename='img/profile.jpg') }}" class="rounded-circle me-3" style="width:30px" alt="">
-                <div>
+              <img src="{{ url_for('static', filename='img/profile.jpg') }}" class="rounded-circle me-3" style="width:30px" alt="">
+              <div>
                 <strong>{{ c.author.name if c.author else 'User' }}</strong>
                 <small class="text-muted ms-2">{{ c.posted_date.strftime('%Y-%m-%d %H:%M') }}</small>
-                </div>
-                {% if current_user.is_authenticated and (current_user.id == c.user_id or (event and event.owner_id == current_user.id)) %}
+              </div>
+              {% if current_user.is_authenticated and (current_user.id == c.user_id or (event and event.owner_id == current_user.id)) %}
                 <form method="POST" action="{{ url_for('events.delete_comment', comment_id=c.id) }}" class="ms-auto">
-                    {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                  {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
+                  <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                 </form>
-                {% endif %}
+              {% endif %}
             </div>
             <p class="mb-1">{{ c.comment }}</p>
-        </div>
-
-        <div class="text-center">
-            <button class="btn btn-light border">Load More</button>
-        </div>
-
-            </div>
+          </div>
         {% else %}
-            <p class="text-muted">No comments yet.</p>
+          <p class="text-muted">No comments yet.</p>
         {% endfor %}
+      </div>
     </div>
 
-
-<!--
-    {% if similar_events %}
-      <div class="container similar-event mt-5">
-        <h2 class="text-center mb-4">Similar Events</h2>
-        <div class="row g-3">
-          {% for s in similar_events %}
-            <div class="col-12 col-sm-6 col-lg-3">
-              <div class="card h-100 shadow-sm">
-                {% if s.image %}
-                  <img src="{{ url_for('static', filename='images/' ~ s.image) }}" class="card-img-top" alt="{{ s.title }}">
-                {% else %}
-                  <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" class="card-img-top" alt="No image">
-                {% endif %}
-                <div class="card-body">
-                  <div class="d-flex justify-content-between mb-2">
-                    <small><i class="bi bi-calendar-event me-1"></i> {{ s.time.strftime('%d %b') }}</small>
-                    <small class="fw-bold">—</small>
-                  </div>
-                  <h6 class="card-title">{{ s.title }}</h6>
-                  <p class="card-text small mb-1">
-                    <i class="bi bi-geo-alt-fill me-1"></i>
-                    {% if s.venue %}{{ s.venue.name }}, {{ s.venue.location }}{% else %}Venue TBA{% endif %}
-                  </p>
-                  <p class="card-text small mb-1">
-                    <i class="bi bi-check-circle me-2"></i>Status: {{ s.status }}
-                  </p>
-                  <a href="{{ url_for('events.event_detail', event_id=s.id) }}" class="btn btn-sm btn-success w-100 mt-3">View</a>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}-->
-
     {% include 'footer.html' %}
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

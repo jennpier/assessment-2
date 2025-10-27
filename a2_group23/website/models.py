@@ -43,11 +43,11 @@ class Category(db.Model):
 
 class Venue(db.Model):
     __tablename__ = "venue"
-
-    id = db.Column(db.String(50), primary_key=True) 
-    name = db.Column(db.String(200), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(200), nullable=False)
     num_of_capacity = db.Column(db.Integer, nullable=False)
+
 
     events = db.relationship("Event", back_populates="venue")
 
@@ -63,79 +63,27 @@ class Event(db.Model):
     date_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     image = db.Column(db.String(255))
     status = db.Column(db.String(20), nullable=False, default="Open")
-
     duration_minutes = db.Column(db.Integer)
-    #total_tickets = db.Column(db.Integer, nullable=False)
-    #no_sold_tickets = db.Column(db.Integer, default=0)
+
     ticket_price = db.Column(db.Integer, nullable=False)
-    ticket_type = db.Column(db.String(50), nullable=False)
     ticket_quantity = db.Column(db.Integer, nullable=False)
 
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable=False)
-    venue_id = db.Column(db.String(50), db.ForeignKey("venue.id"), nullable=False)
-    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
-    #ticket_id = db.Column(db.String(50), db.ForeignKey("ticket.id"), nullable=False)
-    
+    venue_id = db.Column(db.Integer, db.ForeignKey("venue.id"), nullable=False)
+
     owner = db.relationship("User", back_populates="events")
     category = db.relationship("Category", back_populates="events")
     venue = db.relationship("Venue", back_populates="events")
 
-    comments = db.relationship(
-        "Comment", back_populates="event", cascade="all, delete-orphan"
-    )
-    bookings = db.relationship(
-        "Booking", back_populates="event"
-    )
-    #EDIT
-    tickets = db.relationship(
-        "Ticket", back_populates="event", cascade="all, delete-orphan"
-    )
+    comments = db.relationship("Comment", back_populates="event", cascade="all, delete-orphan")
+    bookings = db.relationship("Booking", back_populates="event", cascade="all, delete-orphan")
+    tickets = db.relationship("Ticket", back_populates="event", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Event {self.id}:{self.title}>"
-    
-    def tickets_sold(self):
-        return Ticket.query.filter_by(booking_id=self.id).count()
 
-    def tickets_left(self):
-        return self.tickets.id - self.tickets_sold()
 
-    #def tickets_left(self):
-        #return self.total_tickets - self.tickets_sold()
-    
-    #def sold_out(self):
-        #return self.no_sold_tickets >= self.total_tickets
-   
-    def status(self):
-        if self.status == 'Cancelled':
-            return
-        elif self.time < datetime.utcnow():
-            self.status = 'Inactive'
-        elif self.tickets_left() <= 0:
-            self.status = 'Sold_out'
-        else:
-            self.status = 'Open'
-
-#class Status(db.Model):
-#    __tablename___ = "status"
-
-#    id = db.Column(db.Integer, primary_key=True)    
-#    open = db.Column(db.String(10), nullable=False)
-#    cancelled = db.Column(db.String(10), nullable=False)
-#    inactive = db.Column(db.String(10), nullable=False)
-#    sold_out = db.Column(db.String(10), nullable=False)
-
-#    event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
-#    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
-
-#    event = db.relationship(
-#        "Event", back_populates="status", cascade="all, delete-orphan"
-#    )
-
-#    bookings = db.relationship(
-#        "Booking", back_populates="event", cascade="all, delete-orphan"
-#    )
 
 
 class Comment(db.Model):
@@ -154,7 +102,6 @@ class Comment(db.Model):
     def __repr__(self):
         return f"<Comment {self.id} by {self.user_id} on {self.event_id}>"
 
-# Booking 1..* Tickets, belongs to 1 User and 1 Event
 class Booking(db.Model):
     __tablename__ = "booking"
 
@@ -165,33 +112,28 @@ class Booking(db.Model):
     booking_status = db.Column(db.String(20), nullable=False, default="Pending")
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    #event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
-    ticket_id = db.Column(db.Integer, db.ForeignKey("ticket.id"), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
 
     user = db.relationship("User", back_populates="bookings")
     event = db.relationship("Event", back_populates="bookings")
-
-    tickets = db.relationship(
-        "Ticket", back_populates="booking", foreign_keys=[ticket_id]
-    )
+    tickets = db.relationship("Ticket", back_populates="booking", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Booking {self.id} user={self.user_id} event={self.event_id}>"
 
-# Ticket belongs to 1 Booking
+
 class Ticket(db.Model):
     __tablename__ = "ticket"
 
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer, nullable=False)
-    type = db.Column(db.String(50), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    
-    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
-    #booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=False)
-    
+
+    event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
+    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=True)  # 🔑 Add this!
+
+    event = db.relationship("Event", back_populates="tickets")
     booking = db.relationship("Booking", back_populates="tickets")
-    event = db.relationship("Event", back_populates="tickets" )
 
     def __repr__(self):
-        return f"<Ticket {self.id} booking={self.booking.id}>"
+        return f"<Ticket {self.id} price={self.price} qty={self.quantity}>"
