@@ -14,7 +14,9 @@
     <div class="container my-5">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="mb-0">Events</h3>
+        {% if current_user.role == 'admin' %}
         <a class="btn btn-primary" href="{{ url_for('events.create') }}">Create Event</a>
+        {% endif %}
       </div>
 
       {% with messages = get_flashed_messages(with_categories=true) %}

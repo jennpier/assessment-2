@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <!-- Brand -->
+    <!-- Our Website Name -->
     <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
       Music Event Management
     </a>
@@ -22,32 +22,45 @@
 
         {% if current_user.is_authenticated %}
         <!-- Links for user that are logged in -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle {% if request.endpoint in ['events.create', 'main.venues'] %}active{% endif %}"
-              href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Add / Manage
+
+          <!-- Create Event (Visible to all logged-in users) -->
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'events.create' %}active{% endif %}" 
+               href="{{ url_for('events.create') }}">
+              Create Event
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="{{ url_for('events.create') }}">Create Event</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('main.venues') }}">Add Venue</a></li>
-            </ul>
           </li>
+
+          <!-- Add Venue (Visible only to Admins) -->
+          {% if current_user.role == 'admin' %}
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'main.venues' %}active{% endif %}" 
+               href="{{ url_for('main.venues') }}">
+              Add Venue
+            </a>
+          </li>
+          {% endif %}
 
           <!-- All Events -->
           <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'main.events' %}active{% endif %}" href="{{ url_for('main.events') }}">
-              All Events
-            </a>
+            {% if current_user.role == 'admin' %}
+            <a class="nav-link {% if request.endpoint == 'main.events' %}active{% endif %}" 
+               href="{{ url_for('main.events') }}">All Events</a>
+            {% else %}
+            <a class="nav-link {% if request.endpoint == 'main.events' %}active{% endif %}" 
+               href="{{ url_for('main.events') }}">My Events</a>
+            {% endif %}
           </li>
 
           <!-- Booking History -->
           <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'main.my_bookings' %}active{% endif %}" href="{{ url_for('main.my_bookings') }}">
+            <a class="nav-link {% if request.endpoint == 'main.my_bookings' %}active{% endif %}" 
+               href="{{ url_for('main.my_bookings') }}">
               Booking History
             </a>
           </li>
 
-          <!-- Logout -->
+          <!-- Logout the current user-->
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('auth.logout') }}">
               Logout
@@ -57,12 +70,14 @@
         {% else %}
           <!-- Links for users that are not logged in  -->
           <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" href="{{ url_for('auth.login') }}">
+            <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" 
+               href="{{ url_for('auth.login') }}">
               Login
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'auth.register' %}active{% endif %}" href="{{ url_for('auth.register') }}">
+            <a class="nav-link {% if request.endpoint == 'auth.register' %}active{% endif %}" 
+               href="{{ url_for('auth.register') }}">
               Register
             </a>
           </li>

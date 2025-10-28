@@ -12,6 +12,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(40))
+    role = db.Column(db.String(20), nullable=False, default='user')
+
 
 
 # Relationship of User with other Tables.

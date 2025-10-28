@@ -44,11 +44,11 @@
               <input id="day" name="day" type="date" class="form-control" value="{{ event.date_time.strftime('%Y-%m-%d') }}" required>
             </div>
             <div class="col-md-4">
-              <label for="hour" class="form-label">Hour (0–23)</label>
+              <label for="hour" class="form-label">Hour (0-23)</label>
               <input id="hour" name="hour" type="number" min="0" max="23" class="form-control" value="{{ event.date_time.hour }}" required>
             </div>
             <div class="col-md-4">
-              <label for="minute" class="form-label">Minute (0–59)</label>
+              <label for="minute" class="form-label">Minute (0-59)</label>
               <input id="minute" name="minute" type="number" min="0" max="59" class="form-control" value="{{ event.date_time.minute }}" required>
             </div>
           </div>

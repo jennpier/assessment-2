@@ -54,8 +54,20 @@ def my_bookings():
 @main_bp.route("/events", methods=["GET"])
 @login_required
 def events():
-    items = db.session.scalars(db.select(Event).order_by(Event.date_time.desc())).all()
-    return render_template("all_events.html", events=items) 
+    # Admin can see all the events. 
+    if current_user.role == "admin":
+        items = db.session.scalars(
+            db.select(Event).order_by(Event.date_time.desc())
+        ).all()
+    else:
+        # Individual users can only see events created by them
+        items = db.session.scalars(
+            db.select(Event)
+            .where(Event.owner_id == current_user.id)
+            .order_by(Event.date_time.desc())
+        ).all()
+
+    return render_template("all_events.html", events=items)
 
 @main_bp.route("/venues", methods=["GET", "POST"])
 @login_required
