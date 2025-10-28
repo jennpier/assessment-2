@@ -80,6 +80,12 @@ class Event(db.Model):
     bookings = db.relationship("Booking", back_populates="event", cascade="all, delete-orphan")
     tickets = db.relationship("Ticket", back_populates="event", cascade="all, delete-orphan")
 
+    def tickets_left(self):
+        booked = sum(b.no_of_tickets for b in self.bookings if b.booking_status == "Confirmed")
+        remaining = self.ticket_quantity - booked
+        return max(remaining, 0)
+
+
     def __repr__(self):
         return f"<Event {self.id}:{self.title}>"
 

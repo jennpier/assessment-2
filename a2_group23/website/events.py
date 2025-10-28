@@ -12,8 +12,7 @@ events_bp = Blueprint("events", __name__)
 
 
 
-# CREATE EVENT
-
+# Route for Creating an Event
 @events_bp.route("/create-event", methods=["GET", "POST"])
 @login_required
 def create():
@@ -21,8 +20,8 @@ def create():
     ticket_form = TicketForm(request.form)
 
     if request.method == "POST" and event_form.validate_on_submit() and ticket_form.validate_on_submit():
+        
         # Generatung a  unique string-based event ID
-
         title = event_form.title.data.strip()
         description = event_form.description.data.strip()
         day = event_form.day.data
@@ -32,6 +31,12 @@ def create():
         status = "Open"
 
         event_dt = datetime.combine(day, datetime.min.time()).replace(hour=hour, minute=minute)
+
+        # Checking that event is not created for a past date/time.
+        now = datetime.now()
+        if event_dt < now:
+            flash("Event date and time cannot be in the past", "danger")
+            return redirect(url_for("events.create"))
 
         # Handling image upload - it should be saved at correct path
         image_file = request.files.get("image")
@@ -78,7 +83,7 @@ def create():
         db.session.add(new_event)
         db.session.flush()
 
-        # Create associated ticket
+        # Creating associated ticket
         ticket = Ticket(
             price=ticket_form.price.data,
             quantity=ticket_form.quantity.data,
@@ -101,6 +106,7 @@ def create():
         venues=venues,
         categories=categories
     )
+
 
 
 # Route for editing an event
@@ -183,12 +189,14 @@ def book_event(event_id):
     if form.validate_on_submit():
         quantity = form.no_of_tickets.data
 
+        # Checking if user is trying to buy more tickets than available for the show
         if quantity > event.tickets_left():
             flash("Not enough tickets available.", "warning")
             return redirect(url_for('events.book_event', event_id=event.id))
 
         total_price = event.ticket_price * quantity
 
+        # Actual Adding Booking details to db is done at line 201.
         booking = Booking(
             user_id=current_user.id,
             event_id=event.id,
@@ -196,13 +204,46 @@ def book_event(event_id):
             total_price=total_price,
             booking_status='Confirmed'
         )
+
         db.session.add(booking)
+
+        # Decreasing the event tickets after booking is done.
+        if event.tickets_left() <= 0:
+            event.status = "Sold Out"
+
+
         db.session.commit()
 
-        flash(f"Booking successful for {quantity} tickets!", 'success')
-        return redirect(url_for('main.my_bookings'))
+        # Redirecting user to the Order COnfirmation pagee.
+        return redirect(url_for('events.order_confirmation', booking_id=booking.id))
 
     return render_template('book_event.html', event=event, form=form)
+
+
+# Booking Confirmation Route
+@events_bp.route('/booking/<int:booking_id>/confirmation')
+@login_required
+def order_confirmation(booking_id):
+    # Making sure booking exist for the user.
+    booking = db.session.get(Booking, booking_id)
+    if not booking or booking.user_id != current_user.id:
+        abort(404)
+
+    event = booking.event
+    return render_template('order-confirmation.html', booking=booking, event=event)
+
+# Listing all Events Booked by the user
+@events_bp.route("/my-bookings")
+@login_required
+def my_bookings():
+    bookings = (
+        db.session.query(Booking)
+        .filter(Booking.user_id == current_user.id)
+        .order_by(Booking.booking_date.desc())
+        .all()
+    )
+
+    return render_template("my-bookings.html", bookings=bookings)
 
 
 # Event Details Page

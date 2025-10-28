@@ -106,7 +106,7 @@
             </div>
             <div class="col-md-6">
               <label for="ticket_quantity" class="form-label">Ticket Quantity</label>
-              <input id="ticket_quantity" name="ticket_quantity" type="number" min="1" class="form-control" value="{{ event.ticket_quantity }}">
+              <input id="ticket_quantity" name="ticket_quantity" type="number" min="1" class="form-control" value="{{ event.tickets_left() }}">
             </div>
           </div>
 

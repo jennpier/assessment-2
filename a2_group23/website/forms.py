@@ -46,10 +46,10 @@ class TicketForm(FlaskForm):
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=100)])
     description = TextAreaField('Description', validators=[DataRequired(), Length(max=500)])
-    day = DateField('Day', format='%Y-%m-%d', validators=[DataRequired()])
-    hour = IntegerField('Hour', validators=[DataRequired(), NumberRange(min=0, max=23)])
-    minute = IntegerField('Minute', validators=[DataRequired(), NumberRange(min=0, max=59)])
-    duration = IntegerField('Duration (minutes)', validators=[DataRequired(), NumberRange(min=1)])
+    day = DateField('Date', format='%Y-%m-%d', validators=[DataRequired()])
+    hour = IntegerField('Time (Hour)', validators=[DataRequired(), NumberRange(min=0, max=23)])
+    minute = IntegerField('Time (Minute)', validators=[DataRequired(), NumberRange(min=0, max=59)])
+    duration = IntegerField('Event Duration (minutes)', validators=[DataRequired(), NumberRange(min=1)])
     image = FileField('Event Image', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])
     submit = SubmitField('Create Event')
 
@@ -60,9 +60,8 @@ class EventForm(FlaskForm):
         
         
 class BookingForm(FlaskForm):
-    no_of_tickets=IntegerField("Number of tickets", validators=[InputRequired(), NumberRange(min=1)])
-    submit=SubmitField("Buy")
-
+    no_of_tickets = IntegerField("Number of Tickets", validators=[DataRequired(), NumberRange(min=1)])
+    submit = SubmitField("Confirm Booking")
 
 
 
