@@ -26,6 +26,7 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("Register")
 
 
+# Created a new form to handle profile editing.
 class EditProfileForm(FlaskForm):
     user_name = StringField("Full Name", validators=[DataRequired(), Length(min=3, max=120)])
     email = StringField("Email", validators=[DataRequired(), Email()])

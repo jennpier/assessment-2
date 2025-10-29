@@ -27,7 +27,9 @@ class User(db.Model, UserMixin):
         "Comment", back_populates="author", cascade="all, delete-orphan"
     )
 
-# Added _repr_ method of debugging purposes.
+# Adding these dunder methods for better visuals. Unsure, if it is imporatant, but they say it is beneficial while debugging
+# I found them being used by people in stackoverflow, so i put them as well. We'll see use case in future.
+
     def __repr__(self):
         return f"<User {self.email}>"
 
@@ -82,6 +84,7 @@ class Event(db.Model):
     bookings = db.relationship("Booking", back_populates="event", cascade="all, delete-orphan")
     tickets = db.relationship("Ticket", back_populates="event", cascade="all, delete-orphan")
 
+    # This method returns how many tickets are left.
     def tickets_left(self):
         booked = sum(b.no_of_tickets for b in self.bookings if b.booking_status == "Confirmed")
         remaining = self.ticket_quantity - booked

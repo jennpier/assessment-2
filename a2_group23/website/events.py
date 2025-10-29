@@ -258,7 +258,7 @@ def event_detail(event_id):
     return render_template('event.html', event=event, comments=comments)
 
 
-# ADD COMMENT
+# To Add the comment
 @events_bp.route("/events/<int:event_id>/comments", methods=["POST"])
 @login_required
 def add_comment(event_id):
@@ -278,7 +278,7 @@ def add_comment(event_id):
     return redirect(url_for("events.event_detail", event_id=event.id) + "#comments")
 
 
-# DELETE COMMENT
+# To Delete the commment
 @events_bp.route("/comments/<int:comment_id>/delete", methods=["POST"])
 @login_required
 def delete_comment(comment_id):
