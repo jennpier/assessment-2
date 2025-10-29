@@ -59,7 +59,7 @@
             <h5 class="fw-bold mb-3">Book Your Ticket</h5>
 
             <div class="mb-3">
-              <p class="mb-1"><strong>Price:</strong> Rs. {{ event.ticket_price }}</p>
+              <p class="mb-1"><strong>Price:</strong> ${{ event.ticket_price }}</p>
             </div>
 
             <a href="{{ url_for('events.book_event', event_id=event.id) }}" class="btn btn-success w-100 fw-bold py-2">
@@ -69,12 +69,31 @@
             <hr class="my-4">
 
             <h6 class="fw-bold fs-5 mb-3">Organizer</h6>
-            <div class="d-flex align-items-center">
-              <img src="{{ url_for('static', filename='img/profile.jpg') }}" alt="Organizer" class="rounded-circle me-3" style="width:50px; height:50px;">
-              <div>
-                <strong>{{ event.owner.name if event.owner else 'Organizer' }}</strong>
+            <div class="d-flex flex-row align-items-center justify-content-between p-3 border rounded-3 shadow-sm bg-light">
+
+              <!-- Organizer Logo -->
+              <div class="d-flex align-items-center col-3 justify-content-center">
+                <img src="{{ url_for('static', filename='images/profile.png') }}" alt="Organizer Logo"
+                    class="img-fluid rounded-circle border" style="width:60px; height:60px;">
+              </div>
+
+              <!-- Organizer Info -->
+              <div class="col-8">
+                <h6 class="mb-1 fw-semibold">{{ event.owner.name if event.owner else 'Admin' }}</h6>
+                <div class="d-flex flex-wrap small text-muted">
+                  <div class="me-3">
+                    <span>Followers</span><br><strong>8.7k</strong>
+                  </div>
+                  <div class="me-3">
+                    <span>Events</span><br><strong>83</strong>
+                  </div>
+                  <div>
+                    <span>Active</span><br><strong>7 years</strong>
+                  </div>
+                </div>
               </div>
             </div>
+
 
             <hr class="my-4">
 
@@ -122,9 +141,10 @@
 
         {% for c in comments %}
           <div class="card p-3 mb-3">
-            <div class="d-flex mb-2 align-items-center">
-              <img src="{{ url_for('static', filename='img/profile.jpg') }}" class="rounded-circle me-3" style="width:30px" alt="">
+            <div class="d-flex mb-2 ml-0">
+              <img src="{{ url_for('static', filename='images/profile.png') }}" class="rounded-circle me-3" style="width:25px; height:25px" alt="">
               <div>
+                <!-- <i class="bi bi-person-circle"></i> -->
                 <strong>{{ c.author.name if c.author else 'User' }}</strong>
                 <small class="text-muted ms-2">{{ c.posted_date.strftime('%Y-%m-%d %H:%M') }}</small>
               </div>

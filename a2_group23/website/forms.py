@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import SelectField
 from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, RadioField, IntegerField, DateField
-from wtforms.validators import InputRequired, Length, Email, EqualTo, NumberRange, ValidationError, DataRequired
+from wtforms.validators import InputRequired, Length, Email, EqualTo, NumberRange, ValidationError, DataRequired, Optional
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 import datetime
 
@@ -24,6 +24,15 @@ class RegisterForm(FlaskForm):
                   EqualTo('confirm', message="Passwords should match")])
     confirm = PasswordField("Confirm Password")
     submit = SubmitField("Register")
+
+
+class EditProfileForm(FlaskForm):
+    user_name = StringField("Full Name", validators=[DataRequired(), Length(min=3, max=120)])
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    phone = StringField("Phone", validators=[Optional(), Length(max=40)])
+    password = PasswordField("New Password (optional)", validators=[Optional(), Length(min=6)])
+    confirm_password = PasswordField("Confirm Password", validators=[Optional(), EqualTo('password', message="Passwords must match.")])
+    submit = SubmitField("Update Profile")
 
 
 class TicketForm(FlaskForm):

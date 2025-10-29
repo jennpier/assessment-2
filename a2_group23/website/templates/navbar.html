@@ -60,6 +60,15 @@
             </a>
           </li>
 
+          <!-- Editing User Detailss  -->
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'auth.edit_profile' %}active{% endif %}" 
+              href="{{ url_for('auth.edit_profile') }}">
+              Edit Profile
+            </a>
+          </li>
+
+
           <!-- Logout the current user-->
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('auth.logout') }}">

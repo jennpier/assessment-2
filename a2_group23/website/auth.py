@@ -1,8 +1,8 @@
 from flask import Blueprint, flash, render_template, request, url_for, redirect
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 from .models import User
-from .forms import LoginForm, RegisterForm
+from .forms import EditProfileForm, LoginForm, RegisterForm
 from . import db
 
 # Create a blueprint - make sure all BPs have unique names
@@ -73,7 +73,27 @@ def register():
     # Show the registration form again if invalid
     return render_template('user.html', form=form, heading='Register')
 
+# Making a new route to edit the profile information
+@auth_bp.route("/edit-profile", methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    form = EditProfileForm(obj=current_user)
 
+    if request.method == "POST" and form.validate_on_submit():
+        user = current_user
+        user.name = form.user_name.data
+        user.email = form.email.data
+        user.phone = form.phone.data
+
+        # If btoh fields are present, then only update the pasword
+        if form.password.data and form.confirm_password.data:
+            user.password_hash = generate_password_hash(form.password.data)
+
+        db.session.commit()
+        flash("Profile updated successfully!", "success")
+        return redirect(url_for("main.index"))
+
+    return render_template("edit_profile.html", form=form)
             
 @auth_bp.route('/logout')
 @login_required
