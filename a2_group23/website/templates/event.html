@@ -15,7 +15,7 @@
 
     <div class="container my-4 event">
       <div class="row">
-        <!-- Left Column (Event Image & Description) -->
+        <!-- Left Column for Event Image & Description -->
         <div class="col-12 col-lg-8 mb-4">
           {% if event.image %}
             <img src="{{ url_for('static', filename='images/' ~ event.image) }}" alt="{{ event.title }}" class="w-100 rounded shadow-sm mb-3">
@@ -53,7 +53,7 @@
           {% endif %}
         </div>
 
-        <!-- Right Column (Booking, Info, Organizer) -->
+        <!-- Right Column  for Booking, and Organizer details -->
         <div class="col-12 col-lg-4">
           <div class="card shadow-sm p-4">
             <h5 class="fw-bold mb-3">Book Your Ticket</h5>
@@ -71,13 +71,13 @@
             <h6 class="fw-bold fs-5 mb-3">Organizer</h6>
             <div class="d-flex flex-row align-items-center justify-content-between p-3 border rounded-3 shadow-sm bg-light">
 
-              <!-- Organizer Logo -->
+              <!-- Organizer Logo , I'm using a placeholder image for now -->
               <div class="d-flex align-items-center col-3 justify-content-center">
                 <img src="{{ url_for('static', filename='images/profile.png') }}" alt="Organizer Logo"
                     class="img-fluid rounded-circle border" style="width:60px; height:60px;">
               </div>
 
-              <!-- Organizer Info -->
+              <!-- Organizer Info - This is a static content. Added to make UI better. -->
               <div class="col-8">
                 <h6 class="mb-1 fw-semibold">{{ event.owner.name if event.owner else 'Admin' }}</h6>
                 <div class="d-flex flex-wrap small text-muted">
@@ -110,7 +110,7 @@
         </div>
       </div>
 
-      <!-- COMMENTS SECTION -->
+      <!-- User COmments Section -->
       <div class="container my-5" id="comments">
         <h4 class="mb-3">Comments</h4>
 

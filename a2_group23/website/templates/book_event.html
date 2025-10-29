@@ -43,7 +43,8 @@
               </div>
             </div>
 
-            <!-- User Will Select the quantity  -->
+            <!-- User Will Select the quantity - They should also see how many tickets left.  -->
+            <!-- Guys, validate this portion as well. -->
             <div class="mb-3">
               {{ form.no_of_tickets.label(class="form-label fw-bold") }}
               {{ form.no_of_tickets(id="ticketQty", class="form-control", min="1", max=event.tickets_left(), placeholder="Enter quantity") }}

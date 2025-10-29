@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <!-- Our Website Name -->
     <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
-      Music Event Management
+      Firevents
     </a>
 
     <!-- This si a toggle button in the mobile setting. -->
@@ -23,7 +23,7 @@
         {% if current_user.is_authenticated %}
         <!-- Links for user that are logged in -->
 
-          <!-- Create Event (Visible to all logged-in users) -->
+          <!-- Links that are Visible to all logged in users -->
           <li class="nav-item">
             <a class="nav-link {% if request.endpoint == 'events.create' %}active{% endif %}" 
                href="{{ url_for('events.create') }}">
@@ -31,7 +31,7 @@
             </a>
           </li>
 
-          <!-- Add Venue (Visible only to Admins) -->
+          <!-- Add Venue is only visible only to admins) -->
           {% if current_user.role == 'admin' %}
           <li class="nav-item">
             <a class="nav-link {% if request.endpoint == 'main.venues' %}active{% endif %}" 

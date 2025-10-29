@@ -30,6 +30,7 @@
           <div class="card p-4 shadow-sm">
             <h5 class="mb-3">Add a venue</h5>
             <form method="POST" action="{{ url_for('main.venues') }}">
+              <!-- CSRF token worked here.. my form wasn't getting validated without it. Turns now, it is necessary to prevent CSRF attack. Quite harmful -->
               {% if csrf_token is defined %}{{ csrf_token() }}{% endif %}
               <div class="mb-3">
                 <label class="form-label" for="name">Name</label>

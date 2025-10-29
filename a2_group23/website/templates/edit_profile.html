@@ -13,7 +13,7 @@
         <form method="POST" action="{{ url_for('auth.edit_profile') }}">
           {{ form.hidden_tag() }}
 
-          <!-- New Name -->
+          <!-- All these forms will have details already filled. But, not password. Cause, we are not storing plain password in the db. Only hash -->
           <div class="mb-3">
             {{ form.user_name.label(class="form-label fw-bold") }}
             {{ form.user_name(class="form-control", placeholder="Enter your full name", value=current_user.name) }}
@@ -29,6 +29,7 @@
             {{ form.phone(class="form-control", placeholder="Enter your phone number", value=current_user.phone or '') }}
           </div>
 
+         <!-- Will not have data already filled -->
           <div class="mb-3">
             {{ form.password.label(class="form-label fw-bold") }}
             {{ form.password(class="form-control", placeholder="Leave blank to keep current password") }}
