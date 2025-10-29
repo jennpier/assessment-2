@@ -1,15 +1,6 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Events</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
-  </head>
-  <body>
-    {% include 'navbar.html' %}
+{% extends "base.html" %}
+{% block title %}Events{% endblock %}
+{% block content %}
 
     <div class="container my-5">
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -76,5 +67,4 @@
       </div>
     </div>
 
-    {% include 'footer.html' %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootst
+{% endblock %}
