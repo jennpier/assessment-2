@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import os
 from pathlib import Path
+from flask_bcrypt import generate_password_hash
 
 
 db = SQLAlchemy()
@@ -63,5 +64,22 @@ def create_app():
 
     Path(app.config["UPLOAD_FOLDER"]).mkdir(parents=True, exist_ok=True)
     
+    
+    with app.app_context():
+       db.create_all()
+       admin= db.session.scalar(db.select(User).where(User.email == "admin@admin.com"))
+       if not admin:
+          admin_user = User(
+             name="admin",
+             email="admin@admin.com",
+             phone="0000",
+             password_hash=generate_password_hash("123"),
+             role="admin"
+             )
+          db.session.add(admin_user)
+          db.session.commit()
+          
+    return app       
+          
+     
 
-    return app
