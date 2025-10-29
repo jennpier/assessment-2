@@ -87,16 +87,18 @@
             </select>
           </div>
 
-          <!-- Category -->
+          <!-- Category - changed this -->
           <div class="form-group mb-3">
-            <label for="category_id" class="form-label">Category</label>
-            <select id="category_id" name="category_id" class="form-select" required>
+            <label for="category" class="form-label">Category</label>
+            <select id="category" name="category" class="form-select" required>
               <option value="" disabled>Select a category</option>
+              {% set categories = ["Jazz", "Hip-Hop", "House", "Classical", "Rock", "Electronic", "Indie"] %}
               {% for c in categories %}
-                <option value="{{ c.id }}" {% if c.id == event.category_id %}selected{% endif %}>{{ c.category_name }}</option>
+                <option value="{{ c }}" {% if c == event.category %}selected{% endif %}>{{ c }}</option>
               {% endfor %}
             </select>
-          </div>
+           </div>
+          
 
           <!-- Ticket Info -->
           <div class="row mb-3">

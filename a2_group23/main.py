@@ -1,7 +1,8 @@
 from website import create_app, db
-from website.models import Category, User
+from website.models import User
 from flask_bcrypt import generate_password_hash
 
+# NEED TO GET RID OF THIS SOMEHOW - SO DON'T HAVE TO REBUILD DB EVERY TIME
 # This method will create a web application database
 def init_database(app):
     with app.app_context():
@@ -12,9 +13,9 @@ def init_database(app):
         db.create_all()
 
         # I'm addming these categories by default
-        categories = ["All", "Jazz", "Hip-Hop", "House", "Classical", "Rock", "Electronic", "Indie"]
-        for name in categories:
-            db.session.add(Category(category_name=name))
+        #categories = ["All", "Jazz", "Hip-Hop", "House", "Classical", "Rock", "Electronic", "Indie"]
+        #for name in categories:
+        #    db.session.add(Category(category_name=name))
 
         # Creating a default admin user
         admin_user = User(
@@ -36,3 +37,5 @@ if __name__ == '__main__':
 
     # running the app
     app.run()
+
+    

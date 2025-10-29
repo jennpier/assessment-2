@@ -31,17 +31,18 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"<User {self.email}>"
 
-class Category(db.Model):
-    __tablename__ = "category"
-
-    id = db.Column(db.Integer, primary_key=True)
-    category_name = db.Column(db.String(120), unique=True, nullable=False)
-    description = db.Column(db.Text)
-
-    events = db.relationship("Event", back_populates="category")
-
-    def __repr__(self):
-        return f"<Category {self.category_name}>"
+# Getting rid of table
+#class Category(db.Model):
+#    __tablename__ = "category"
+#
+#   id = db.Column(db.Integer, primary_key=True)
+#    category_name = db.Column(db.String(120), unique=True, nullable=False)
+#    description = db.Column(db.Text)
+#
+#    events = db.relationship("Event", back_populates="category")
+#
+#    def __repr__(self):
+#        return f"<Category {self.category_name}>"
 
 class Venue(db.Model):
     __tablename__ = "venue"
@@ -71,11 +72,12 @@ class Event(db.Model):
     ticket_quantity = db.Column(db.Integer, nullable=False)
 
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable=False)
+    category = db.Column(db.String(120), nullable=False)
+    #category_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey("venue.id"), nullable=False)
 
     owner = db.relationship("User", back_populates="events")
-    category = db.relationship("Category", back_populates="events")
+    #category = db.relationship("Category", back_populates="events")
     venue = db.relationship("Venue", back_populates="events")
 
     comments = db.relationship("Comment", back_populates="event", cascade="all, delete-orphan")
@@ -138,7 +140,7 @@ class Ticket(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
 
     event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
-    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=True)  # 🔑 Add this!
+    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"), nullable=True) 
 
     event = db.relationship("Event", back_populates="tickets")
     booking = db.relationship("Booking", back_populates="tickets")

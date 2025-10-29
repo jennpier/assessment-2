@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from .models import Booking, Ticket, Event, User, Category, Venue, Comment
+from .models import Booking, Ticket, Event, User, Venue, Comment
 from .forms import BookingForm
 from datetime import datetime
 from datetime import datetime
@@ -10,7 +10,7 @@ import os, uuid, json
 from website.forms import EventForm
 
 from . import db
-from .models import Event, Venue, Category, Ticket, Booking, Comment, User
+from .models import Event, Venue, Ticket, Booking, Comment, User
 
 main_bp = Blueprint('main', __name__)
 
@@ -33,13 +33,29 @@ def search():
     else:
         return redirect(url_for('main.index'))
 
-# Backend Filter (working on - Still need to do front end)
+# Backend Filter - OLD FILTER
+#@main_bp.route('/filter-event/<category>')
+#def filter_event(category):
+#    filtered = db.session.scalars(
+#        db.select(Event).join(Category).where(Category.category_name.ilike(category)).order_by(Event.date_time.asc())
+#        ).all()
+#    return render_template('index.html', events=filtered)  
+
+# NEW FILTER
 @main_bp.route('/filter-event/<category>')
 def filter_event(category):
-    filtered = db.session.scalars(
-        db.select(Event).join(Category).where(Category.category_name.ilike(category)).order_by(Event.date_time.asc())
+    if category == "All":
+        filtered = db.session.scalars(
+            db.select(Event).order_by(Event.date_time.asc())
         ).all()
-    return render_template('index.html', events=filtered)    
+    else:
+        filtered = db.session.scalars(
+            db.select(Event)
+            .where(Event.category.ilike(category))
+            .order_by(Event.date_time.asc())
+        ).all()
+    return render_template('index.html', events=filtered)
+
 
 @main_bp.route('/my-bookings')
 @login_required

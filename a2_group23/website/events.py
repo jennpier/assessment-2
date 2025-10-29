@@ -5,11 +5,10 @@ from datetime import datetime
 import os, uuid
 
 from . import db
-from .models import Event, Venue, Category, Comment, Booking, Ticket
+from .models import Event, Venue, Comment, Booking, Ticket
 from .forms import EventForm, TicketForm, BookingForm
 
 events_bp = Blueprint("events", __name__)
-
 
 
 # Route for Creating an Event
@@ -60,11 +59,17 @@ def create():
             return redirect(url_for("events.create"))
 
         # Validating Category
-        category_id = request.form.get("category_id")
-        category = db.session.get(Category, category_id)
+#        category_id = request.form.get("category_id")
+#        category = db.session.get(Category, category_id)
+#        if not category:
+#            flash("Select a valid category.", "warning")
+#            return redirect(url_for("events.create"))
+
+        category = event_form.category.data
         if not category:
-            flash("Select a valid category.", "warning")
+            flash("Please select a category.", "warning")
             return redirect(url_for("events.create"))
+
 
         new_event = Event(
             title=title,
@@ -74,7 +79,7 @@ def create():
             status=status,
             duration_minutes=duration or None,
             owner_id=current_user.id,
-            category_id=category.id,
+            category=event_form.category.data,
             venue_id=venue.id,
             ticket_price=ticket_form.price.data,
             ticket_quantity=ticket_form.quantity.data,
@@ -97,14 +102,14 @@ def create():
 
     # Load venues and categories for the form
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-    categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
+    #categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
 
     return render_template(
         "create-event.html",
         form=event_form,
         ticket_form=ticket_form,
         venues=venues,
-        categories=categories
+        #categories=categories
     )
 
 
@@ -126,7 +131,7 @@ def edit(event_id):
         event.ticket_quantity = int(request.form.get("ticket_quantity") or event.ticket_quantity)
         event.status = request.form.get("status", event.status)
         event.venue_id = request.form.get("venue_id") or event.venue_id
-        event.category_id = request.form.get("category_id") or event.category_id
+        event.category = request.form.get("category") or event.category
 
 
         # Handle image replacement
@@ -149,8 +154,8 @@ def edit(event_id):
         return redirect(url_for("main.events"))
 
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-    categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
-    return render_template("update-event.html", event=event, venues=venues, categories=categories, form=EventForm())
+    #categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
+    return render_template("update-event.html", event=event, venues=venues, form=EventForm())#categories=categories
 
 
 # Delete Event

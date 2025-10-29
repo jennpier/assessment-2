@@ -44,6 +44,7 @@ class TicketForm(FlaskForm):
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=100)])
     description = TextAreaField('Description', validators=[DataRequired(), Length(max=500)])
+    category = SelectField("Category", choices=[("", "Select a genre"),("Jazz", "Jazz"), ("Hip-Hop", "Hip-Hop"), ("House", "House"), ("Classical", "Classical"), ("Rock", "Rock"), ("Electronic", "Electronic"), ("Indie", "Indie")], validators=[DataRequired(message="please select a genre")])
     day = DateField('Date', format='%Y-%m-%d', validators=[DataRequired()])
     hour = IntegerField('Time (Hour)', validators=[DataRequired(), NumberRange(min=0, max=23)])
     minute = IntegerField('Time (Minute)', validators=[DataRequired(), NumberRange(min=0, max=59)])

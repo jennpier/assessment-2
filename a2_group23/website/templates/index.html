@@ -78,7 +78,7 @@
             {{ e.description|truncate(140, True) }}
           </p>
           <p><strong>Status:</strong> {{ e.status }}</p>
-          <p><strong>Category:</strong> {{ e.category.category_name }}</p>
+          <p><strong>Category:</strong> {{ e.category }}</p>
           <a href="{{ url_for('events.event_detail', event_id=e.id) }}" class="btn btn-success w-100">View Details</a>
         </div>
       </div>
