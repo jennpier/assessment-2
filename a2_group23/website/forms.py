@@ -36,17 +36,6 @@ class EditProfileForm(FlaskForm):
 
 
 class TicketForm(FlaskForm):
-    type = SelectField('Ticket Type', choices=[
-        ('General Admission', 'General Admission'),
-        ('VIP', 'VIP'),
-        ('Backstage Pass', 'Backstage Pass')
-    ], validators=[DataRequired()])
-    price = IntegerField('Price ($)', validators=[DataRequired(), NumberRange(min=0)])
-    quantity = IntegerField('Quantity', validators=[DataRequired(), NumberRange(min=1)])
-    submit = SubmitField('Add Ticket Choice')
-
-
-class TicketForm(FlaskForm):
     price = IntegerField('Ticket Price ($)', validators=[DataRequired(), NumberRange(min=0)])
     quantity = IntegerField('Available Quantity', validators=[DataRequired(), NumberRange(min=1)])
     submit = SubmitField('Set Ticket Details')

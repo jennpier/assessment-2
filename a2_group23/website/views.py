@@ -44,12 +44,20 @@ def filter_event(category):
 @main_bp.route('/my-bookings')
 @login_required
 def my_bookings():
-    # Getting all bookings for the current user
-    bookings = db.session.scalars(
-        db.select(Booking).where(Booking.user_id == current_user.id).order_by(Booking.id.desc())
-    ).all()
-    return render_template('bookings.html', bookings=bookings)
+    # Admin Users can see all the bookings made by every users
+    if current_user.role == "admin":
+        bookings = db.session.scalars(
+            db.select(Booking).order_by(Booking.id.desc())
+        ).all()
+    else:
+        # Normal users can see onlty their own bookings.
+        bookings = db.session.scalars(
+            db.select(Booking)
+            .where(Booking.user_id == current_user.id)
+            .order_by(Booking.id.desc())
+        ).all()
 
+    return render_template('bookings.html', bookings=bookings)
 
 @main_bp.route("/events", methods=["GET"])
 @login_required
