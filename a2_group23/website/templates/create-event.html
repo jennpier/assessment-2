@@ -106,12 +106,14 @@
             </div>
           </div>
 
-          <!-- Ticket Details (Single type only) -->
+          <!-- Ticket Details. I removed multiple ticket types, as it goes beyond requirement -->
           <div class="row mb-3">
             <div class="form-group col-md-6 mb-2">
               {{ ticket_form.price.label(class='form-label') }}
               {{ ticket_form.price(class="form-control") }}
             </div>
+            
+            <!-- nUMBER OF Seats -->
             <div class="form-group col-md-6 mb-2">
               {{ ticket_form.quantity.label(class='form-label') }}
               {{ ticket_form.quantity(class="form-control") }}

@@ -89,6 +89,14 @@ class Event(db.Model):
         booked = sum(b.no_of_tickets for b in self.bookings if b.booking_status == "Confirmed")
         remaining = self.ticket_quantity - booked
         return max(remaining, 0)
+    
+    # This method updates the event status based on remaining tickets.
+    def update_status(self):
+        remaining = self.tickets_left()
+        new_status = "Sold Out" if remaining == 0 else "Open"
+        if self.status != new_status:
+            self.status = new_status
+            db.session.commit()
 
 
     def __repr__(self):

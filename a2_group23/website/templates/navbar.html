@@ -1,7 +1,9 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<div class="bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark w-75 m-auto">
   <div class="container-fluid">
     <!-- Our Website Name -->
     <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" style="width: 50px;">
       Firevents
     </a>
 
@@ -95,3 +97,4 @@
     </div>
   </div>
 </nav>
+</div>
