@@ -31,11 +31,13 @@ def create():
 
         event_dt = datetime.combine(day, datetime.min.time()).replace(hour=hour, minute=minute)
 
-        # Checking that event is not created for a past date/time.
-        now = datetime.now()
-        if event_dt < now:
-            flash("Event date and time cannot be in the past", "danger")
+        # Making sure event time is at least 5 hours after to the event creation.
+        current_time = datetime.now()
+        time_difference = event_dt - current_time
+        if time_difference.total_seconds() < 5 * 3600:  
+            flash("Event start time must be at least 5 hours from now.", "danger")
             return redirect(url_for("events.create"))
+        
 
         # Handling image upload - it should be saved at correct path
         image_file = request.files.get("image")
@@ -65,12 +67,19 @@ def create():
 #            flash("Select a valid category.", "warning")
 #            return redirect(url_for("events.create"))
 
+        # Checking that ticket quantity doesn’t exceed venue capacity
+        if ticket_form.quantity.data > venue.num_of_capacity:
+            flash(f"Number of seats cannot exceed the venue capacity ({venue.num_of_capacity} seats).", "danger")
+            return redirect(url_for("events.create"))
+
+
+        # Making sure category selected
         category = event_form.category.data
         if not category:
             flash("Please select a category.", "warning")
             return redirect(url_for("events.create"))
 
-
+        # Creating Event
         new_event = Event(
             title=title,
             description=description,
@@ -201,7 +210,7 @@ def book_event(event_id):
 
         total_price = event.ticket_price * quantity
 
-        # Actual Adding Booking details to db is done at line 201.
+        # Add Booking
         booking = Booking(
             user_id=current_user.id,
             event_id=event.id,
@@ -211,13 +220,17 @@ def book_event(event_id):
         )
 
         db.session.add(booking)
-
-        # Decreasing the event tickets after booking is done.
-        if event.tickets_left() <= 0:
-            event.status = "Sold Out"
-
-
         db.session.commit()
+
+        event.update_status()
+
+        #Does this need to be deleted?
+        # Decreasing the event tickets after booking is done.
+        #if event.tickets_left() <= 0:
+        #    event.status = "Sold Out"
+
+
+        flash("Booking confirmed successfully!", "success")
 
         # Redirecting user to the Order COnfirmation pagee.
         return redirect(url_for('events.order_confirmation', booking_id=booking.id))
@@ -258,6 +271,8 @@ def event_detail(event_id):
     if not event:
         abort(404)
 
+    event.update_status() 
+    
     comments = event.comments
     comments.sort(key=lambda c: c.posted_date, reverse=True)
     return render_template('event.html', event=event, comments=comments)
