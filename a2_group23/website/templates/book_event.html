@@ -1,20 +1,128 @@
 {% extends "base.html" %}
+{% block title %}Book Event{% endblock %}
 {% block content %}
-<div class="container pt-5">
-    <h2>Book Tickets for {{ event.title }}</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">
-            {{ form.ticket_type.label }}<br>
-            {{ form.ticket_type() }}
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <!-- Event Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <img src="{{ url_for('static', filename='images/' + (event.image or 'default.jpg')) }}" 
+             class="card-img-top" alt="{{ event.title }}" 
+             style="max-height: 350px; object-fit: cover;">
+        
+        <div class="card-body">
+          <h3 class="card-title mb-2">{{ event.title }}</h3>
+          <p class="text-muted mb-1">
+            <i class="bi bi-geo-alt"></i> {{ event.venue.name }} - {{ event.venue.location }}
+          </p>
+          <p class="text-muted mb-1">
+            <i class="bi bi-calendar-event"></i> {{ event.date_time.strftime('%A, %d %B %Y %I:%M %p') }}
+          </p>
+          <p class="text-muted mb-3">
+            <i class="bi bi-clock-history"></i> Duration: {{ event.duration_minutes }} mins
+          </p>
+          <p class="card-text">{{ event.description }}</p>
         </div>
-        <div class="mb-3">
-            {{ form.no_of_tickets.label }}
-            {{ form.no_of_tickets(class="form-control") }}
+      </div>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h4 class="mb-3"><i class="bi bi-ticket-detailed"></i> Book Your Tickets</h4>
+
+          <form method="POST" action="{{ url_for('events.book_event', event_id=event.id) }}">
+
+            {{ form.hidden_tag() }}
+
+            <!-- Listing Ticket Price -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Price per Ticket</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="text" id="ticketPrice" class="form-control" value="{{ event.ticket_price }}" readonly>
+              </div>
+            </div>
+
+            <!-- User Will Select the quantity - They should also see how many tickets left.  -->
+            <!-- Guys, validate this portion as well. -->
+            <div class="mb-3">
+              {{ form.no_of_tickets.label(class="form-label fw-bold") }}
+              {{ form.no_of_tickets(id="ticketQty", class="form-control", min="1", max=event.tickets_left(), placeholder="Enter quantity") }}
+              <small class="text-muted">Available tickets: {{ event.tickets_left() }}</small>
+            </div>
+
+            <!-- Total Price is also displayed using javascript placed at the very bottom of the page. -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Total Price</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="text" id="totalPrice" class="form-control" value="0" readonly>
+              </div>
+            </div>
+
+            <!-- Agreement, when clicked.. it has a popup modal box -->
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="agree" required>
+              <label class="form-check-label" for="agree">
+                I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms & Conditions</a>.
+              </label>
+            </div>
+
+            <!-- Submit -->
+            {% if event.tickets_left() > 0 %}
+            <button class="btn btn-success w-100 py-2" type="submit">
+              <i class="bi bi-cart-check me-1"></i> Confirm Booking
+            </button>
+            {% else %}
+            <button class="btn btn-secondary w-100 py-2" type="button" disabled>
+              <i class="bi bi-x-circle me-1"></i> Sold Out
+            </button>
+            {% endif %}
+          </form>
         </div>
-        <div class="mb-3">
-            {{ form.submit(class="btn btn-success") }}
-        </div>
-    </form>
+      </div>
+
+    </div>
+  </div>
 </div>
+
+<!--  Agreement popup modal box is this one. - Idea taken from W3school -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="termsLabel">Booking Terms & Conditions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <ul>
+          <li>Tickets once booked cannot be cancelled or refunded.</li>
+          <li>Come at the event 30 mins before the given time.</li>
+          <li>Other Terms and Conditions Are to Be added Later On..</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Javascript that calculates price automatically -->
+<script>
+  const qtyInput = document.getElementById('ticketQty');
+  const priceInput = document.getElementById('ticketPrice');
+  const totalDisplay = document.getElementById('totalPrice');
+
+  if (qtyInput) {
+    qtyInput.addEventListener('input', () => {
+      const qty = parseInt(qtyInput.value || 0);
+      const price = parseFloat(priceInput.value || 0);
+      const total = qty * price;
+      totalDisplay.value = total.toFixed(2);
+    });
+  }
+</script>
+
 {% endblock %}

@@ -1,41 +1,45 @@
 from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from .models import Booking, Ticket, Event
-from .forms import BookingForm, EventForm, TicketForm
 from datetime import datetime
-from datetime import datetime
-import os, uuid, json
-
-from website.forms import EventForm, TicketForm
+import os, uuid
 
 from . import db
-from .models import Event, Venue, Category, Comment, Ticket, Booking
+from .models import Event, Venue, Comment, Booking, Ticket
+from .forms import EventForm, TicketForm, BookingForm
 
-events_bp = Blueprint("events", __name__)  # no url_prefix so paths stay the same if you want
+events_bp = Blueprint("events", __name__)
 
+
+# Route for Creating an Event
 @events_bp.route("/create-event", methods=["GET", "POST"])
 @login_required
 def create():
-    event_form = EventForm()
-    ticket_form = TicketForm()
-    
-    if request.method == "POST":
-        title = (request.form.get("title") or "").strip()
-        description = (request.form.get("description") or "").strip()
-        hour = int(request.form.get("hour") or 0)
-        minute = int(request.form.get("minute") or 0)
-        duration = int(request.form.get("duration") or 0)
-        status = request.form.get("status") or "Open"
+    event_form = EventForm(request.form)
+    ticket_form = TicketForm(request.form)
 
-        day = (request.form.get("day") or "").strip()
-        if not day:
-            flash("Please pick a date.", "warning")
+    if request.method == "POST" and event_form.validate_on_submit() and ticket_form.validate_on_submit():
+        
+        # Generatung a  unique string-based event ID
+        title = event_form.title.data.strip()
+        description = event_form.description.data.strip()
+        day = event_form.day.data
+        hour = event_form.hour.data
+        minute = event_form.minute.data
+        duration = event_form.duration.data
+        status = "Open"
+
+        event_dt = datetime.combine(day, datetime.min.time()).replace(hour=hour, minute=minute)
+
+        # Making sure event time is at least 5 hours after to the event creation.
+        current_time = datetime.now()
+        time_difference = event_dt - current_time
+        if time_difference.total_seconds() < 5 * 3600:  
+            flash("Event start time must be at least 5 hours from now.", "danger")
             return redirect(url_for("events.create"))
-        event_dt = datetime.strptime(day, "%Y-%m-%d").replace(
-            hour=hour, minute=minute, second=0, microsecond=0
-        )
+        
 
+        # Handling image upload - it should be saved at correct path
         image_file = request.files.get("image")
         image_filename = None
         if image_file and image_file.filename:
@@ -49,66 +53,113 @@ def create():
             image_file.save(save_path)
             image_filename = new_name
 
-        category = db.session.scalar(
-            db.select(Category).where(Category.category_name == "General")
-        )
-        if not category:
-            category = Category(category_name="General", description="Default")
-            db.session.add(category)
-            db.session.flush()
-
+        # Validating venue - Hard for hacker to manipulate, but can be done with burpsuite. 
         venue_id = request.form.get("venue_id")
         venue = db.session.get(Venue, venue_id)
         if not venue:
             flash("Select a valid venue.", "warning")
             return redirect(url_for("events.create"))
 
-        type = (request.form.get("type") or "").strip()
-        price = int(request.form.get("price") or 0)
-        quantity = int(request.form.get("quantity") or 0)
+
+        # Checking that ticket quantity doesn’t exceed venue capacity
+        if ticket_form.quantity.data > venue.num_of_capacity:
+            flash(f"Number of seats cannot exceed the venue capacity ({venue.num_of_capacity} seats).", "danger")
+            return redirect(url_for("events.create"))
 
 
+        # Making sure category selected
+        category = event_form.category.data
+        if not category:
+            flash("Please select a category.", "warning")
+            return redirect(url_for("events.create"))
 
-        if event_form.validate_on_submit():
-            new_event = Event(
-                id=f"V-{uuid.uuid4().hex[:8]}",
-                title=title,
-                description=description,
-                time=event_dt,
-                image=image_filename,
-                status=status,
-                duration_minutes=duration or None,
-                owner_id=current_user.id,
-                category_id=category.id,
-                venue_id=venue.id,
-                ticket_type=type,
-                ticket_price=price,
-                ticket_quantity=quantity,                
-            )
+        # Creating Event
+        new_event = Event(
+            title=title,
+            description=description,
+            date_time=event_dt,
+            image=image_filename,
+            status=status,
+            duration_minutes=duration or None,
+            owner_id=current_user.id,
+            category=event_form.category.data,
+            venue_id=venue.id,
+            ticket_price=ticket_form.price.data,
+            ticket_quantity=ticket_form.quantity.data,
+        )
 
         db.session.add(new_event)
         db.session.flush()
 
-        for ticket_form in event_form.tickets:
-            a_ticket = Ticket(
-                id=f"V-{uuid.uuid4().hex[:8]}",
-                type=ticket_form.type.data,
-                price=ticket_form.price.data,
-                quantity=ticket_form.quantity.data,
-                event_id=new_event.id
-            )
-            db.session.add(a_ticket)       
-        db.session.commit(new_event, a_ticket)
+        # Creating associated ticket
+        ticket = Ticket(
+            price=ticket_form.price.data,
+            quantity=ticket_form.quantity.data,
+            event_id=new_event.id
+        )
+        db.session.add(ticket)
 
-        flash("Event with tickets created successfully!", "success")
-        return redirect(url_for("main.events", event_id=new_event.id))
+        db.session.commit()
+        flash("Event created successfully!", "success")
+        return redirect(url_for("main.events"))
 
+    # Load venues for the form
+    venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
+
+
+    return render_template(
+        "create-event.html",
+        form=event_form,
+        ticket_form=ticket_form,
+        venues=venues,
+    )
+
+
+
+# Route for editing an event
+@events_bp.route("/events/<int:event_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit(event_id):
+    event = db.session.get(Event, event_id)
+    if not event:
+        flash("Event not found.", "warning")
+        return redirect(url_for("main.events"))
+
+    if request.method == "POST":
+        event.title = request.form.get("title", event.title)
+        event.description = request.form.get("description", event.description)
+        event.duration_minutes = int(request.form.get("duration") or event.duration_minutes)
+        event.ticket_price = int(request.form.get("ticket_price") or event.ticket_price)
+        event.ticket_quantity = int(request.form.get("ticket_quantity") or event.ticket_quantity)
+        event.status = request.form.get("status", event.status)
+        event.venue_id = request.form.get("venue_id") or event.venue_id
+        event.category = request.form.get("category") or event.category
+
+
+        # Handle image replacement
+        image_file = request.files.get("image")
+        if image_file and image_file.filename:
+            ext = image_file.filename.rsplit(".", 1)[-1].lower()
+            if ext in {"jpg", "jpeg", "png", "gif"}:
+                safe_name = secure_filename(image_file.filename)
+                new_name = f"{uuid.uuid4().hex[:8]}_{safe_name}"
+                save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], new_name)
+                image_file.save(save_path)
+                if event.image:
+                    old_path = os.path.join(current_app.config["UPLOAD_FOLDER"], event.image)
+                    if os.path.exists(old_path):
+                        os.remove(old_path)
+                event.image = new_name
+
+        db.session.commit()
+        flash("Event updated successfully!", "success")
+        return redirect(url_for("main.events"))
 
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-    categories = db.session.scalars(db.select(Category).order_by(Category.name)).all()
-    return render_template("create-event.html", venues=venues, categories=categories)
+    return render_template("update-event.html", event=event, venues=venues, form=EventForm())
 
 
+# Delete Event
 @events_bp.route("/events/<int:event_id>/delete", methods=["POST"])
 @login_required
 def delete(event_id):
@@ -130,6 +181,8 @@ def delete(event_id):
     flash("Event deleted.", "success")
     return redirect(url_for("main.events"))
 
+
+# Booking an Event
 @events_bp.route('/events/<int:event_id>/book', methods=['GET', 'POST'])
 @login_required
 def book_event(event_id):
@@ -140,19 +193,16 @@ def book_event(event_id):
     form = BookingForm()
 
     if form.validate_on_submit():
-        ticket_type = form.ticket_type.data
         quantity = form.no_of_tickets.data
 
-        # example pricing
-        price_lookup = {
-            'Phase I': 99,
-            'Phase II': 150,
-            'Phase III': 279,
-        }
-        ticket_price = price_lookup.get(ticket_type, 0)
-        total_price = ticket_price * quantity
+        # Checking if user is trying to buy more tickets than available for the show
+        if quantity > event.tickets_left():
+            flash("Not enough tickets available.", "warning")
+            return redirect(url_for('events.book_event', event_id=event.id))
 
-        # create booking
+        total_price = event.ticket_price * quantity
+
+        # Add Booking
         booking = Booking(
             user_id=current_user.id,
             event_id=event.id,
@@ -160,144 +210,67 @@ def book_event(event_id):
             total_price=total_price,
             booking_status='Confirmed'
         )
+
         db.session.add(booking)
-        db.session.flush()  # get booking.id before commit
-
-        # create ticket
-        for _ in range(quantity):
-            ticket = Ticket(
-                price=ticket_price,
-                ticket_type=ticket_type,
-                booking_id=booking.id
-            )
-            db.session.add(ticket)
-
         db.session.commit()
-        flash(f"Booking Successful! Your Order ID is {booking.id}", 'success')
 
-        # redirect back to event page o bookings page
-        return redirect(url_for('main.my_bookings'))
+        event.update_status()
 
-    # if GET request or form not valid show booking form
+        #Does this need to be deleted?
+        # Decreasing the event tickets after booking is done.
+        #if event.tickets_left() <= 0:
+        #    event.status = "Sold Out"
+
+
+        flash("Booking confirmed successfully!", "success")
+
+        # Redirecting user to the Order COnfirmation pagee.
+        return redirect(url_for('events.order_confirmation', booking_id=booking.id))
+
     return render_template('book_event.html', event=event, form=form)
 
 
-@events_bp.route('/events/<int:event_id>')
+# Booking Confirmation Route
+@events_bp.route('/booking/<int:booking_id>/confirmation')
+@login_required
+def order_confirmation(booking_id):
+    # Making sure booking exist for the user.
+    booking = db.session.get(Booking, booking_id)
+    if not booking or booking.user_id != current_user.id:
+        abort(404)
+
+    event = booking.event
+    return render_template('order-confirmation.html', booking=booking, event=event)
+
+# Listing all Events Booked by the user
+@events_bp.route("/my-bookings")
+@login_required
+def my_bookings():
+    bookings = (
+        db.session.query(Booking)
+        .filter(Booking.user_id == current_user.id)
+        .order_by(Booking.booking_date.desc())
+        .all()
+    )
+
+    return render_template("my-bookings.html", bookings=bookings)
+
+
+# Event Details Page
+@events_bp.route('/events/<event_id>')
 def event_detail(event_id):
-    event = db.session.get(Event, event_id)
+    event = db.session.get(Event, int(event_id))
     if not event:
         abort(404)
 
-    comments = db.session.scalars(
-        db.select(Comment)
-          .where(Comment.event_id == event.id)
-          .order_by(Comment.posted_date.desc())
-    ).all()
+    event.update_status() 
 
+    comments = event.comments
+    comments.sort(key=lambda c: c.posted_date, reverse=True)
     return render_template('event.html', event=event, comments=comments)
 
 
-
-
-@events_bp.route("/events/<int:event_id>/edit", methods=["GET", "POST"])
-@login_required
-def edit(event_id):
-    event = db.session.get(Event, event_id)
-    if not event:
-        flash("Event not found.", "warning")
-        return redirect(url_for("main.events"))
-
-    # Optional: only owner can edit
-    # if event.owner_id != current_user.id:
-    #     flash("You don't have permission to edit this event.", "danger")
-    #     return redirect(url_for("main.events"))
-
-    if request.method == "POST":
-        title = (request.form.get("title") or "").strip()
-        description = (request.form.get("description") or "").strip()
-        hour = int(request.form.get("hour") or 0)
-        minute = int(request.form.get("minute") or 0)
-        duration = int(request.form.get("duration") or 0)
-        status = request.form.get("status") or "Open"
-        if event.status == "Inactive":
-            flash("Cannot change the status of a past event", "warning")
-            return redirect(url_for("main.events"))
-        venue_id = request.form.get("venue_id")
-
-        category = db.session.scalar(
-            db.select(Category).where(Category.category_name == "General")
-        )
-        if not category:
-            category = Category(category_name="General", description="Default")
-            db.session.add(category)
-            db.session.flush()
-
-        # date (required)
-        day = (request.form.get("day") or "").strip()
-        event_dt = datetime.strptime(day, "%Y-%m-%d").replace(
-            hour=hour, minute=minute, second=0, microsecond=0
-        )
-
-        # venue (required)
-        venue = db.session.get(Venue, venue_id)
-        if not venue:
-            flash("Select a valid venue.", "warning")
-            return redirect(url_for("events.edit", event_id=event.id))
-
-        # optional image replacement
-        image_file = request.files.get("image")
-        if image_file and image_file.filename:
-            ext = image_file.filename.rsplit(".", 1)[-1].lower()
-            if ext not in {"jpg", "jpeg", "png", "gif"}:
-                flash("Unsupported image type.", "warning")
-                return redirect(url_for("events.edit", event_id=event.id))
-            safe_name = secure_filename(image_file.filename)
-            new_name = f"{uuid.uuid4().hex[:8]}_{safe_name}"
-            save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], new_name)
-            image_file.save(save_path)
-
-            # delete old file if existed
-            if event.image:
-                old_path = os.path.join(current_app.config["UPLOAD_FOLDER"], event.image)
-                try:
-                    if os.path.exists(old_path):
-                        os.remove(old_path)
-                except OSError:
-                    pass
-
-            event.image = new_name  # set new filename
-
-        ticket_type = db.session.scalar(
-            db.select(Event).where(Event.ticket_type == "General Admission")
-        )
-        if not ticket_type:
-            flash("Select a valid type.", "warning")
-            return redirect(url_for("events.create"))
-        ticket_price = request.form.get("ticket_price")
-        ticket_quantity = request.form.get("ticket_quanitty")
-
-        # update fields
-        event.title = title
-        event.description = description
-        event.time = event_dt
-        event.status = status
-        event.category_id = category
-        event.duration_minutes = duration or None
-        event.venue_id = venue.id
-        event.ticket_type = ticket_type
-        event.ticket_price = ticket_price
-        event.ticket_quantity = ticket_quantity
-        
-
-        db.session.commit()
-        flash("Event updated successfully!", "success")
-        return redirect(url_for("main.events"))
-
-    # GET: render form with current values
-    venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-    return render_template("edit-event.html", event=event, venues=venues)
-
-
+# ADD COMMENT
 @events_bp.route("/events/<int:event_id>/comments", methods=["POST"])
 @login_required
 def add_comment(event_id):
@@ -317,15 +290,15 @@ def add_comment(event_id):
     return redirect(url_for("events.event_detail", event_id=event.id) + "#comments")
 
 
+# DELETE COMMENT
 @events_bp.route("/comments/<int:comment_id>/delete", methods=["POST"])
 @login_required
 def delete_comment(comment_id):
     c = db.session.get(Comment, comment_id)
     if not c:
         flash("Comment not found.", "warning")
-        return redirect(url_for("events.event_detail", event_id=0))  # harmless fallback
+        return redirect(url_for("main.events"))
 
-    # allow deletion by comment author or event owner
     is_author = c.user_id == current_user.id
     is_event_owner = (c.event and c.event.owner_id == current_user.id)
     if not (is_author or is_event_owner):

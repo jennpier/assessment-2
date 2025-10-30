@@ -1,51 +1,100 @@
-<!-- Your navbar should go here -->
-             <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url_for('main.index') }}">Music Event Management</a> 
-                
-                <!-----Toggler for mobile -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <!----Navbar Links-->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{{ url_for('main.index') }}">Home</a>
-                        </li>
+<div class="bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark w-75 m-auto">
+  <div class="container-fluid">
+    <!-- Our Website Name -->
+    <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" style="width: 50px;">
+      Firevents
+    </a>
 
-            <!---- IF AUTHETICATED-->            
-            {% if current_user.is_authenticated %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('events.create') }}">Create Event</a>
+    <!-- This si a toggle button in the mobile setting. -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.events') }}">All Events</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.venues') }}">Add Venue</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Booking History</a> 
-            </li>
-            
-            
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('auth.logout')}}">Logout</a> <!-- placeholder -->
-            </li>
-            
-            <!--- IF NOT AUTHENTICATED-->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" href="{{ url_for('main.index') }}">
+            Home
+          </a>
+        </li>
+
+        {% if current_user.is_authenticated %}
+        <!-- Links for user that are logged in -->
+
+          <!-- Links that are Visible to all logged in users -->
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'events.create' %}active{% endif %}" 
+               href="{{ url_for('events.create') }}">
+              Create Event
+            </a>
+          </li>
+
+          <!-- Add Venue is only visible only to admins) -->
+          {% if current_user.role == 'admin' %}
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'main.venues' %}active{% endif %}" 
+               href="{{ url_for('main.venues') }}">
+              Add Venue
+            </a>
+          </li>
+          {% endif %}
+
+          <!-- All Events -->
+          <li class="nav-item">
+            {% if current_user.role == 'admin' %}
+            <a class="nav-link {% if request.endpoint == 'main.events' %}active{% endif %}" 
+               href="{{ url_for('main.events') }}">All Events</a>
             {% else %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('auth.login')}}">Login</a> <!-- placeholder -->
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('auth.register')}}">Register</a> <!-- placeholder -->
-            </li>
+            <a class="nav-link {% if request.endpoint == 'main.events' %}active{% endif %}" 
+               href="{{ url_for('main.events') }}">My Events</a>
             {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
+          </li>
+
+          <!-- Booking History -->
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'main.my_bookings' %}active{% endif %}" 
+               href="{{ url_for('main.my_bookings') }}">
+              Booking History
+            </a>
+          </li>
+
+          <!-- Editing User Detailss  -->
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'auth.edit_profile' %}active{% endif %}" 
+              href="{{ url_for('auth.edit_profile') }}">
+              Edit Profile
+            </a>
+          </li>
+
+
+          <!-- Logout the current user-->
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.logout') }}">
+              Logout
+            </a>
+          </li>
+
+        {% else %}
+          <!-- Links for users that are not logged in  -->
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" 
+               href="{{ url_for('auth.login') }}">
+              Login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'auth.register' %}active{% endif %}" 
+               href="{{ url_for('auth.register') }}">
+              Register
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+</div>

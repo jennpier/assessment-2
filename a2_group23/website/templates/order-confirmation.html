@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmation{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-success text-white">
+          <h4 class="mb-0"><i class="bi bi-check-circle-fill me-2"></i> Booking Confirmed!</h4>
+        </div>
+        <div class="card-body p-4">
+          
+          <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='images/' + (event.image or 'default.jpg')) }}" 
+                 class="img-fluid rounded mb-3" style="max-height: 300px; object-fit: cover;">
+            <h3>{{ event.title }}</h3>
+            <p class="text-muted">
+              <i class="bi bi-calendar-event"></i> {{ event.date_time.strftime('%A, %d %B %Y %I:%M %p') }} <br>
+              <i class="bi bi-geo-alt"></i> {{ event.venue.name }} – {{ event.venue.location }}
+            </p>
+          </div>
+
+          <hr>
+
+          <h5 class="fw-bold mb-3"><i class="bi bi-receipt"></i> Booking Details</h5>
+          <ul class="list-group mb-4">
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Booking ID:</span>
+              <strong>#{{ booking.id }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Tickets Booked:</span>
+              <strong>{{ booking.no_of_tickets }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Price per Ticket:</span>
+              <strong>${{ event.ticket_price }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total Paid:</span>
+              <strong class="text-success">${{ booking.total_price }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Booking Date:</span>
+              <strong>{{ booking.booking_date.strftime('%d %B %Y, %I:%M %p') }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Status:</span>
+              <span class="badge bg-success">{{ booking.booking_status }}</span>
+            </li>
+          </ul>
+
+          <div class="alert alert-info text-center">
+            <!-- Emails are not actually sent. -->
+            A confirmation email will be sent to <strong>{{ current_user.email }}</strong>.
+          </div>
+
+          <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="{{ url_for('main.events') }}" class="btn btn-outline-primary">
+              <i class="bi bi-house-door"></i> Back to Events
+            </a>
+            <a href="{{ url_for('main.my_bookings') }}" class="btn btn-success">
+              <i class="bi bi-ticket-perforated"></i> View My Bookings
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
