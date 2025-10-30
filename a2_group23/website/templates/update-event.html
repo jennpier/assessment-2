@@ -1,22 +1,6 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Update Event</title>
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
-  </head>
-
-  <body>
-    {% include 'navbar.html' %}
+{% extends "base.html" %}
+{% block title %}Update Event{% endblock %}
+{% block content %}
 
     <div class="container my-5">
       <div class="card p-4 shadow-sm">
@@ -87,16 +71,18 @@
             </select>
           </div>
 
-          <!-- Category -->
+          <!-- Category - changed this -->
           <div class="form-group mb-3">
-            <label for="category_id" class="form-label">Category</label>
-            <select id="category_id" name="category_id" class="form-select" required>
+            <label for="category" class="form-label">Category</label>
+            <select id="category" name="category" class="form-select" required>
               <option value="" disabled>Select a category</option>
+              {% set categories = ["Jazz", "Hip-Hop", "House", "Classical", "Rock", "Electronic", "Indie"] %}
               {% for c in categories %}
-                <option value="{{ c.id }}" {% if c.id == event.category_id %}selected{% endif %}>{{ c.category_name }}</option>
+                <option value="{{ c }}" {% if c == event.category %}selected{% endif %}>{{ c }}</option>
               {% endfor %}
             </select>
-          </div>
+           </div>
+          
 
           <!-- Ticket Info -->
           <div class="row mb-3">
@@ -127,8 +113,4 @@
       </div>
     </div>
 
-    {% include 'footer.html' %}
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+{% endblock %}

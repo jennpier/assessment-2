@@ -5,11 +5,10 @@ from datetime import datetime
 import os, uuid
 
 from . import db
-from .models import Event, Venue, Category, Comment, Booking, Ticket
+from .models import Event, Venue, Comment, Booking, Ticket
 from .forms import EventForm, TicketForm, BookingForm
 
 events_bp = Blueprint("events", __name__)
-
 
 
 # Route for Creating an Event
@@ -32,11 +31,10 @@ def create():
 
         event_dt = datetime.combine(day, datetime.min.time()).replace(hour=hour, minute=minute)
 
-        # Making sure event time is at least 5 hours after to the event creation.
-        current_time = datetime.now()
-        time_difference = event_dt - current_time
-        if time_difference.total_seconds() < 5 * 3600:  
-            flash("Event start time must be at least 5 hours from now.", "danger")
+        # Checking that event is not created for a past date/time.
+        now = datetime.now()
+        if event_dt < now:
+            flash("Event date and time cannot be in the past", "danger")
             return redirect(url_for("events.create"))
 
         # Handling image upload - it should be saved at correct path
@@ -61,18 +59,18 @@ def create():
             return redirect(url_for("events.create"))
 
         # Validating Category
-        category_id = request.form.get("category_id")
-        category = db.session.get(Category, category_id)
+#        category_id = request.form.get("category_id")
+#        category = db.session.get(Category, category_id)
+#        if not category:
+#            flash("Select a valid category.", "warning")
+#            return redirect(url_for("events.create"))
+
+        category = event_form.category.data
         if not category:
-            flash("Select a valid category.", "warning")
+            flash("Please select a category.", "warning")
             return redirect(url_for("events.create"))
 
-        # Checking that ticket quantity doesn’t exceed venue capacity
-        if ticket_form.quantity.data > venue.num_of_capacity:
-            flash(f"Number of seats cannot exceed the venue capacity ({venue.num_of_capacity} seats).", "danger")
-            return redirect(url_for("events.create"))
 
-        # Creating the event
         new_event = Event(
             title=title,
             description=description,
@@ -81,7 +79,7 @@ def create():
             status=status,
             duration_minutes=duration or None,
             owner_id=current_user.id,
-            category_id=category.id,
+            category=event_form.category.data,
             venue_id=venue.id,
             ticket_price=ticket_form.price.data,
             ticket_quantity=ticket_form.quantity.data,
@@ -104,16 +102,15 @@ def create():
 
     # Load venues and categories for the form
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-    categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
+    #categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
 
     return render_template(
         "create-event.html",
         form=event_form,
         ticket_form=ticket_form,
         venues=venues,
-        categories=categories
+        #categories=categories
     )
-
 
 
 
@@ -134,7 +131,7 @@ def edit(event_id):
         event.ticket_quantity = int(request.form.get("ticket_quantity") or event.ticket_quantity)
         event.status = request.form.get("status", event.status)
         event.venue_id = request.form.get("venue_id") or event.venue_id
-        event.category_id = request.form.get("category_id") or event.category_id
+        event.category = request.form.get("category") or event.category
 
 
         # Handle image replacement
@@ -157,8 +154,8 @@ def edit(event_id):
         return redirect(url_for("main.events"))
 
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-    categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
-    return render_template("update-event.html", event=event, venues=venues, categories=categories, form=EventForm())
+    #categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
+    return render_template("update-event.html", event=event, venues=venues, form=EventForm())#categories=categories
 
 
 # Delete Event
@@ -204,7 +201,7 @@ def book_event(event_id):
 
         total_price = event.ticket_price * quantity
 
-        # Add booking
+        # Actual Adding Booking details to db is done at line 201.
         booking = Booking(
             user_id=current_user.id,
             event_id=event.id,
@@ -212,16 +209,20 @@ def book_event(event_id):
             total_price=total_price,
             booking_status='Confirmed'
         )
+
         db.session.add(booking)
-        db.session.commit() 
 
-        event.update_status()
+        # Decreasing the event tickets after booking is done.
+        if event.tickets_left() <= 0:
+            event.status = "Sold Out"
 
-        flash("Booking confirmed successfully!", "success")
+
+        db.session.commit()
+
+        # Redirecting user to the Order COnfirmation pagee.
         return redirect(url_for('events.order_confirmation', booking_id=booking.id))
 
     return render_template('book_event.html', event=event, form=form)
-
 
 
 # Booking Confirmation Route
@@ -257,15 +258,12 @@ def event_detail(event_id):
     if not event:
         abort(404)
 
-    event.update_status() 
-
     comments = event.comments
     comments.sort(key=lambda c: c.posted_date, reverse=True)
     return render_template('event.html', event=event, comments=comments)
 
 
-
-# To Add the comment
+# ADD COMMENT
 @events_bp.route("/events/<int:event_id>/comments", methods=["POST"])
 @login_required
 def add_comment(event_id):
@@ -285,7 +283,7 @@ def add_comment(event_id):
     return redirect(url_for("events.event_detail", event_id=event.id) + "#comments")
 
 
-# To Delete the commment
+# DELETE COMMENT
 @events_bp.route("/comments/<int:comment_id>/delete", methods=["POST"])
 @login_required
 def delete_comment(comment_id):
