@@ -60,12 +60,6 @@ def create():
             flash("Select a valid venue.", "warning")
             return redirect(url_for("events.create"))
 
-        # Validating Category
-#        category_id = request.form.get("category_id")
-#        category = db.session.get(Category, category_id)
-#        if not category:
-#            flash("Select a valid category.", "warning")
-#            return redirect(url_for("events.create"))
 
         # Checking that ticket quantity doesn’t exceed venue capacity
         if ticket_form.quantity.data > venue.num_of_capacity:
@@ -109,16 +103,15 @@ def create():
         flash("Event created successfully!", "success")
         return redirect(url_for("main.events"))
 
-    # Load venues and categories for the form
+    # Load venues for the form
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-    #categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
+
 
     return render_template(
         "create-event.html",
         form=event_form,
         ticket_form=ticket_form,
         venues=venues,
-        #categories=categories
     )
 
 
@@ -163,8 +156,7 @@ def edit(event_id):
         return redirect(url_for("main.events"))
 
     venues = db.session.scalars(db.select(Venue).order_by(Venue.name)).all()
-    #categories = db.session.scalars(db.select(Category).order_by(Category.category_name)).all()
-    return render_template("update-event.html", event=event, venues=venues, form=EventForm())#categories=categories
+    return render_template("update-event.html", event=event, venues=venues, form=EventForm())
 
 
 # Delete Event
@@ -272,7 +264,7 @@ def event_detail(event_id):
         abort(404)
 
     event.update_status() 
-    
+
     comments = event.comments
     comments.sort(key=lambda c: c.posted_date, reverse=True)
     return render_template('event.html', event=event, comments=comments)

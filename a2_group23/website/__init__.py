@@ -57,7 +57,6 @@ def create_app():
 
 
     #To Make sure Images are saved at correct path
-
     app.config["UPLOAD_FOLDER"] = str(Path(app.root_path) / "static" / "images")
     app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5 MB
     app.config["ALLOWED_IMAGE_EXTS"] = {"png", "jpg", "jpeg", "gif"}

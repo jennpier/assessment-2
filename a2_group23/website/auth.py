@@ -8,9 +8,8 @@ from . import db
 # Create a blueprint - make sure all BPs have unique names
 auth_bp = Blueprint('auth', __name__)
 
-# this is a hint for a login function
+#Login Function
 @auth_bp.route('/login', methods=['GET', 'POST'])
-# view function
 def login():
     login_form = LoginForm()
     error = None
@@ -94,7 +93,8 @@ def edit_profile():
         return redirect(url_for("main.index"))
 
     return render_template("edit_profile.html", form=form)
-            
+
+# Logout user
 @auth_bp.route('/logout')
 @login_required
 def logout():

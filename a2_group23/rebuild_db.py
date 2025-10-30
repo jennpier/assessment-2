@@ -1,4 +1,4 @@
-# Will delete this later - just for debug
+# Will delete this later - just for debug purpose - run do rebuild database
 
 from website import create_app, db
 

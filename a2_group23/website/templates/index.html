@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<!--- Need to Change Name of Event Management System  -->
 
 <!---Carousel -->
-<div id="MusicManagementCarousel" class="carousel slide" style="height:380px;">
+<div id="FireEventsCarousel" class="carousel slide" data-bs-ride="carousel" style="height:380px;">
   <div class="carousel-indicators">
-    <button type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <button type="button" data-bs-target="#FireEventsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#FireEventsCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#FireEventsCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
   </div>
   <div class="carousel-inner">
     <div class="carousel-item">
@@ -21,16 +20,15 @@
       <img src="https://images.pexels.com/photos/7591515/pexels-photo-7591515.jpeg?_gl=1*x4yf8z*_ga*OTIxMjIyMTE5LjE3NjA3NTY1NzM.*_ga_8JE65Q40S6*czE3NjA3NTY1NzIkbzEkZzEkdDE3NjA3NTY2NDUkajYwJGwwJGgw" class="d-block w-100" alt="Carousel Image 3" style="height:380px; object-fit: cover;">
     </div>
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide="prev">
+  <button class="carousel-control-prev" type="button" data-bs-target="#FireEventsCarousel" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Previous</span>
   </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#MusicManagementCarousel" data-bs-slide="next">
+  <button class="carousel-control-next" type="button" data-bs-target="#FireEventsCarousel" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
   </button>
 </div>
-
 
 
 <style>  
@@ -38,7 +36,7 @@
 </style>
 
 <div class="container mt-4 text-center text-white">
-<h1 class="display-3">Music Events Management</h1>
+<h1 class="display-3">Fire Events</h1>
 <p class="lead">Upcoming Events</p>
 </div>
 
@@ -62,7 +60,8 @@
   <a href="{{ url_for('main.filter_event', category='Indie') }}" class="btn btn-dark btn-outline-light mx-1">Indie</a>
 </div>
 
-
+<!--- Music Events - Card for each event ---->
+  <div class = container>
   <div class="row justify-content-center">
   {% for e in events %}
     <div class="col-12 col-sm-6 col-md-4 mb-3">
@@ -79,7 +78,7 @@
             {{ e.description|truncate(140, True) }}
           </p>
           <p><strong>Status:</strong> {{ e.status }}</p>
-          <p><strong>Category:</strong> {{ e.category }}</p>
+          <p><strong>Genre:</strong> {{ e.category }}</p>
           <a href="{{ url_for('events.event_detail', event_id=e.id) }}" class="btn btn-success w-100">View Details</a>
         </div>
       </div>
@@ -87,6 +86,7 @@
   {% else %}
     <div class="text-center text-white-50">No events yet.</div>
   {% endfor %}
+</div>
 </div>
 
 

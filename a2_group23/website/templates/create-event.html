@@ -61,10 +61,10 @@
           <!-- Choose category -->
           <div class="row mb-3">
             <div class="col-md-8 mb-2">
-              <label for="category" class="form-label">Category</label>
-              <option value="" disabled selected>Select a category</option>
+              <label for="category" class="form-label">Genre</label>
+              <option value="" disabled selected>Select a Genre</option>
               <select id="category" name="category" class="form-select" required>
-                <option value="" disabled selected>Select a category</option>
+                <option value="" disabled selected>Select a Genre</option>
                 {% set categories = ["Jazz", "Hip-Hop", "House", "Classical", "Rock", "Electronic", "Indie"] %}
                 {% for c in categories %}
                   <option value="{{ c }}">{{ c }}</option>

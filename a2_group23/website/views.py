@@ -33,15 +33,8 @@ def search():
     else:
         return redirect(url_for('main.index'))
 
-# Backend Filter - OLD FILTER
-#@main_bp.route('/filter-event/<category>')
-#def filter_event(category):
-#    filtered = db.session.scalars(
-#        db.select(Event).join(Category).where(Category.category_name.ilike(category)).order_by(Event.date_time.asc())
-#        ).all()
-#    return render_template('index.html', events=filtered)  
 
-# NEW FILTER
+# Filter Events based on genre
 @main_bp.route('/filter-event/<category>')
 def filter_event(category):
     if category == "All":
