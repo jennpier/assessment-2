@@ -8,12 +8,12 @@
         <h4 class="display-2">{{heading}}</h4>
     </div>
 
-    <!-- Form rendering is simple and easy if using WTForms and Bootstrap -->
+    <!-- Form rendering (login or register)---->
     <div class="col-md-6">
         {{render_form(form)}}
     </div>
 
-    <!-- When you have Login form, then show the user a link to register -->
+    <!-- Link to Register -->
     {% if heading == 'Login' %}
     <div class="col-md-4">
         <p>New user? <a href="{{url_for('auth.register')}}">Click here</a> to register.</p> 

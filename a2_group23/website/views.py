@@ -22,7 +22,7 @@ def index():
     ).all()
     return render_template("index.html", events=events)
 
-# Search Bar
+# Search Bar - Can search based on event name or description
 @main_bp.route('/search')
 def search():
     if request.args['search'] and request.args['search'] != "":
@@ -34,7 +34,7 @@ def search():
         return redirect(url_for('main.index'))
 
 
-# Filter Events based on genre
+# Filter Events based on their genre
 @main_bp.route('/filter-event/<category>')
 def filter_event(category):
     if category == "All":
@@ -50,6 +50,7 @@ def filter_event(category):
     return render_template('index.html', events=filtered)
 
 
+# My Bookings 
 @main_bp.route('/my-bookings')
 @login_required
 def my_bookings():
@@ -68,6 +69,7 @@ def my_bookings():
 
     return render_template('bookings.html', bookings=bookings)
 
+# Events
 @main_bp.route("/events", methods=["GET"])
 @login_required
 def events():
@@ -86,6 +88,7 @@ def events():
 
     return render_template("all_events.html", events=items)
 
+# Venues 
 @main_bp.route("/venues", methods=["GET", "POST"])
 @login_required
 def venues():

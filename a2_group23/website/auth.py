@@ -26,14 +26,13 @@ def login():
             flash(f"Welcome back, {user.name}!", "success")
             nextp = request.args.get('next')
             if not nextp or not nextp.startswith('/'):
-                # if user.role == "admin":
-                #     return redirect(url_for('admin.dashboard'))
                 return redirect(url_for('main.index'))
             return redirect(nextp)
         else:
             flash(error, "danger")
     return render_template('user.html', form=login_form, heading='Login')
 
+# Register Function
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -72,7 +71,7 @@ def register():
     # Show the registration form again if invalid
     return render_template('user.html', form=form, heading='Register')
 
-# Making a new route to edit the profile information
+# Edit the profile information
 @auth_bp.route("/edit-profile", methods=["GET", "POST"])
 @login_required
 def edit_profile():
@@ -94,7 +93,7 @@ def edit_profile():
 
     return render_template("edit_profile.html", form=form)
 
-# Logout user
+# Logout user Fucntion
 @auth_bp.route('/logout')
 @login_required
 def logout():

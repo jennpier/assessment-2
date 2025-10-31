@@ -10,12 +10,9 @@ from flask_bcrypt import generate_password_hash
 
 db = SQLAlchemy()
 
-# create a function that creates a web application
-# a web server will run this web application
+
 def create_app():
-  
     app = Flask(__name__)  # this is the name of the module/package that is calling this app
-    # Should be set to false in a production environment
     app.debug = True
     app.secret_key = 'somesecretkey'
     # set the app configuration data 
@@ -64,6 +61,7 @@ def create_app():
     Path(app.config["UPLOAD_FOLDER"]).mkdir(parents=True, exist_ok=True)
     
     
+    # Create Admin User if not in db already - Admin can add venues and see all events 
     with app.app_context():
        db.create_all()
        admin= db.session.scalar(db.select(User).where(User.email == "admin@admin.com"))

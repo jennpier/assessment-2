@@ -2,7 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-<!---Carousel -->
+<!---The Carousel -->
 <div id="FireEventsCarousel" class="carousel slide" data-bs-ride="carousel" style="height:380px;">
   <div class="carousel-indicators">
     <button type="button" data-bs-target="#FireEventsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -30,7 +30,7 @@
   </button>
 </div>
 
-
+<!-- Styling for the background colour -->
 <style>  
   body {background-color:rgb(75, 75, 75)}
 </style>
@@ -48,7 +48,7 @@
 </form>
 </div>
 
-<!-- Filter the music events (filter genres) - Need to test still -->
+<!-- Filter the music events by genre buttons ----->
 <div class="d-flex justify-content-center mb-4">
   <a href="{{ url_for('main.index') }}" class="btn btn-dark btn-outline-light mx-1">All</a>
   <a href="{{ url_for('main.filter_event', category='Jazz') }}" class="btn btn-dark btn-outline-light mx-2">Jazz</a>

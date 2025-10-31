@@ -216,12 +216,6 @@ def book_event(event_id):
 
         event.update_status()
 
-        #Does this need to be deleted?
-        # Decreasing the event tickets after booking is done.
-        #if event.tickets_left() <= 0:
-        #    event.status = "Sold Out"
-
-
         flash("Booking confirmed successfully!", "success")
 
         # Redirecting user to the Order COnfirmation pagee.

@@ -28,7 +28,7 @@ class User(db.Model, UserMixin):
     )
 
 # Adding these dunder methods for better visuals. Unsure, if it is imporatant, but they say it is beneficial while debugging
-# I found them being used by people in stackoverflow, so i put them as well. We'll see use case in future.
+# I found them being used by people in stackoverflow, so i put them as well. 
 
     def __repr__(self):
         return f"<User {self.email}>"
@@ -46,6 +46,7 @@ class Venue(db.Model):
     def __repr__(self):
         return f"<Venue {self.id}:{self.name}>"
 
+# Event Model 
 class Event(db.Model):
     __tablename__ = "event"
 
@@ -91,7 +92,7 @@ class Event(db.Model):
 
 
 
-
+# Comments Model 
 class Comment(db.Model):
     __tablename__ = "comment"
 
@@ -108,6 +109,7 @@ class Comment(db.Model):
     def __repr__(self):
         return f"<Comment {self.id} by {self.user_id} on {self.event_id}>"
 
+# Bookings Model
 class Booking(db.Model):
     __tablename__ = "booking"
 
@@ -128,6 +130,7 @@ class Booking(db.Model):
         return f"<Booking {self.id} user={self.user_id} event={self.event_id}>"
 
 
+# Tickets Model
 class Ticket(db.Model):
     __tablename__ = "ticket"
 
