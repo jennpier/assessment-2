@@ -36,7 +36,7 @@
 </style>
 
 <div class="container mt-4 text-center text-white">
-<h1 class="display-3">Fire Events</h1>
+<h1 class="display-1 fw-bold pb-4">Firevents</h1>
 <p class="lead">Upcoming Events</p>
 </div>
 
@@ -51,13 +51,13 @@
 <!-- Filter the music events (filter genres) - Need to test still -->
 <div class="d-flex justify-content-center mb-4">
   <a href="{{ url_for('main.index') }}" class="btn btn-dark btn-outline-light mx-1">All</a>
-  <a href="{{ url_for('main.filter_event', category='Jazz') }}" class="btn btn-dark btn-outline-light mx-1">Jazz</a>
-  <a href="{{ url_for('main.filter_event', category='Hip-Hop') }}" class="btn btn-dark btn-outline-light mx-1">Hip-Hop</a>
-  <a href="{{ url_for('main.filter_event', category='House') }}" class="btn btn-dark btn-outline-light mx-1">House</a>
-  <a href="{{ url_for('main.filter_event', category='Classical') }}" class="btn btn-dark btn-outline-light mx-1">Classical</a>
-  <a href="{{ url_for('main.filter_event', category='Rock') }}" class="btn btn-dark btn-outline-light mx-1">Rock</a>
-  <a href="{{ url_for('main.filter_event', category='Electronic') }}" class="btn btn-dark btn-outline-light mx-1">Electronic</a>
-  <a href="{{ url_for('main.filter_event', category='Indie') }}" class="btn btn-dark btn-outline-light mx-1">Indie</a>
+  <a href="{{ url_for('main.filter_event', category='Jazz') }}" class="btn btn-dark btn-outline-light mx-2">Jazz</a>
+  <a href="{{ url_for('main.filter_event', category='Hip-Hop') }}" class="btn btn-dark btn-outline-light mx-2">Hip-Hop</a>
+  <a href="{{ url_for('main.filter_event', category='House') }}" class="btn btn-dark btn-outline-light mx-2">House</a>
+  <a href="{{ url_for('main.filter_event', category='Classical') }}" class="btn btn-dark btn-outline-light mx-2">Classical</a>
+  <a href="{{ url_for('main.filter_event', category='Rock') }}" class="btn btn-dark btn-outline-light mx-2">Rock</a>
+  <a href="{{ url_for('main.filter_event', category='Electronic') }}" class="btn btn-dark btn-outline-light mx-2">Electronic</a>
+  <a href="{{ url_for('main.filter_event', category='Indie') }}" class="btn btn-dark btn-outline-light mx-2">Indie</a>
 </div>
 
 <!--- Music Events - Card for each event ---->
@@ -79,7 +79,7 @@
           </p>
           <p><strong>Status:</strong> {{ e.status }}</p>
           <p><strong>Genre:</strong> {{ e.category }}</p>
-          <a href="{{ url_for('events.event_detail', event_id=e.id) }}" class="btn btn-success w-100">View Details</a>
+          <a href="{{ url_for('events.event_detail', event_id=e.id) }}" class="btn btn-primary w-100">View Details</a>
         </div>
       </div>
     </div>

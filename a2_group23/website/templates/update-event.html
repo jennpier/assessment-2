@@ -4,63 +4,63 @@
 
     <div class="container my-5">
       <div class="card p-4 shadow-sm">
-        <h3 class="mb-4 text-center"><i class="bi bi-pencil-square me-1"></i> Update Event</h3>
+        <h3 class="mb-4 text-center display-2"><i class="bi bi-pencil-square me-1"></i> Update Event</h3>
 
         <form method="POST" enctype="multipart/form-data" action="{{ url_for('events.edit', event_id=event.id) }}">
           {{ form.hidden_tag() }}
 
           <!-- Title -->
           <div class="form-group mb-3">
-            <label for="title" class="form-label">Title</label>
+            <label for="title" class="form-label fw-semibold">Title</label>
             <input type="text" id="title" name="title" class="form-control" value="{{ event.title }}" required>
           </div>
 
           <!-- Description -->
           <div class="form-group mb-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label fw-semibold">Description</label>
             <textarea id="description" name="description" class="form-control" rows="4" required>{{ event.description }}</textarea>
           </div>
 
           <!-- Date & Time -->
           <div class="row mb-3">
             <div class="col-md-4">
-              <label for="day" class="form-label">Event Date</label>
+              <label for="day" class="form-label fw-semibold">Event Date</label>
               <input id="day" name="day" type="date" class="form-control" value="{{ event.date_time.strftime('%Y-%m-%d') }}" required>
             </div>
             <div class="col-md-4">
-              <label for="hour" class="form-label">Hour (0-23)</label>
+              <label for="hour" class="form-label fw-semibold">Hour (0-23)</label>
               <input id="hour" name="hour" type="number" min="0" max="23" class="form-control" value="{{ event.date_time.hour }}" required>
             </div>
             <div class="col-md-4">
-              <label for="minute" class="form-label">Minute (0-59)</label>
+              <label for="minute" class="form-label fw-semibold">Minute (0-59)</label>
               <input id="minute" name="minute" type="number" min="0" max="59" class="form-control" value="{{ event.date_time.minute }}" required>
             </div>
           </div>
 
           <!-- Duration -->
           <div class="form-group mb-3">
-            <label for="duration" class="form-label">Duration (minutes)</label>
+            <label for="duration" class="form-label fw-semibold">Duration (minutes)</label>
             <input id="duration" name="duration" type="number" min="1" class="form-control" value="{{ event.duration_minutes or '' }}">
           </div>
 
           <!-- Existing Image -->
           {% if event.image %}
           <div class="form-group mb-3 text-center">
-            <label class="form-label d-block">Current Image:</label>
+            <label class="form-label d-block fw-semibold">Current Image:</label>
             <img src="{{ url_for('static', filename='images/' ~ event.image) }}" alt="Event Image" class="img-fluid rounded" style="max-height: 250px;">
           </div>
           {% endif %}
 
           <!-- Upload New Image -->
           <div class="form-group mb-3">
-            <label for="image" class="form-label">Replace Image</label>
+            <label for="image" class="form-label fw-semibold">Replace Image</label>
             <input type="file" id="image" name="image" class="form-control">
             <div class="form-text">Accepted: PNG, JPG, JPEG, GIF (optional)</div>
           </div>
 
           <!-- Venue -->
           <div class="form-group mb-3">
-            <label for="venue_id" class="form-label">Venue</label>
+            <label for="venue_id" class="form-label fw-semibold">Venue</label>
             <select id="venue_id" name="venue_id" class="form-select" required>
               <option value="" disabled>Select a venue</option>
               {% for v in venues %}
@@ -73,7 +73,7 @@
 
           <!-- Category - changed this -->
           <div class="form-group mb-3">
-            <label for="category" class="form-label">Category</label>
+            <label for="category" class="form-label fw-semibold">Category</label>
             <select id="category" name="category" class="form-select" required>
               <option value="" disabled>Select a category</option>
               {% set categories = ["Jazz", "Hip-Hop", "House", "Classical", "Rock", "Electronic", "Indie"] %}
@@ -87,7 +87,7 @@
           <!-- Ticket Info -->
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="ticket_price" class="form-label">Ticket Price ($)</label>
+              <label for="ticket_price" class="form-label fw-semibold">Ticket Price ($)</label>
               <input id="ticket_price" name="ticket_price" type="number" class="form-control" min="0" value="{{ event.ticket_price }}">
             </div>
             <div class="col-md-6">
@@ -98,7 +98,7 @@
 
           <!-- Status -->
           <div class="form-group mb-4">
-            <label for="status" class="form-label">Status</label>
+            <label for="status" class="form-label fw-semibold">Status</label>
             <select id="status" name="status" class="form-select">
               <option value="Open" {% if event.status == 'Open' %}selected{% endif %}>Open</option>
               <option value="Cancelled" {% if event.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>

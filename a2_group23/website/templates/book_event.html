@@ -40,7 +40,7 @@
               <label class="form-label fw-bold">Price per Ticket</label>
               <div class="input-group">
                 <span class="input-group-text">$</span>
-                <input type="text" id="ticketPrice" class="form-control" value="{{ event.ticket_price }}" readonly>
+                <input type="text" class="form-control" value="{{ event.ticket_price }}" readonly>
               </div>
             </div>
 
@@ -48,18 +48,18 @@
             <!-- Guys, validate this portion as well. -->
             <div class="mb-3">
               {{ form.no_of_tickets.label(class="form-label fw-bold") }}
-              {{ form.no_of_tickets(id="ticketQty", class="form-control", min="1", max=event.tickets_left(), placeholder="Enter quantity") }}
+              {{ form.no_of_tickets(class="form-control", min="1", max=event.tickets_left(), placeholder="Enter quantity") }}
               <small class="text-muted">Available tickets: {{ event.tickets_left() }}</small>
             </div>
 
-            <!-- Total Price is also displayed using javascript placed at the very bottom of the page. -->
+            <!-- Total Price is also displayed using javascript placed at the very bottom of the page.
             <div class="mb-3">
               <label class="form-label fw-bold">Total Price</label>
               <div class="input-group">
                 <span class="input-group-text">$</span>
-                <input type="text" id="totalPrice" class="form-control" value="0" readonly>
+                <input type="text" class="form-control" value="" readonly>
               </div>
-            </div>
+            </div>-->
 
             <!-- Agreement, when clicked.. it has a popup modal box -->
             <div class="form-check mb-3">
@@ -71,7 +71,7 @@
 
             <!-- Submit -->
             {% if event.tickets_left() > 0 %}
-            <button class="btn btn-success w-100 py-2" type="submit">
+            <button class="btn btn-primary w-100 py-2" type="submit">
               <i class="bi bi-cart-check me-1"></i> Confirm Booking
             </button>
             {% else %}
@@ -109,7 +109,7 @@
   </div>
 </div>
 
-<!-- Javascript that calculates price automatically -->
+<!-- Javascript that calculates price automatically 
 <script>
   const qtyInput = document.getElementById('ticketQty');
   const priceInput = document.getElementById('ticketPrice');
@@ -123,6 +123,6 @@
       totalDisplay.value = total.toFixed(2);
     });
   }
-</script>
+</script>-->
 
 {% endblock %}

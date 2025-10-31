@@ -4,7 +4,7 @@
 
     <div class="container my-5">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="mb-0">Events</h3>
+        <h3 class="mb-0 display-2">Events</h3>
         {% if current_user.role == 'admin' %}
         <a class="btn btn-primary" href="{{ url_for('events.create') }}">Create Event</a>
         {% endif %}
@@ -21,7 +21,7 @@
         {% endif %}
       {% endwith %}
 
-      <div class="table-responsive">
+      <div class="table-responsive pt-3">
         <table class="table align-middle">
           <thead>
             <tr>
