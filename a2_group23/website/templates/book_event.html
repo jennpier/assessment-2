@@ -52,15 +52,6 @@
               <small class="text-muted">Available tickets: {{ event.tickets_left() }}</small>
             </div>
 
-            <!-- Total Price is also displayed using javascript placed at the very bottom of the page.
-            <div class="mb-3">
-              <label class="form-label fw-bold">Total Price</label>
-              <div class="input-group">
-                <span class="input-group-text">$</span>
-                <input type="text" class="form-control" value="" readonly>
-              </div>
-            </div>-->
-
             <!-- Agreement, when clicked.. it has a popup modal box -->
             <div class="form-check mb-3">
               <input class="form-check-input" type="checkbox" id="agree" required>
@@ -108,21 +99,5 @@
     </div>
   </div>
 </div>
-
-<!-- Javascript that calculates price automatically 
-<script>
-  const qtyInput = document.getElementById('ticketQty');
-  const priceInput = document.getElementById('ticketPrice');
-  const totalDisplay = document.getElementById('totalPrice');
-
-  if (qtyInput) {
-    qtyInput.addEventListener('input', () => {
-      const qty = parseInt(qtyInput.value || 0);
-      const price = parseFloat(priceInput.value || 0);
-      const total = qty * price;
-      totalDisplay.value = total.toFixed(2);
-    });
-  }
-</script>-->
 
 {% endblock %}

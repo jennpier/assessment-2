@@ -138,4 +138,7 @@ def internal_error(error):
     return render_template ('500.html'), 500
 
 
-
+@main_bp.route('/trigger500')
+def trigger500():
+    # This will cause a 500 Internal Server Error
+    1 / 0
