@@ -35,23 +35,16 @@
             {{ form.description(class="form-control", placeholder="Tell people about the event") }}
           </div>
 
-          <!-- Date & Time & Duration -->
-          <div class="row mb-4">
-            <div class="form-group col-md-4 mb-2">
-              {{ form.day.label(class='form-label fw-semibold') }}
-              {{ form.day(class="form-control", required=True) }}
-            </div>
+          
+        <!---Date and time of the Event-->
+        <div class="form-group mb-4">
+          {{ form.date_time.label(class='form-label fw-semibold') }}
+          {{ form.date_time(class="form-control", required=True) }}
+          <div class="form-text">Select the event date and start time.</div>
+        </div>
 
-            <div class="form-group col-md-3 mb-2">
-              {{ form.hour.label(class='form-label fw-semibold') }}
-              {{ form.hour(class="form-control", min="00", max="23", required=True) }}
-            </div>
 
-            <div class="form-group col-md-3 mb-2">
-              {{ form.minute.label(class='form-label fw-semibold') }}
-              {{ form.minute(class="form-control", min="0", max="59", required=True) }}
-            </div>
-          </div>
+          <!--- Duration of Event --->
           <div class="row mb-4">
             <div class="form-group col-md-3 mb-2">
               {{ form.duration.label(class='form-label fw-semibold') }}

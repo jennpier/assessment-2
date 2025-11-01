@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import SelectField
-from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, RadioField, IntegerField, DateField
+from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, RadioField, IntegerField, DateField, DateTimeLocalField
 from wtforms.validators import InputRequired, Length, Email, EqualTo, NumberRange, ValidationError, DataRequired, Optional
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 import datetime
@@ -46,9 +46,10 @@ class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=100)])
     description = TextAreaField('Description', validators=[DataRequired(), Length(max=500)])
     category = SelectField("Category", choices=[("", "Select a genre"),("Jazz", "Jazz"), ("Hip-Hop", "Hip-Hop"), ("House", "House"), ("Classical", "Classical"), ("Rock", "Rock"), ("Electronic", "Electronic"), ("Indie", "Indie")], validators=[DataRequired(message="please select a genre")])
-    day = DateField('Date', format='%Y-%m-%d', validators=[DataRequired()])
-    hour = IntegerField('Time (Hour)', validators=[DataRequired(), NumberRange(min=0, max=23)])
-    minute = IntegerField('Time (Minute)', validators=[DataRequired(), NumberRange(min=0, max=59)])
+    date_time = DateTimeLocalField('Event Date & Time', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])
+    #day = DateField('Date', format='%Y-%m-%d', validators=[DataRequired()])
+    #hour = IntegerField('Time (Hour)', validators=[DataRequired(), NumberRange(min=0, max=23)])
+    #minute = IntegerField('Time (Minute)', validators=[DataRequired(), NumberRange(min=0, max=59)])
     duration = IntegerField('Event Duration (minutes)', validators=[DataRequired(), NumberRange(min=1)])
     image = FileField('Event Image', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])
     submit = SubmitField('Create Event')
