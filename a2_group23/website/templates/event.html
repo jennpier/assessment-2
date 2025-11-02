@@ -149,7 +149,6 @@
             <div class="d-flex mb-2 ml-0">
               <img src="{{ url_for('static', filename='images/profile.png') }}" class="rounded-circle me-3" style="width:25px; height:25px" alt="">
               <div>
-                <!-- <i class="bi bi-person-circle"></i> -->
                 <strong>{{ c.author.name if c.author else 'User' }}</strong>
                 <small class="text-muted ms-2">{{ c.posted_date.strftime('%Y-%m-%d %H:%M') }}</small>
               </div>

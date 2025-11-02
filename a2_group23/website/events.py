@@ -24,13 +24,9 @@ def create():
         title = event_form.title.data.strip()
         description = event_form.description.data.strip()
         event_dt = event_form.date_time.data
-        #day = event_form.day.data
-        #hour = event_form.hour.data
-        #minute = event_form.minute.data
         duration = event_form.duration.data
         status = "Open"
 
-        #event_dt = datetime.combine(day, datetime.min.time()).replace(hour=hour, minute=minute)
 
         # Making sure event time is at least 5 hours after to the event creation.
         current_time = datetime.now()
