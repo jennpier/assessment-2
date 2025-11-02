@@ -23,13 +23,14 @@ def create():
         # Generatung a  unique string-based event ID
         title = event_form.title.data.strip()
         description = event_form.description.data.strip()
-        day = event_form.day.data
-        hour = event_form.hour.data
-        minute = event_form.minute.data
+        event_dt = event_form.date_time.data
+        #day = event_form.day.data
+        #hour = event_form.hour.data
+        #minute = event_form.minute.data
         duration = event_form.duration.data
         status = "Open"
 
-        event_dt = datetime.combine(day, datetime.min.time()).replace(hour=hour, minute=minute)
+        #event_dt = datetime.combine(day, datetime.min.time()).replace(hour=hour, minute=minute)
 
         # Making sure event time is at least 5 hours after to the event creation.
         current_time = datetime.now()
@@ -125,6 +126,8 @@ def edit(event_id):
         flash("Event not found.", "warning")
         return redirect(url_for("main.events"))
 
+    form = EventForm(obj=event)
+    
     if request.method == "POST":
         event.title = request.form.get("title", event.title)
         event.description = request.form.get("description", event.description)
@@ -134,6 +137,7 @@ def edit(event_id):
         event.status = request.form.get("status", event.status)
         event.venue_id = request.form.get("venue_id") or event.venue_id
         event.category = request.form.get("category") or event.category
+        event.date_time = form.date_time.data
 
 
         # Handle image replacement
